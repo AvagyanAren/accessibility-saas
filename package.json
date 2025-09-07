@@ -1,0 +1,23 @@
+{
+  "name": "accessibility-saas",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@axe-core/playwright": "^4.10.2",
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.14.0",
+    "@mui/material": "^5.14.0",
+    "axe-core": "^4.8.0",
+    "jsdom": "^26.1.0",
+    "next": "^13.5.2",
+    "node-fetch": "^2.7.0",
+    "playwright": "^1.55.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
