@@ -1,27 +1,10 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Typography,
-  Paper,
-  TextField,
-  Button,
-  Card,
-  CardContent,
-  Alert,
-  Grid,
-  Chip,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Divider,
-  CircularProgress,
-  Snackbar,
-  Stepper,
-  Step,
-  StepLabel,
-  StepContent,
-} from "@mui/material";
+import { Box, Stack, HStack, VStack } from "../components/apple/Layout";
+import { Typography } from "../components/apple/Typography";
+import { Button } from "../components/apple/Button";
+import { Input } from "../components/apple/Input";
+import { Card } from "../components/apple/Card";
+import { appleTheme } from "../../styles/apple-theme";
 import {
   Keyboard,
   CheckCircle,
@@ -34,6 +17,8 @@ import {
   NavigateNext,
 } from "@mui/icons-material";
 import Link from "next/link";
+
+const { Container, Section } = require("../components/apple/Layout");
 
 export default function KeyboardNavigator() {
   const [url, setUrl] = useState("");
@@ -135,10 +120,10 @@ export default function KeyboardNavigator() {
 
   const getSeverityColor = (severity) => {
     switch (severity) {
-      case "critical": return "#dc3545";
-      case "warning": return "#ffc107";
-      case "info": return "#17a2b8";
-      default: return "#6c757d";
+      case "critical": return appleTheme.colors.error;
+      case "warning": return appleTheme.colors.warning;
+      case "info": return appleTheme.colors.info;
+      default: return appleTheme.colors.gray[500];
     }
   };
 
@@ -160,362 +145,382 @@ export default function KeyboardNavigator() {
   ];
 
   return (
-    <Box sx={{ minHeight: "100vh", backgroundColor: "#e3f2fd" }}>
-      {/* Header */}
-      <Box sx={{ 
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-        color: "white",
-        py: { xs: 6, sm: 8 },
-        textAlign: "center"
-      }}>
-        <Typography variant="h3" sx={{ 
-          fontWeight: 700, 
-          mb: 2,
-          fontSize: { xs: "28px", sm: "36px" }
-        }}>
-          Keyboard Navigator
-        </Typography>
-        <Typography variant="h6" sx={{ 
-          opacity: 0.9,
-          maxWidth: "600px",
-          mx: "auto",
-          px: 2
-        }}>
-          Test and improve keyboard navigation on your website. Ensure all interactive elements are accessible via keyboard.
-        </Typography>
-      </Box>
+    <div style={{ backgroundColor: appleTheme.colors.background.secondary, minHeight: "100vh" }}>
+      {/* Hero Section */}
+      <Section background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
+        <Container size="lg">
+          <Box style={{ textAlign: "center" }}>
+            <Typography variant="display" style={{ 
+              marginBottom: appleTheme.spacing[4],
+              color: "#1C1C1E",
+              fontWeight: appleTheme.typography.fontWeight.bold
+            }}>
+              Keyboard Navigator
+            </Typography>
+            <Typography variant="headline" weight="regular" style={{ 
+              color: "#2C2C2E",
+              maxWidth: "600px",
+              margin: `0 auto ${appleTheme.spacing[8]} auto`,
+              fontWeight: appleTheme.typography.fontWeight.medium
+            }}>
+              Test and improve keyboard navigation on your website. Ensure all interactive elements are accessible via keyboard.
+            </Typography>
+          </Box>
+        </Container>
+      </Section>
 
-      <Box sx={{ maxWidth: "1200px", mx: "auto", p: { xs: 2, sm: 3 } }}>
+      <Container size="lg" style={{ padding: appleTheme.spacing[6] }}>
         {/* Input Section */}
-        <Paper sx={{ p: 4, mb: 4, borderRadius: 3 }}>
-          <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: "#333" }}>
+        <Card variant="elevated" padding="xl" style={{ marginBottom: appleTheme.spacing[6] }}>
+          <Typography variant="title1" style={{ 
+            marginBottom: appleTheme.spacing[4],
+            color: appleTheme.colors.text.primary,
+            fontWeight: appleTheme.typography.fontWeight.semibold
+          }}>
             Test Keyboard Navigation
           </Typography>
           
-          <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
-            <TextField
-              fullWidth
-              label="Website URL"
-              placeholder="https://example.com"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  backgroundColor: "white",
-                  "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#0077b6",
-                  },
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#0077b6",
-                    borderWidth: 2,
-                  },
-                },
-              }}
-            />
+          <HStack spacing={3} align="stretch" style={{ marginBottom: appleTheme.spacing[4] }}>
+            <Box style={{ flex: 1 }}>
+              <Input
+                placeholder="https://example.com"
+                value={url}
+                onChange={setUrl}
+                size="large"
+                variant="filled"
+                startIcon={<Keyboard />}
+              />
+            </Box>
             <Button
-              variant="contained"
+              variant="primary"
+              size="large"
               onClick={handleTest}
               disabled={testing}
-              startIcon={testing ? <CircularProgress size={20} /> : <Keyboard />}
-              sx={{
-                backgroundColor: "#0077b6",
-                px: 4,
-                py: 1.5,
-                fontSize: "16px",
-                fontWeight: 600,
-                "&:hover": {
-                  backgroundColor: "#0056b3",
-                },
-              }}
+              loading={testing}
+              startIcon={testing ? <Refresh /> : <PlayArrow />}
             >
               {testing ? "Testing..." : "Test Navigation"}
             </Button>
-          </Box>
+          </HStack>
 
-          <Alert severity="info" sx={{ mb: 2 }}>
-            <Typography variant="body2">
+          <Card variant="outlined" padding="md" style={{ 
+            backgroundColor: appleTheme.colors.info + "10",
+            borderColor: appleTheme.colors.info + "30"
+          }}>
+            <Typography variant="body" style={{ color: appleTheme.colors.text.secondary }}>
               <strong>What we test:</strong> Tab order, focus management, keyboard shortcuts, 
               ARIA labels, focus indicators, and skip links.
             </Typography>
-          </Alert>
-        </Paper>
+          </Card>
+        </Card>
 
         {/* Testing Progress */}
         {testing && (
-          <Paper sx={{ p: 4, mb: 4, borderRadius: 3 }}>
-            <Typography variant="h6" sx={{ fontWeight: 600, mb: 3, color: "#333" }}>
+          <Card variant="elevated" padding="xl" style={{ marginBottom: appleTheme.spacing[6] }}>
+            <Typography variant="title1" style={{ 
+              marginBottom: appleTheme.spacing[4],
+              color: appleTheme.colors.text.primary,
+              fontWeight: appleTheme.typography.fontWeight.semibold
+            }}>
               Testing in Progress...
             </Typography>
-            <Stepper activeStep={activeStep} orientation="vertical">
+            <VStack spacing={3}>
               {testSteps.map((step, index) => (
-                <Step key={index}>
-                  <StepLabel>{step}</StepLabel>
-                </Step>
+                <HStack key={index} spacing={3} align="center">
+                  <Box style={{
+                    width: "24px",
+                    height: "24px",
+                    borderRadius: "50%",
+                    backgroundColor: index <= activeStep ? appleTheme.colors.primary[500] : appleTheme.colors.gray[300],
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "white",
+                    fontSize: "12px",
+                    fontWeight: "bold"
+                  }}>
+                    {index < activeStep ? "✓" : index + 1}
+                  </Box>
+                  <Typography variant="body" style={{ 
+                    color: index <= activeStep ? appleTheme.colors.text.primary : appleTheme.colors.text.tertiary
+                  }}>
+                    {step}
+                  </Typography>
+                </HStack>
               ))}
-            </Stepper>
-          </Paper>
+            </VStack>
+          </Card>
         )}
 
         {/* Results Section */}
         {results && (
-          <Box sx={{ mb: 4 }}>
+          <Box style={{ marginBottom: appleTheme.spacing[6] }}>
             {/* Summary Cards */}
-            <Grid container spacing={3} sx={{ mb: 4 }}>
-              <Grid item xs={12} sm={6} md={3}>
-                <Card sx={{ textAlign: "center", p: 2 }}>
-                  <CardContent>
-                    <Typography variant="h4" sx={{ color: "#0077b6", fontWeight: 700 }}>
-                      {results.totalElements}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Interactive Elements
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <Card sx={{ textAlign: "center", p: 2 }}>
-                  <CardContent>
-                    <Typography variant="h4" sx={{ color: "#28a745", fontWeight: 700 }}>
-                      {results.keyboardAccessible}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Keyboard Accessible
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <Card sx={{ textAlign: "center", p: 2 }}>
-                  <CardContent>
-                    <Typography variant="h4" sx={{ color: "#dc3545", fontWeight: 700 }}>
-                      {results.issues}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Issues Found
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <Card sx={{ textAlign: "center", p: 2 }}>
-                  <CardContent>
-                    <Typography variant="h4" sx={{ color: "#ffc107", fontWeight: 700 }}>
-                      {results.score}%
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Navigation Score
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            </Grid>
+            <HStack spacing={4} wrap="wrap" style={{ marginBottom: appleTheme.spacing[6] }}>
+              <Card variant="elevated" padding="lg" style={{ flex: 1, minWidth: "200px", textAlign: "center" }}>
+                <Typography variant="title1" style={{ 
+                  color: appleTheme.colors.primary[500],
+                  fontWeight: appleTheme.typography.fontWeight.bold,
+                  marginBottom: appleTheme.spacing[2]
+                }}>
+                  {results.totalElements}
+                </Typography>
+                <Typography variant="body" style={{ color: appleTheme.colors.text.secondary }}>
+                  Interactive Elements
+                </Typography>
+              </Card>
+              <Card variant="elevated" padding="lg" style={{ flex: 1, minWidth: "200px", textAlign: "center" }}>
+                <Typography variant="title1" style={{ 
+                  color: appleTheme.colors.success,
+                  fontWeight: appleTheme.typography.fontWeight.bold,
+                  marginBottom: appleTheme.spacing[2]
+                }}>
+                  {results.keyboardAccessible}
+                </Typography>
+                <Typography variant="body" style={{ color: appleTheme.colors.text.secondary }}>
+                  Keyboard Accessible
+                </Typography>
+              </Card>
+              <Card variant="elevated" padding="lg" style={{ flex: 1, minWidth: "200px", textAlign: "center" }}>
+                <Typography variant="title1" style={{ 
+                  color: appleTheme.colors.error,
+                  fontWeight: appleTheme.typography.fontWeight.bold,
+                  marginBottom: appleTheme.spacing[2]
+                }}>
+                  {results.issues}
+                </Typography>
+                <Typography variant="body" style={{ color: appleTheme.colors.text.secondary }}>
+                  Issues Found
+                </Typography>
+              </Card>
+              <Card variant="elevated" padding="lg" style={{ flex: 1, minWidth: "200px", textAlign: "center" }}>
+                <Typography variant="title1" style={{ 
+                  color: appleTheme.colors.warning,
+                  fontWeight: appleTheme.typography.fontWeight.bold,
+                  marginBottom: appleTheme.spacing[2]
+                }}>
+                  {results.score}%
+                </Typography>
+                <Typography variant="body" style={{ color: appleTheme.colors.text.secondary }}>
+                  Navigation Score
+                </Typography>
+              </Card>
+            </HStack>
 
             {/* Issues List */}
-            <Paper sx={{ p: 4, borderRadius: 3 }}>
-              <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: "#333" }}>
+            <Card variant="elevated" padding="xl">
+              <Typography variant="title1" style={{ 
+                marginBottom: appleTheme.spacing[4],
+                color: appleTheme.colors.text.primary,
+                fontWeight: appleTheme.typography.fontWeight.semibold
+              }}>
                 Keyboard Navigation Issues
               </Typography>
               
               {results.problems.length === 0 ? (
-                <Alert severity="success">
-                  <Typography variant="h6">Excellent! No keyboard navigation issues found.</Typography>
-                  <Typography variant="body2">
+                <Card variant="outlined" padding="lg" style={{ 
+                  backgroundColor: appleTheme.colors.success + "10",
+                  borderColor: appleTheme.colors.success + "30"
+                }}>
+                  <Typography variant="title2" style={{ 
+                    color: appleTheme.colors.success,
+                    marginBottom: appleTheme.spacing[2],
+                    fontWeight: appleTheme.typography.fontWeight.semibold
+                  }}>
+                    Excellent! No keyboard navigation issues found.
+                  </Typography>
+                  <Typography variant="body" style={{ color: appleTheme.colors.text.secondary }}>
                     All interactive elements are properly accessible via keyboard.
                   </Typography>
-                </Alert>
+                </Card>
               ) : (
-                <List>
+                <VStack spacing={4}>
                   {results.problems.map((problem, index) => (
-                    <React.Fragment key={index}>
-                      <ListItem sx={{ px: 0, py: 2 }}>
-                        <ListItemIcon>
-                          <Box sx={{ color: getSeverityColor(problem.severity) }}>
-                            {getSeverityIcon(problem.severity)}
-                          </Box>
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={
-                            <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                              <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                                {problem.description}
-                              </Typography>
-                              <Chip
-                                label={problem.severity.toUpperCase()}
-                                size="small"
-                                sx={{
-                                  backgroundColor: getSeverityColor(problem.severity),
-                                  color: "white",
-                                  fontWeight: 600,
-                                  fontSize: "10px"
-                                }}
-                              />
+                    <Card key={index} variant="outlined" padding="lg">
+                      <HStack spacing={3} align="flex-start">
+                        <Box style={{ color: getSeverityColor(problem.severity), marginTop: appleTheme.spacing[1] }}>
+                          {getSeverityIcon(problem.severity)}
+                        </Box>
+                        <Box style={{ flex: 1 }}>
+                          <HStack spacing={2} align="center" style={{ marginBottom: appleTheme.spacing[2] }}>
+                            <Typography variant="title2" style={{ 
+                              color: appleTheme.colors.text.primary,
+                              fontWeight: appleTheme.typography.fontWeight.semibold
+                            }}>
+                              {problem.description}
+                            </Typography>
+                            <Box style={{
+                              padding: `${appleTheme.spacing[1]} ${appleTheme.spacing[2]}`,
+                              backgroundColor: getSeverityColor(problem.severity),
+                              color: "white",
+                              borderRadius: appleTheme.borderRadius.base,
+                              fontSize: appleTheme.typography.fontSize.xs,
+                              fontWeight: appleTheme.typography.fontWeight.semibold
+                            }}>
+                              {problem.severity.toUpperCase()}
                             </Box>
-                          }
-                          secondary={
-                            <Box>
-                              <Typography variant="body2" sx={{ mb: 1, color: "#666" }}>
-                                <strong>Element:</strong> {problem.element}
-                              </Typography>
-                              <Alert severity="info" sx={{ mt: 1, mb: 1 }}>
-                                <Typography variant="body2">
-                                  <strong>💡 Suggestion:</strong> {problem.suggestion}
-                                </Typography>
-                              </Alert>
-                              <Paper sx={{ p: 2, backgroundColor: "#f8f9fa", mt: 1 }}>
-                                <Typography variant="caption" sx={{ color: "#666", display: "block", mb: 1 }}>
-                                  Code Example:
-                                </Typography>
-                                <Typography variant="body2" sx={{ fontFamily: "monospace", fontSize: "14px" }}>
-                                  {problem.code}
-                                </Typography>
-                              </Paper>
-                            </Box>
-                          }
-                        />
-                      </ListItem>
-                      {index < results.problems.length - 1 && <Divider />}
-                    </React.Fragment>
+                          </HStack>
+                          <Typography variant="body" style={{ 
+                            marginBottom: appleTheme.spacing[2],
+                            color: appleTheme.colors.text.secondary
+                          }}>
+                            <strong>Element:</strong> {problem.element}
+                          </Typography>
+                          <Card variant="outlined" padding="md" style={{ 
+                            backgroundColor: appleTheme.colors.info + "10",
+                            borderColor: appleTheme.colors.info + "30",
+                            marginBottom: appleTheme.spacing[2]
+                          }}>
+                            <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
+                              <strong>💡 Suggestion:</strong> {problem.suggestion}
+                            </Typography>
+                          </Card>
+                          <Card variant="outlined" padding="md" style={{ backgroundColor: appleTheme.colors.gray[50] }}>
+                            <Typography variant="caption" style={{ 
+                              color: appleTheme.colors.text.tertiary,
+                              display: "block",
+                              marginBottom: appleTheme.spacing[1]
+                            }}>
+                              Code Example:
+                            </Typography>
+                            <Typography variant="body" style={{ 
+                              fontFamily: "SF Mono, Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace",
+                              fontSize: appleTheme.typography.fontSize.sm,
+                              color: appleTheme.colors.text.primary
+                            }}>
+                              {problem.code}
+                            </Typography>
+                          </Card>
+                        </Box>
+                      </HStack>
+                    </Card>
                   ))}
-                </List>
+                </VStack>
               )}
-            </Paper>
+            </Card>
           </Box>
         )}
 
         {/* Best Practices */}
-        <Paper sx={{ p: 4, borderRadius: 3 }}>
-          <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: "#333" }}>
+        <Card variant="elevated" padding="xl" style={{ marginBottom: appleTheme.spacing[6] }}>
+          <Typography variant="title1" style={{ 
+            marginBottom: appleTheme.spacing[4],
+            color: appleTheme.colors.text.primary,
+            fontWeight: appleTheme.typography.fontWeight.semibold
+          }}>
             Keyboard Navigation Best Practices
           </Typography>
           
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: "#28a745" }}>
+          <HStack spacing={6} align="flex-start" wrap="wrap">
+            <Box style={{ flex: 1, minWidth: "300px" }}>
+              <Typography variant="title2" style={{ 
+                marginBottom: appleTheme.spacing[3],
+                color: appleTheme.colors.success,
+                fontWeight: appleTheme.typography.fontWeight.semibold
+              }}>
                 ✅ Essential Requirements
               </Typography>
-              <List dense>
-                <ListItem>
-                  <ListItemIcon>
-                    <CheckCircle sx={{ color: "#28a745" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="All interactive elements must be focusable" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <CheckCircle sx={{ color: "#28a745" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Logical tab order throughout the page" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <CheckCircle sx={{ color: "#28a745" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Visible focus indicators" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <CheckCircle sx={{ color: "#28a745" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Escape key closes modals and dropdowns" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <CheckCircle sx={{ color: "#28a745" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Skip links for main content" />
-                </ListItem>
-              </List>
-            </Grid>
+              <VStack spacing={2}>
+                {[
+                  "All interactive elements must be focusable",
+                  "Logical tab order throughout the page",
+                  "Visible focus indicators",
+                  "Escape key closes modals and dropdowns",
+                  "Skip links for main content"
+                ].map((item, index) => (
+                  <HStack key={index} spacing={2} align="center">
+                    <CheckCircle style={{ color: appleTheme.colors.success, fontSize: "20px" }} />
+                    <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
+                      {item}
+                    </Typography>
+                  </HStack>
+                ))}
+              </VStack>
+            </Box>
             
-            <Grid item xs={12} md={6}>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: "#17a2b8" }}>
+            <Box style={{ flex: 1, minWidth: "300px" }}>
+              <Typography variant="title2" style={{ 
+                marginBottom: appleTheme.spacing[3],
+                color: appleTheme.colors.info,
+                fontWeight: appleTheme.typography.fontWeight.semibold
+              }}>
                 🚀 Advanced Features
               </Typography>
-              <List dense>
-                <ListItem>
-                  <ListItemIcon>
-                    <Info sx={{ color: "#17a2b8" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Keyboard shortcuts for common actions" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <Info sx={{ color: "#17a2b8" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Arrow keys for menu navigation" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <Info sx={{ color: "#17a2b8" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Focus management in single-page apps" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <Info sx={{ color: "#17a2b8" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="ARIA landmarks for page structure" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <Info sx={{ color: "#17a2b8" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Live regions for dynamic content" />
-                </ListItem>
-              </List>
-            </Grid>
-          </Grid>
-        </Paper>
+              <VStack spacing={2}>
+                {[
+                  "Keyboard shortcuts for common actions",
+                  "Arrow keys for menu navigation",
+                  "Focus management in single-page apps",
+                  "ARIA landmarks for page structure",
+                  "Live regions for dynamic content"
+                ].map((item, index) => (
+                  <HStack key={index} spacing={2} align="center">
+                    <Info style={{ color: appleTheme.colors.info, fontSize: "20px" }} />
+                    <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
+                      {item}
+                    </Typography>
+                  </HStack>
+                ))}
+              </VStack>
+            </Box>
+          </HStack>
+        </Card>
 
         {/* CTA */}
-        <Paper sx={{ 
-          p: 4, 
-          textAlign: "center",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-          color: "white",
-          mt: 4
+        <Card variant="elevated" padding="xl" style={{ 
+          background: "linear-gradient(135deg, #007AFF 0%, #5856D6 100%)",
+          textAlign: "center"
         }}>
-          <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
+          <Typography variant="title1" style={{ 
+            marginBottom: appleTheme.spacing[3],
+            color: "white",
+            fontWeight: appleTheme.typography.fontWeight.semibold
+          }}>
             Need More Accessibility Tools?
           </Typography>
-          <Typography variant="body1" sx={{ mb: 3, opacity: 0.9 }}>
+          <Typography variant="body" style={{ 
+            marginBottom: appleTheme.spacing[4],
+            color: "white",
+            opacity: 0.9
+          }}>
             Explore our full suite of accessibility testing tools.
           </Typography>
-          <Button
-            component={Link}
-            href="/tools"
-            variant="contained"
-            size="large"
-            sx={{
-              backgroundColor: "white",
-              color: "#667eea",
-              fontWeight: 600,
-              px: 4,
-              "&:hover": {
-                backgroundColor: "#f8f9fa"
-              }
-            }}
-          >
-            View All Tools
-          </Button>
-        </Paper>
-      </Box>
+          <Link href="/tools" passHref legacyBehavior>
+            <a style={{ textDecoration: "none" }}>
+              <Button
+                variant="secondary"
+                size="large"
+                style={{
+                  backgroundColor: "white",
+                  color: "#007AFF",
+                  fontWeight: appleTheme.typography.fontWeight.semibold
+                }}
+              >
+                View All Tools
+              </Button>
+            </a>
+          </Link>
+        </Card>
+      </Container>
 
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={() => setSnackbarOpen(false)}
-      >
-        <Alert 
-          onClose={() => setSnackbarOpen(false)} 
-          severity="error" 
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
-    </Box>
+      {/* Snackbar */}
+      {snackbarOpen && (
+        <Box style={{
+          position: "fixed",
+          bottom: appleTheme.spacing[6],
+          right: appleTheme.spacing[6],
+          backgroundColor: appleTheme.colors.error,
+          color: "white",
+          padding: `${appleTheme.spacing[3]} ${appleTheme.spacing[4]}`,
+          borderRadius: appleTheme.borderRadius.md,
+          boxShadow: appleTheme.shadows.lg,
+          zIndex: 1000
+        }}>
+          <Typography variant="footnote" style={{ color: "white" }}>
+            {snackbarMessage}
+          </Typography>
+        </Box>
+      )}
+    </div>
   );
 }

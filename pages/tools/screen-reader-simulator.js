@@ -1,28 +1,10 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Typography,
-  Paper,
-  TextField,
-  Button,
-  Card,
-  CardContent,
-  Alert,
-  Grid,
-  Chip,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Divider,
-  CircularProgress,
-  Snackbar,
-  Tabs,
-  Tab,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-} from "@mui/material";
+import { Box, Stack, HStack, VStack } from "../components/apple/Layout";
+import { Typography } from "../components/apple/Typography";
+import { Button } from "../components/apple/Button";
+import { Input } from "../components/apple/Input";
+import { Card } from "../components/apple/Card";
+import { appleTheme } from "../../styles/apple-theme";
 import {
   RecordVoiceOver,
   CheckCircle,
@@ -35,6 +17,8 @@ import {
   ExpandMore,
 } from "@mui/icons-material";
 import Link from "next/link";
+
+const { Container, Section } = require("../components/apple/Layout");
 
 export default function ScreenReaderSimulator() {
   const [url, setUrl] = useState("");
@@ -54,129 +38,109 @@ export default function ScreenReaderSimulator() {
     setSimulating(true);
     try {
       // Simulate screen reader analysis
-      await new Promise(resolve => setTimeout(resolve, 2500));
+      await new Promise(resolve => setTimeout(resolve, 3000));
       
       const mockResults = {
         overallScore: 82,
-        screenReaderExperience: {
-          totalElements: 45,
-          accessibleElements: 38,
-          problematicElements: 7,
-          navigationLandmarks: 6,
-          headingStructure: "Good",
-          formLabels: "Complete",
-          linkDescriptions: "Mostly clear"
-        },
+        totalElements: 45,
+        accessibleElements: 37,
+        issues: 8,
+        screenReaderOutput: [
+          "Heading level 1: Welcome to our website",
+          "Navigation landmark: Main navigation",
+          "Link: Home",
+          "Link: About",
+          "Link: Services", 
+          "Link: Contact",
+          "Heading level 2: Our Services",
+          "List with 3 items",
+          "List item 1: Web Development",
+          "List item 2: Mobile Apps",
+          "List item 3: Consulting",
+          "Button: Learn More",
+          "Heading level 2: Contact Us",
+          "Form: Contact form",
+          "Text field: Name (required)",
+          "Text field: Email (required)",
+          "Text field: Message (required)",
+          "Button: Send Message",
+          "Footer landmark: Page footer"
+        ],
         issues: [
+          {
+            type: "missing-alt",
+            severity: "critical",
+            element: "Hero image",
+            description: "Image missing alt text",
+            suggestion: "Add descriptive alt text for screen readers",
+            code: 'alt="Team working on accessibility project"'
+          },
           {
             type: "heading-structure",
             severity: "warning",
-            element: "h3",
-            description: "Heading hierarchy skipped (h1 → h3)",
-            impact: "Screen readers may not announce proper document structure",
-            suggestion: "Use h2 before h3 to maintain proper heading hierarchy",
-            code: '<h2>Section Title</h2>\n<h3>Subsection Title</h3>'
+            element: "Service cards",
+            description: "Heading levels skip from h2 to h4",
+            suggestion: "Use proper heading hierarchy (h1, h2, h3, etc.)",
+            code: "Change h4 to h3 for proper structure"
           },
           {
-            type: "missing-labels",
-            severity: "critical",
-            element: "input",
-            description: "Form input missing accessible label",
-            impact: "Screen reader users cannot identify the input purpose",
-            suggestion: "Add label element or aria-label attribute",
-            code: '<label for="email">Email Address</label>\n<input id="email" type="email" />'
-          },
-          {
-            type: "link-text",
+            type: "form-labels",
             severity: "warning",
-            element: "a",
-            description: "Link text is not descriptive ('Click here')",
-            impact: "Screen reader users cannot understand link purpose out of context",
-            suggestion: "Use descriptive link text that explains the destination",
-            code: '<a href="/contact">Contact our support team</a>'
+            element: "Contact form",
+            description: "Form fields missing proper labels",
+            suggestion: "Associate labels with form controls",
+            code: '<label htmlFor="email">Email Address</label>'
           },
           {
-            type: "aria-roles",
+            type: "button-text",
             severity: "info",
-            element: "button",
-            description: "Custom button missing proper ARIA role",
-            impact: "Screen reader may not recognize it as a button",
-            suggestion: "Add role='button' and ensure keyboard accessibility",
-            code: '<div role="button" tabindex="0" aria-label="Close dialog">×</div>'
+            element: "Social media buttons",
+            description: "Icon buttons lack accessible text",
+            suggestion: "Add aria-label or visible text",
+            code: 'aria-label="Follow us on Twitter"'
           },
           {
-            type: "live-regions",
+            type: "landmarks",
             severity: "info",
-            element: "status-message",
-            description: "Dynamic content updates not announced to screen readers",
-            impact: "Screen reader users miss important status changes",
-            suggestion: "Use aria-live regions for dynamic content",
-            code: '<div aria-live="polite" role="status">Form submitted successfully</div>'
+            element: "Page structure",
+            description: "Missing main landmark",
+            suggestion: "Add main landmark for primary content",
+            code: '<main role="main">'
           },
           {
             type: "focus-management",
             severity: "warning",
-            element: "modal",
-            description: "Modal does not trap focus properly",
-            impact: "Screen reader users may lose track of focus location",
-            suggestion: "Implement focus trap and return focus on close",
-            code: '// Focus management in modal\nconst focusableElements = modal.querySelectorAll(\'[tabindex]:not([tabindex="-1"]), button, input, select, textarea\');'
+            element: "Modal dialog",
+            description: "Focus not trapped in modal",
+            suggestion: "Implement focus trap for modal dialogs",
+            code: "Use focus-trap-react or similar library"
           },
           {
-            type: "table-structure",
+            type: "live-regions",
+            severity: "info",
+            element: "Dynamic content",
+            description: "No live regions for dynamic updates",
+            suggestion: "Add aria-live regions for dynamic content",
+            code: '<div aria-live="polite" id="status"></div>'
+          },
+          {
+            type: "color-contrast",
             severity: "warning",
-            element: "table",
-            description: "Data table missing proper headers and scope",
-            impact: "Screen reader users cannot understand table structure",
-            suggestion: "Add proper table headers with scope attributes",
-            code: '<th scope="col">Product Name</th>\n<th scope="col">Price</th>'
-          }
-        ],
-        screenReaderOutput: [
-          {
-            element: "Navigation",
-            content: "Main navigation landmark with 6 items",
-            level: "landmark"
-          },
-          {
-            element: "Heading",
-            content: "Welcome to Our Website, heading level 1",
-            level: "h1"
-          },
-          {
-            element: "Heading",
-            content: "About Our Services, heading level 2",
-            level: "h2"
-          },
-          {
-            element: "Text",
-            content: "We provide comprehensive accessibility solutions...",
-            level: "paragraph"
-          },
-          {
-            element: "Button",
-            content: "Get Started, button",
-            level: "button"
-          },
-          {
-            element: "Link",
-            content: "Learn more about accessibility, link",
-            level: "link"
-          },
-          {
-            element: "Form",
-            content: "Contact form with 3 fields",
-            level: "form"
+            element: "Call-to-action button",
+            description: "Insufficient color contrast ratio",
+            suggestion: "Improve color contrast for better visibility",
+            code: "background-color: #007AFF; color: white;"
           }
         ],
         recommendations: [
-          "Maintain proper heading hierarchy (h1 → h2 → h3)",
-          "Ensure all form inputs have associated labels",
-          "Use descriptive link text that makes sense out of context",
-          "Add ARIA roles for custom interactive elements",
-          "Implement live regions for dynamic content updates",
-          "Ensure proper focus management in modals and dropdowns",
-          "Use proper table headers with scope attributes"
+          "Add alt text to all images",
+          "Use proper heading hierarchy",
+          "Associate labels with form controls",
+          "Add ARIA labels to icon buttons",
+          "Include landmark roles for page structure",
+          "Implement focus management for modals",
+          "Add live regions for dynamic content",
+          "Ensure sufficient color contrast"
         ]
       };
       
@@ -191,10 +155,10 @@ export default function ScreenReaderSimulator() {
 
   const getSeverityColor = (severity) => {
     switch (severity) {
-      case "critical": return "#dc3545";
-      case "warning": return "#ffc107";
-      case "info": return "#17a2b8";
-      default: return "#6c757d";
+      case "critical": return appleTheme.colors.error;
+      case "warning": return appleTheme.colors.warning;
+      case "info": return appleTheme.colors.info;
+      default: return appleTheme.colors.gray[500];
     }
   };
 
@@ -207,498 +171,408 @@ export default function ScreenReaderSimulator() {
     }
   };
 
-  const getScoreColor = (score) => {
-    if (score >= 90) return "#28a745";
-    if (score >= 70) return "#ffc107";
-    return "#dc3545";
-  };
-
-  const getScoreLabel = (score) => {
-    if (score >= 90) return "Excellent";
-    if (score >= 70) return "Good";
-    if (score >= 50) return "Needs Improvement";
-    return "Poor";
-  };
+  const tabs = [
+    { label: "Screen Reader Output", icon: <VolumeUp /> },
+    { label: "Issues Found", icon: <Warning /> },
+    { label: "Recommendations", icon: <CheckCircle /> }
+  ];
 
   return (
-    <Box sx={{ minHeight: "100vh", backgroundColor: "#e3f2fd" }}>
-      {/* Header */}
-      <Box sx={{ 
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-        color: "white",
-        py: { xs: 6, sm: 8 },
-        textAlign: "center"
-      }}>
-        <Typography variant="h3" sx={{ 
-          fontWeight: 700, 
-          mb: 2,
-          fontSize: { xs: "28px", sm: "36px" }
-        }}>
-          Screen Reader Simulator
-        </Typography>
-        <Typography variant="h6" sx={{ 
-          opacity: 0.9,
-          maxWidth: "600px",
-          mx: "auto",
-          px: 2
-        }}>
-          Experience your website as screen reader users do. Test and improve screen reader accessibility.
-        </Typography>
-      </Box>
+    <div style={{ backgroundColor: appleTheme.colors.background.secondary, minHeight: "100vh" }}>
+      {/* Hero Section */}
+      <Section background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
+        <Container size="lg">
+          <Box style={{ textAlign: "center" }}>
+            <Typography variant="display" style={{ 
+              marginBottom: appleTheme.spacing[4],
+              color: "#1C1C1E",
+              fontWeight: appleTheme.typography.fontWeight.bold
+            }}>
+              Screen Reader Simulator
+            </Typography>
+            <Typography variant="headline" weight="regular" style={{ 
+              color: "#2C2C2E",
+              maxWidth: "600px",
+              margin: `0 auto ${appleTheme.spacing[8]} auto`,
+              fontWeight: appleTheme.typography.fontWeight.medium
+            }}>
+              Experience your website as screen reader users do. Test accessibility and improve the experience for all users.
+            </Typography>
+          </Box>
+        </Container>
+      </Section>
 
-      <Box sx={{ maxWidth: "1200px", mx: "auto", p: { xs: 2, sm: 3 } }}>
+      <Container size="lg" style={{ padding: appleTheme.spacing[6] }}>
         {/* Input Section */}
-        <Paper sx={{ p: 4, mb: 4, borderRadius: 3 }}>
-          <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: "#333" }}>
+        <Card variant="elevated" padding="xl" style={{ marginBottom: appleTheme.spacing[6] }}>
+          <Typography variant="title1" style={{ 
+            marginBottom: appleTheme.spacing[4],
+            color: appleTheme.colors.text.primary,
+            fontWeight: appleTheme.typography.fontWeight.semibold
+          }}>
             Simulate Screen Reader Experience
           </Typography>
           
-          <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
-            <TextField
-              fullWidth
-              label="Website URL"
-              placeholder="https://example.com"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  backgroundColor: "white",
-                  "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#0077b6",
-                  },
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#0077b6",
-                    borderWidth: 2,
-                  },
-                },
-              }}
-            />
+          <HStack spacing={3} align="stretch" style={{ marginBottom: appleTheme.spacing[4] }}>
+            <Box style={{ flex: 1 }}>
+              <Input
+                placeholder="https://example.com"
+                value={url}
+                onChange={setUrl}
+                size="large"
+                variant="filled"
+                startIcon={<RecordVoiceOver />}
+              />
+            </Box>
             <Button
-              variant="contained"
+              variant="primary"
+              size="large"
               onClick={handleSimulate}
               disabled={simulating}
-              startIcon={simulating ? <CircularProgress size={20} /> : <RecordVoiceOver />}
-              sx={{
-                backgroundColor: "#0077b6",
-                px: 4,
-                py: 1.5,
-                fontSize: "16px",
-                fontWeight: 600,
-                "&:hover": {
-                  backgroundColor: "#0056b3",
-                },
-              }}
+              loading={simulating}
+              startIcon={<PlayArrow />}
             >
               {simulating ? "Simulating..." : "Start Simulation"}
             </Button>
-          </Box>
+          </HStack>
 
-          <Alert severity="info" sx={{ mb: 2 }}>
-            <Typography variant="body2">
-              <strong>What we test:</strong> Screen reader navigation, heading structure, form labels, 
-              ARIA roles, live regions, and overall screen reader experience.
+          <Card variant="outlined" padding="md" style={{ 
+            backgroundColor: appleTheme.colors.info + "10",
+            borderColor: appleTheme.colors.info + "30"
+          }}>
+            <Typography variant="body" style={{ color: appleTheme.colors.text.secondary }}>
+              <strong>What we simulate:</strong> Screen reader navigation, ARIA announcements, 
+              heading structure, form labels, and landmark identification.
             </Typography>
-          </Alert>
-        </Paper>
+          </Card>
+        </Card>
 
         {/* Results Section */}
         {results && (
-          <Box sx={{ mb: 4 }}>
-            {/* Overall Score */}
-            <Paper sx={{ p: 4, mb: 4, borderRadius: 3, textAlign: "center" }}>
-              <Typography variant="h4" sx={{ 
-                fontWeight: 700, 
-                color: getScoreColor(results.overallScore),
-                mb: 1
-              }}>
-                {results.overallScore}/100
-              </Typography>
-              <Typography variant="h6" sx={{ 
-                color: getScoreColor(results.overallScore),
-                mb: 3
-              }}>
-                {getScoreLabel(results.overallScore)} Screen Reader Experience
-              </Typography>
-            </Paper>
+          <Box style={{ marginBottom: appleTheme.spacing[6] }}>
+            {/* Summary Cards */}
+            <HStack spacing={4} wrap="wrap" style={{ marginBottom: appleTheme.spacing[6] }}>
+              <Card variant="elevated" padding="lg" style={{ flex: 1, minWidth: "200px", textAlign: "center" }}>
+                <Typography variant="title1" style={{ 
+                  color: appleTheme.colors.primary[500],
+                  fontWeight: appleTheme.typography.fontWeight.bold,
+                  marginBottom: appleTheme.spacing[2]
+                }}>
+                  {results.overallScore}%
+                </Typography>
+                <Typography variant="body" style={{ color: appleTheme.colors.text.secondary }}>
+                  Accessibility Score
+                </Typography>
+              </Card>
+              <Card variant="elevated" padding="lg" style={{ flex: 1, minWidth: "200px", textAlign: "center" }}>
+                <Typography variant="title1" style={{ 
+                  color: appleTheme.colors.success,
+                  fontWeight: appleTheme.typography.fontWeight.bold,
+                  marginBottom: appleTheme.spacing[2]
+                }}>
+                  {results.accessibleElements}
+                </Typography>
+                <Typography variant="body" style={{ color: appleTheme.colors.text.secondary }}>
+                  Accessible Elements
+                </Typography>
+              </Card>
+              <Card variant="elevated" padding="lg" style={{ flex: 1, minWidth: "200px", textAlign: "center" }}>
+                <Typography variant="title1" style={{ 
+                  color: appleTheme.colors.error,
+                  fontWeight: appleTheme.typography.fontWeight.bold,
+                  marginBottom: appleTheme.spacing[2]
+                }}>
+                  {results.issues}
+                </Typography>
+                <Typography variant="body" style={{ color: appleTheme.colors.text.secondary }}>
+                  Issues Found
+                </Typography>
+              </Card>
+              <Card variant="elevated" padding="lg" style={{ flex: 1, minWidth: "200px", textAlign: "center" }}>
+                <Typography variant="title1" style={{ 
+                  color: appleTheme.colors.info,
+                  fontWeight: appleTheme.typography.fontWeight.bold,
+                  marginBottom: appleTheme.spacing[2]
+                }}>
+                  {results.totalElements}
+                </Typography>
+                <Typography variant="body" style={{ color: appleTheme.colors.text.secondary }}>
+                  Total Elements
+                </Typography>
+              </Card>
+            </HStack>
 
-            {/* Tabs for different views */}
-            <Paper sx={{ mb: 4, borderRadius: 3 }}>
-              <Tabs value={activeTab} onChange={(e, newValue) => setActiveTab(newValue)}>
-                <Tab label="Overview" />
-                <Tab label="Screen Reader Output" />
-                <Tab label="Issues & Fixes" />
-              </Tabs>
+            {/* Tab Navigation */}
+            <Card variant="elevated" padding="lg" style={{ marginBottom: appleTheme.spacing[4] }}>
+              <HStack spacing={2} wrap="wrap">
+                {tabs.map((tab, index) => (
+                  <Button
+                    key={index}
+                    variant={activeTab === index ? "primary" : "ghost"}
+                    size="medium"
+                    onClick={() => setActiveTab(index)}
+                    startIcon={tab.icon}
+                    style={{
+                      backgroundColor: activeTab === index ? appleTheme.colors.primary[500] : "transparent",
+                      color: activeTab === index ? "white" : appleTheme.colors.text.primary
+                    }}
+                  >
+                    {tab.label}
+                  </Button>
+                ))}
+              </HStack>
+            </Card>
 
-              {/* Overview Tab */}
+            {/* Tab Content */}
+            <Card variant="elevated" padding="xl">
               {activeTab === 0 && (
-                <Box sx={{ p: 4 }}>
-                  <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: "#333" }}>
-                    Screen Reader Experience Overview
+                <Box>
+                  <Typography variant="title1" style={{ 
+                    marginBottom: appleTheme.spacing[4],
+                    color: appleTheme.colors.text.primary,
+                    fontWeight: appleTheme.typography.fontWeight.semibold
+                  }}>
+                    Screen Reader Output
                   </Typography>
-                  <Grid container spacing={3}>
-                    <Grid item xs={12} sm={6} md={3}>
-                      <Card sx={{ textAlign: "center", p: 2 }}>
-                        <CardContent>
-                          <Typography variant="h4" sx={{ color: "#0077b6", fontWeight: 700 }}>
-                            {results.screenReaderExperience.totalElements}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            Total Elements
-                          </Typography>
-                        </CardContent>
-                      </Card>
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
-                      <Card sx={{ textAlign: "center", p: 2 }}>
-                        <CardContent>
-                          <Typography variant="h4" sx={{ color: "#28a745", fontWeight: 700 }}>
-                            {results.screenReaderExperience.accessibleElements}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            Accessible Elements
-                          </Typography>
-                        </CardContent>
-                      </Card>
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
-                      <Card sx={{ textAlign: "center", p: 2 }}>
-                        <CardContent>
-                          <Typography variant="h4" sx={{ color: "#dc3545", fontWeight: 700 }}>
-                            {results.screenReaderExperience.problematicElements}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            Problematic Elements
-                          </Typography>
-                        </CardContent>
-                      </Card>
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
-                      <Card sx={{ textAlign: "center", p: 2 }}>
-                        <CardContent>
-                          <Typography variant="h4" sx={{ color: "#17a2b8", fontWeight: 700 }}>
-                            {results.screenReaderExperience.navigationLandmarks}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            Navigation Landmarks
-                          </Typography>
-                        </CardContent>
-                      </Card>
-                    </Grid>
-                  </Grid>
-
-                  <Grid container spacing={3} sx={{ mt: 2 }}>
-                    <Grid item xs={12} md={4}>
-                      <Card sx={{ p: 2 }}>
-                        <CardContent>
-                          <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-                            Heading Structure
-                          </Typography>
-                          <Chip 
-                            label={results.screenReaderExperience.headingStructure}
-                            color={results.screenReaderExperience.headingStructure === "Good" ? "success" : "warning"}
-                            size="small"
-                          />
-                        </CardContent>
-                      </Card>
-                    </Grid>
-                    <Grid item xs={12} md={4}>
-                      <Card sx={{ p: 2 }}>
-                        <CardContent>
-                          <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-                            Form Labels
-                          </Typography>
-                          <Chip 
-                            label={results.screenReaderExperience.formLabels}
-                            color={results.screenReaderExperience.formLabels === "Complete" ? "success" : "warning"}
-                            size="small"
-                          />
-                        </CardContent>
-                      </Card>
-                    </Grid>
-                    <Grid item xs={12} md={4}>
-                      <Card sx={{ p: 2 }}>
-                        <CardContent>
-                          <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-                            Link Descriptions
-                          </Typography>
-                          <Chip 
-                            label={results.screenReaderExperience.linkDescriptions}
-                            color={results.screenReaderExperience.linkDescriptions === "Mostly clear" ? "warning" : "success"}
-                            size="small"
-                          />
-                        </CardContent>
-                      </Card>
-                    </Grid>
-                  </Grid>
+                  <Card variant="outlined" padding="lg" style={{ 
+                    backgroundColor: appleTheme.colors.gray[50],
+                    fontFamily: "SF Mono, Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace"
+                  }}>
+                    <VStack spacing={1}>
+                      {results.screenReaderOutput.map((line, index) => (
+                        <Typography key={index} variant="body" style={{ 
+                          color: appleTheme.colors.text.primary,
+                          fontSize: appleTheme.typography.fontSize.sm,
+                          lineHeight: 1.6
+                        }}>
+                          {line}
+                        </Typography>
+                      ))}
+                    </VStack>
+                  </Card>
                 </Box>
               )}
 
-              {/* Screen Reader Output Tab */}
               {activeTab === 1 && (
-                <Box sx={{ p: 4 }}>
-                  <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: "#333" }}>
-                    How Screen Readers Experience Your Page
-                  </Typography>
-                  <Alert severity="info" sx={{ mb: 3 }}>
-                    <Typography variant="body2">
-                      This is how screen readers would announce the content on your page. 
-                      Listen to the order and context of information.
-                    </Typography>
-                  </Alert>
-                  
-                  <List>
-                    {results.screenReaderOutput.map((item, index) => (
-                      <ListItem key={index} sx={{ px: 0, py: 1 }}>
-                        <ListItemIcon>
-                          <VolumeUp sx={{ color: "#0077b6" }} />
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={
-                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                              <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                                {item.element}
-                              </Typography>
-                              <Chip 
-                                label={item.level}
-                                size="small"
-                                variant="outlined"
-                                sx={{ fontSize: "10px" }}
-                              />
-                            </Box>
-                          }
-                          secondary={
-                            <Typography variant="body2" sx={{ color: "#666", fontStyle: "italic" }}>
-                              "{item.content}"
-                            </Typography>
-                          }
-                        />
-                      </ListItem>
-                    ))}
-                  </List>
-                </Box>
-              )}
-
-              {/* Issues & Fixes Tab */}
-              {activeTab === 2 && (
-                <Box sx={{ p: 4 }}>
-                  <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: "#333" }}>
-                    Screen Reader Issues & Fixes
+                <Box>
+                  <Typography variant="title1" style={{ 
+                    marginBottom: appleTheme.spacing[4],
+                    color: appleTheme.colors.text.primary,
+                    fontWeight: appleTheme.typography.fontWeight.semibold
+                  }}>
+                    Accessibility Issues
                   </Typography>
                   
-                  {results.issues.length === 0 ? (
-                    <Alert severity="success">
-                      <Typography variant="h6">Excellent! No screen reader issues found.</Typography>
-                      <Typography variant="body2">
-                        Your website provides an excellent screen reader experience.
-                      </Typography>
-                    </Alert>
-                  ) : (
-                    <List>
-                      {results.issues.map((issue, index) => (
-                        <Accordion key={index} sx={{ mb: 1 }}>
-                          <AccordionSummary expandIcon={<ExpandMore />}>
-                            <Box sx={{ display: "flex", alignItems: "center", gap: 1, width: "100%" }}>
-                              <Box sx={{ color: getSeverityColor(issue.severity) }}>
-                                {getSeverityIcon(issue.severity)}
-                              </Box>
-                              <Typography variant="h6" sx={{ fontWeight: 600, flex: 1 }}>
+                  <VStack spacing={4}>
+                    {results.issues.map((issue, index) => (
+                      <Card key={index} variant="outlined" padding="lg">
+                        <HStack spacing={3} align="flex-start">
+                          <Box style={{ color: getSeverityColor(issue.severity), marginTop: appleTheme.spacing[1] }}>
+                            {getSeverityIcon(issue.severity)}
+                          </Box>
+                          <Box style={{ flex: 1 }}>
+                            <HStack spacing={2} align="center" style={{ marginBottom: appleTheme.spacing[2] }}>
+                              <Typography variant="title2" style={{ 
+                                color: appleTheme.colors.text.primary,
+                                fontWeight: appleTheme.typography.fontWeight.semibold
+                              }}>
                                 {issue.description}
                               </Typography>
-                              <Chip
-                                label={issue.severity.toUpperCase()}
-                                size="small"
-                                sx={{
-                                  backgroundColor: getSeverityColor(issue.severity),
-                                  color: "white",
-                                  fontWeight: 600,
-                                  fontSize: "10px"
-                                }}
-                              />
-                            </Box>
-                          </AccordionSummary>
-                          <AccordionDetails>
-                            <Box>
-                              <Typography variant="body2" sx={{ mb: 1, color: "#666" }}>
-                                <strong>Element:</strong> {issue.element}
+                              <Box style={{
+                                padding: `${appleTheme.spacing[1]} ${appleTheme.spacing[2]}`,
+                                backgroundColor: getSeverityColor(issue.severity),
+                                color: "white",
+                                borderRadius: appleTheme.borderRadius.base,
+                                fontSize: appleTheme.typography.fontSize.xs,
+                                fontWeight: appleTheme.typography.fontWeight.semibold
+                              }}>
+                                {issue.severity.toUpperCase()}
+                              </Box>
+                            </HStack>
+                            <Typography variant="body" style={{ 
+                              marginBottom: appleTheme.spacing[2],
+                              color: appleTheme.colors.text.secondary
+                            }}>
+                              <strong>Element:</strong> {issue.element}
+                            </Typography>
+                            <Card variant="outlined" padding="md" style={{ 
+                              backgroundColor: appleTheme.colors.info + "10",
+                              borderColor: appleTheme.colors.info + "30",
+                              marginBottom: appleTheme.spacing[2]
+                            }}>
+                              <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
+                                <strong>💡 Suggestion:</strong> {issue.suggestion}
                               </Typography>
-                              <Typography variant="body2" sx={{ mb: 2, color: "#dc3545", fontWeight: 600 }}>
-                                Impact: {issue.impact}
+                            </Card>
+                            <Card variant="outlined" padding="md" style={{ backgroundColor: appleTheme.colors.gray[50] }}>
+                              <Typography variant="caption" style={{ 
+                                color: appleTheme.colors.text.tertiary,
+                                display: "block",
+                                marginBottom: appleTheme.spacing[1]
+                              }}>
+                                Code Example:
                               </Typography>
-                              <Alert severity="info" sx={{ mb: 2 }}>
-                                <Typography variant="body2">
-                                  <strong>💡 Suggestion:</strong> {issue.suggestion}
-                                </Typography>
-                              </Alert>
-                              <Paper sx={{ p: 2, backgroundColor: "#f8f9fa" }}>
-                                <Typography variant="caption" sx={{ color: "#666", display: "block", mb: 1 }}>
-                                  Code Example:
-                                </Typography>
-                                <Typography variant="body2" sx={{ fontFamily: "monospace", fontSize: "14px" }}>
-                                  {issue.code}
-                                </Typography>
-                              </Paper>
-                            </Box>
-                          </AccordionDetails>
-                        </Accordion>
-                      ))}
-                    </List>
-                  )}
+                              <Typography variant="body" style={{ 
+                                fontFamily: "SF Mono, Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace",
+                                fontSize: appleTheme.typography.fontSize.sm,
+                                color: appleTheme.colors.text.primary
+                              }}>
+                                {issue.code}
+                              </Typography>
+                            </Card>
+                          </Box>
+                        </HStack>
+                      </Card>
+                    ))}
+                  </VStack>
                 </Box>
               )}
-            </Paper>
 
-            {/* Recommendations */}
-            <Paper sx={{ p: 4, borderRadius: 3 }}>
-              <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: "#333" }}>
-                Screen Reader Optimization Recommendations
-              </Typography>
-              <List>
-                {results.recommendations.map((recommendation, index) => (
-                  <ListItem key={index}>
-                    <ListItemIcon>
-                      <CheckCircle sx={{ color: "#28a745" }} />
-                    </ListItemIcon>
-                    <ListItemText primary={recommendation} />
-                  </ListItem>
-                ))}
-              </List>
-            </Paper>
+              {activeTab === 2 && (
+                <Box>
+                  <Typography variant="title1" style={{ 
+                    marginBottom: appleTheme.spacing[4],
+                    color: appleTheme.colors.text.primary,
+                    fontWeight: appleTheme.typography.fontWeight.semibold
+                  }}>
+                    Recommendations
+                  </Typography>
+                  <VStack spacing={2}>
+                    {results.recommendations.map((recommendation, index) => (
+                      <HStack key={index} spacing={2} align="center">
+                        <CheckCircle style={{ color: appleTheme.colors.success, fontSize: "20px" }} />
+                        <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
+                          {recommendation}
+                        </Typography>
+                      </HStack>
+                    ))}
+                  </VStack>
+                </Box>
+              )}
+            </Card>
           </Box>
         )}
 
         {/* Best Practices */}
-        <Paper sx={{ p: 4, borderRadius: 3 }}>
-          <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: "#333" }}>
+        <Card variant="elevated" padding="xl" style={{ marginBottom: appleTheme.spacing[6] }}>
+          <Typography variant="title1" style={{ 
+            marginBottom: appleTheme.spacing[4],
+            color: appleTheme.colors.text.primary,
+            fontWeight: appleTheme.typography.fontWeight.semibold
+          }}>
             Screen Reader Best Practices
           </Typography>
           
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: "#28a745" }}>
+          <HStack spacing={6} align="flex-start" wrap="wrap">
+            <Box style={{ flex: 1, minWidth: "300px" }}>
+              <Typography variant="title2" style={{ 
+                marginBottom: appleTheme.spacing[3],
+                color: appleTheme.colors.success,
+                fontWeight: appleTheme.typography.fontWeight.semibold
+              }}>
                 ✅ Essential Requirements
               </Typography>
-              <List dense>
-                <ListItem>
-                  <ListItemIcon>
-                    <CheckCircle sx={{ color: "#28a745" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Proper heading hierarchy (h1 → h2 → h3)" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <CheckCircle sx={{ color: "#28a745" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="All form inputs have associated labels" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <CheckCircle sx={{ color: "#28a745" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Descriptive link text that makes sense out of context" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <CheckCircle sx={{ color: "#28a745" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Alt text for all meaningful images" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <CheckCircle sx={{ color: "#28a745" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="ARIA landmarks for page structure" />
-                </ListItem>
-              </List>
-            </Grid>
+              <VStack spacing={2}>
+                {[
+                  "Provide alt text for all images",
+                  "Use proper heading hierarchy (h1, h2, h3)",
+                  "Associate labels with form controls",
+                  "Add ARIA labels to interactive elements",
+                  "Include landmark roles for page structure"
+                ].map((item, index) => (
+                  <HStack key={index} spacing={2} align="center">
+                    <CheckCircle style={{ color: appleTheme.colors.success, fontSize: "20px" }} />
+                    <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
+                      {item}
+                    </Typography>
+                  </HStack>
+                ))}
+              </VStack>
+            </Box>
             
-            <Grid item xs={12} md={6}>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: "#17a2b8" }}>
+            <Box style={{ flex: 1, minWidth: "300px" }}>
+              <Typography variant="title2" style={{ 
+                marginBottom: appleTheme.spacing[3],
+                color: appleTheme.colors.info,
+                fontWeight: appleTheme.typography.fontWeight.semibold
+              }}>
                 🚀 Advanced Features
               </Typography>
-              <List dense>
-                <ListItem>
-                  <ListItemIcon>
-                    <Info sx={{ color: "#17a2b8" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Live regions for dynamic content updates" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <Info sx={{ color: "#17a2b8" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Skip links for main content navigation" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <Info sx={{ color: "#17a2b8" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Focus management in modals and dropdowns" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <Info sx={{ color: "#17a2b8" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Proper table headers with scope attributes" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <Info sx={{ color: "#17a2b8" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Screen reader testing with actual tools" />
-                </ListItem>
-              </List>
-            </Grid>
-          </Grid>
-        </Paper>
+              <VStack spacing={2}>
+                {[
+                  "Implement live regions for dynamic content",
+                  "Use focus management for modals",
+                  "Provide skip links for navigation",
+                  "Add descriptive link text",
+                  "Test with actual screen readers"
+                ].map((item, index) => (
+                  <HStack key={index} spacing={2} align="center">
+                    <Info style={{ color: appleTheme.colors.info, fontSize: "20px" }} />
+                    <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
+                      {item}
+                    </Typography>
+                  </HStack>
+                ))}
+              </VStack>
+            </Box>
+          </HStack>
+        </Card>
 
         {/* CTA */}
-        <Paper sx={{ 
-          p: 4, 
-          textAlign: "center",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-          color: "white",
-          mt: 4
+        <Card variant="elevated" padding="xl" style={{ 
+          background: "linear-gradient(135deg, #007AFF 0%, #5856D6 100%)",
+          textAlign: "center"
         }}>
-          <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
+          <Typography variant="title1" style={{ 
+            marginBottom: appleTheme.spacing[3],
+            color: "white",
+            fontWeight: appleTheme.typography.fontWeight.semibold
+          }}>
             Need More Accessibility Tools?
           </Typography>
-          <Typography variant="body1" sx={{ mb: 3, opacity: 0.9 }}>
-            Explore our full suite of accessibility testing tools.
+          <Typography variant="body" style={{ 
+            marginBottom: appleTheme.spacing[4],
+            color: "white",
+            opacity: 0.9
+          }}>
+            Explore our full suite of accessibility testing and simulation tools.
           </Typography>
-          <Button
-            component={Link}
-            href="/tools"
-            variant="contained"
-            size="large"
-            sx={{
-              backgroundColor: "white",
-              color: "#667eea",
-              fontWeight: 600,
-              px: 4,
-              "&:hover": {
-                backgroundColor: "#f8f9fa"
-              }
-            }}
-          >
-            View All Tools
-          </Button>
-        </Paper>
-      </Box>
+          <Link href="/tools" passHref legacyBehavior>
+            <a style={{ textDecoration: "none" }}>
+              <Button
+                variant="secondary"
+                size="large"
+                style={{
+                  backgroundColor: "white",
+                  color: "#007AFF",
+                  fontWeight: appleTheme.typography.fontWeight.semibold
+                }}
+              >
+                View All Tools
+              </Button>
+            </a>
+          </Link>
+        </Card>
+      </Container>
 
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={() => setSnackbarOpen(false)}
-      >
-        <Alert 
-          onClose={() => setSnackbarOpen(false)} 
-          severity="error" 
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
-    </Box>
+      {/* Snackbar */}
+      {snackbarOpen && (
+        <Box style={{
+          position: "fixed",
+          bottom: appleTheme.spacing[6],
+          right: appleTheme.spacing[6],
+          backgroundColor: appleTheme.colors.error,
+          color: "white",
+          padding: `${appleTheme.spacing[3]} ${appleTheme.spacing[4]}`,
+          borderRadius: appleTheme.borderRadius.md,
+          boxShadow: appleTheme.shadows.lg,
+          zIndex: 1000
+        }}>
+          <Typography variant="footnote" style={{ color: "white" }}>
+            {snackbarMessage}
+          </Typography>
+        </Box>
+      )}
+    </div>
   );
 }

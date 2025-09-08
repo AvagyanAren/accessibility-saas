@@ -1,24 +1,10 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Typography,
-  Paper,
-  TextField,
-  Button,
-  Card,
-  CardContent,
-  Alert,
-  Grid,
-  Chip,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Divider,
-  CircularProgress,
-  Snackbar,
-  LinearProgress,
-} from "@mui/material";
+import { Box, Stack, HStack, VStack } from "../components/apple/Layout";
+import { Typography } from "../components/apple/Typography";
+import { Button } from "../components/apple/Button";
+import { Input } from "../components/apple/Input";
+import { Card } from "../components/apple/Card";
+import { appleTheme } from "../../styles/apple-theme";
 import {
   Speed,
   CheckCircle,
@@ -31,6 +17,8 @@ import {
   Timer,
 } from "@mui/icons-material";
 import Link from "next/link";
+
+const { Container, Section } = require("../components/apple/Layout");
 
 export default function PerformanceAudit() {
   const [url, setUrl] = useState("");
@@ -54,75 +42,66 @@ export default function PerformanceAudit() {
       const mockResults = {
         overallScore: 78,
         metrics: {
-          firstContentfulPaint: 1.2,
-          largestContentfulPaint: 2.1,
-          cumulativeLayoutShift: 0.05,
-          firstInputDelay: 45,
-          timeToInteractive: 3.2
+          firstContentfulPaint: { value: 1.2, score: 85, unit: "s" },
+          largestContentfulPaint: { value: 2.1, score: 72, unit: "s" },
+          cumulativeLayoutShift: { value: 0.08, score: 90, unit: "" },
+          firstInputDelay: { value: 45, score: 88, unit: "ms" },
+          timeToInteractive: { value: 3.2, score: 65, unit: "s" }
         },
         issues: [
           {
             category: "Images",
             severity: "warning",
             title: "Unoptimized images detected",
-            description: "Large images without proper compression or modern formats",
-            impact: "Increases page load time by 2.3s",
-            suggestion: "Use WebP format and compress images to reduce file size",
-            savings: "Save 1.8s load time"
+            description: "Large images without proper compression or format optimization",
+            impact: "Increases page load time by 1.2s",
+            suggestion: "Compress images and use modern formats like WebP",
+            code: "Use tools like ImageOptim or TinyPNG for compression"
           },
           {
             category: "JavaScript",
             severity: "critical",
             title: "Large JavaScript bundle",
-            description: "Main bundle is 450KB, exceeding recommended 200KB",
-            impact: "Blocks page rendering and increases load time",
-            suggestion: "Code split, lazy load, and remove unused dependencies",
-            savings: "Save 1.2s load time"
+            description: "JavaScript bundle size exceeds recommended limits",
+            impact: "Blocks main thread for 800ms",
+            suggestion: "Implement code splitting and lazy loading",
+            code: "const LazyComponent = React.lazy(() => import('./Component'))"
           },
           {
             category: "CSS",
             severity: "warning",
             title: "Unused CSS rules",
-            description: "40% of CSS is unused on this page",
-            impact: "Unnecessary network overhead",
-            suggestion: "Remove unused CSS and use critical CSS inlining",
-            savings: "Save 0.8s load time"
+            description: "30% of CSS rules are not used on this page",
+            impact: "Increases bundle size by 45KB",
+            suggestion: "Remove unused CSS and implement critical CSS",
+            code: "Use PurgeCSS or similar tools to remove unused styles"
           },
           {
             category: "Network",
             severity: "info",
             title: "Missing compression",
-            description: "Text resources not compressed with gzip/brotli",
-            impact: "Larger file sizes over the network",
+            description: "Resources not served with gzip/brotli compression",
+            impact: "Increases transfer size by 60%",
             suggestion: "Enable gzip or brotli compression on server",
-            savings: "Save 0.5s load time"
+            code: "Add compression middleware to your server"
           },
           {
             category: "Caching",
             severity: "warning",
             title: "Short cache headers",
-            description: "Static assets have short cache expiration",
-            impact: "Frequent re-downloads of unchanged resources",
+            description: "Static assets have short cache expiration times",
+            impact: "Forces unnecessary re-downloads",
             suggestion: "Set longer cache headers for static assets",
-            savings: "Improve repeat visit performance"
-          },
-          {
-            category: "Third-party",
-            severity: "info",
-            title: "Blocking third-party scripts",
-            description: "Analytics and tracking scripts block rendering",
-            impact: "Delays page interactivity",
-            suggestion: "Load third-party scripts asynchronously",
-            savings: "Save 0.3s load time"
+            code: "Cache-Control: public, max-age=31536000"
           }
         ],
         recommendations: [
-          "Implement image optimization with WebP format",
-          "Enable code splitting for JavaScript bundles",
-          "Use critical CSS inlining for above-the-fold content",
-          "Enable gzip/brotli compression",
-          "Set proper cache headers for static assets",
-          "Load third-party scripts asynchronously"
+          "Enable text compression (gzip/brotli)",
+          "Optimize images and use modern formats",
+          "Implement lazy loading for images",
+          "Use a CDN for static assets",
+          "Minimize and compress CSS/JS",
+          "Implement service worker for caching"
         ]
       };
       
@@ -135,12 +114,18 @@ export default function PerformanceAudit() {
     }
   };
 
+  const getScoreColor = (score) => {
+    if (score >= 90) return appleTheme.colors.success;
+    if (score >= 70) return appleTheme.colors.warning;
+    return appleTheme.colors.error;
+  };
+
   const getSeverityColor = (severity) => {
     switch (severity) {
-      case "critical": return "#dc3545";
-      case "warning": return "#ffc107";
-      case "info": return "#17a2b8";
-      default: return "#6c757d";
+      case "critical": return appleTheme.colors.error;
+      case "warning": return appleTheme.colors.warning;
+      case "info": return appleTheme.colors.info;
+      default: return appleTheme.colors.gray[500];
     }
   };
 
@@ -153,434 +138,395 @@ export default function PerformanceAudit() {
     }
   };
 
-  const getScoreColor = (score) => {
-    if (score >= 90) return "#28a745";
-    if (score >= 70) return "#ffc107";
-    return "#dc3545";
-  };
-
-  const getScoreLabel = (score) => {
-    if (score >= 90) return "Excellent";
-    if (score >= 70) return "Good";
-    if (score >= 50) return "Needs Improvement";
-    return "Poor";
-  };
-
   return (
-    <Box sx={{ minHeight: "100vh", backgroundColor: "#e3f2fd" }}>
-      {/* Header */}
-      <Box sx={{ 
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-        color: "white",
-        py: { xs: 6, sm: 8 },
-        textAlign: "center"
-      }}>
-        <Typography variant="h3" sx={{ 
-          fontWeight: 700, 
-          mb: 2,
-          fontSize: { xs: "28px", sm: "36px" }
-        }}>
-          Performance Audit
-        </Typography>
-        <Typography variant="h6" sx={{ 
-          opacity: 0.9,
-          maxWidth: "600px",
-          mx: "auto",
-          px: 2
-        }}>
-          Analyze and optimize your website's performance. Get detailed insights and actionable recommendations.
-        </Typography>
-      </Box>
+    <div style={{ backgroundColor: appleTheme.colors.background.secondary, minHeight: "100vh" }}>
+      {/* Hero Section */}
+      <Section background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
+        <Container size="lg">
+          <Box style={{ textAlign: "center" }}>
+            <Typography variant="display" style={{ 
+              marginBottom: appleTheme.spacing[4],
+              color: "#1C1C1E",
+              fontWeight: appleTheme.typography.fontWeight.bold
+            }}>
+              Performance Audit
+            </Typography>
+            <Typography variant="headline" weight="regular" style={{ 
+              color: "#2C2C2E",
+              maxWidth: "600px",
+              margin: `0 auto ${appleTheme.spacing[8]} auto`,
+              fontWeight: appleTheme.typography.fontWeight.medium
+            }}>
+              Analyze your website's performance and get actionable insights to improve loading speed and user experience.
+            </Typography>
+          </Box>
+        </Container>
+      </Section>
 
-      <Box sx={{ maxWidth: "1200px", mx: "auto", p: { xs: 2, sm: 3 } }}>
+      <Container size="lg" style={{ padding: appleTheme.spacing[6] }}>
         {/* Input Section */}
-        <Paper sx={{ p: 4, mb: 4, borderRadius: 3 }}>
-          <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: "#333" }}>
+        <Card variant="elevated" padding="xl" style={{ marginBottom: appleTheme.spacing[6] }}>
+          <Typography variant="title1" style={{ 
+            marginBottom: appleTheme.spacing[4],
+            color: appleTheme.colors.text.primary,
+            fontWeight: appleTheme.typography.fontWeight.semibold
+          }}>
             Audit Website Performance
           </Typography>
           
-          <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
-            <TextField
-              fullWidth
-              label="Website URL"
-              placeholder="https://example.com"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  backgroundColor: "white",
-                  "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#0077b6",
-                  },
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#0077b6",
-                    borderWidth: 2,
-                  },
-                },
-              }}
-            />
+          <HStack spacing={3} align="stretch" style={{ marginBottom: appleTheme.spacing[4] }}>
+            <Box style={{ flex: 1 }}>
+              <Input
+                placeholder="https://example.com"
+                value={url}
+                onChange={setUrl}
+                size="large"
+                variant="filled"
+                startIcon={<Speed />}
+              />
+            </Box>
             <Button
-              variant="contained"
+              variant="primary"
+              size="large"
               onClick={handleAudit}
               disabled={auditing}
-              startIcon={auditing ? <CircularProgress size={20} /> : <Speed />}
-              sx={{
-                backgroundColor: "#0077b6",
-                px: 4,
-                py: 1.5,
-                fontSize: "16px",
-                fontWeight: 600,
-                "&:hover": {
-                  backgroundColor: "#0056b3",
-                },
-              }}
+              loading={auditing}
+              startIcon={<TrendingUp />}
             >
               {auditing ? "Auditing..." : "Start Audit"}
             </Button>
-          </Box>
+          </HStack>
 
-          <Alert severity="info" sx={{ mb: 2 }}>
-            <Typography variant="body2">
-              <strong>What we analyze:</strong> Page load speed, Core Web Vitals, resource optimization, 
-              caching strategies, and performance best practices.
+          <Card variant="outlined" padding="md" style={{ 
+            backgroundColor: appleTheme.colors.info + "10",
+            borderColor: appleTheme.colors.info + "30"
+          }}>
+            <Typography variant="body" style={{ color: appleTheme.colors.text.secondary }}>
+              <strong>What we analyze:</strong> Core Web Vitals, loading performance, resource optimization, 
+              caching strategies, and accessibility impact on performance.
             </Typography>
-          </Alert>
-        </Paper>
+          </Card>
+        </Card>
 
         {/* Results Section */}
         {results && (
-          <Box sx={{ mb: 4 }}>
+          <Box style={{ marginBottom: appleTheme.spacing[6] }}>
             {/* Overall Score */}
-            <Paper sx={{ p: 4, mb: 4, borderRadius: 3, textAlign: "center" }}>
-              <Typography variant="h4" sx={{ 
-                fontWeight: 700, 
-                color: getScoreColor(results.overallScore),
-                mb: 1
+            <Card variant="elevated" padding="xl" style={{ marginBottom: appleTheme.spacing[6], textAlign: "center" }}>
+              <Typography variant="title1" style={{ 
+                marginBottom: appleTheme.spacing[2],
+                color: appleTheme.colors.text.primary,
+                fontWeight: appleTheme.typography.fontWeight.semibold
               }}>
-                {results.overallScore}/100
+                Performance Score
               </Typography>
-              <Typography variant="h6" sx={{ 
-                color: getScoreColor(results.overallScore),
-                mb: 3
+              <Box style={{
+                width: "120px",
+                height: "120px",
+                borderRadius: "50%",
+                backgroundColor: getScoreColor(results.overallScore) + "20",
+                border: `8px solid ${getScoreColor(results.overallScore)}`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "0 auto",
+                marginBottom: appleTheme.spacing[4]
               }}>
-                {getScoreLabel(results.overallScore)}
+                <Typography variant="display" style={{ 
+                  color: getScoreColor(results.overallScore),
+                  fontWeight: appleTheme.typography.fontWeight.bold
+                }}>
+                  {results.overallScore}
+                </Typography>
+              </Box>
+              <Typography variant="body" style={{ color: appleTheme.colors.text.secondary }}>
+                {results.overallScore >= 90 ? "Excellent performance!" : 
+                 results.overallScore >= 70 ? "Good performance with room for improvement" : 
+                 "Performance needs significant improvement"}
               </Typography>
-              <LinearProgress
-                variant="determinate"
-                value={results.overallScore}
-                sx={{
-                  height: 8,
-                  borderRadius: 4,
-                  backgroundColor: "#e9ecef",
-                  "& .MuiLinearProgress-bar": {
-                    backgroundColor: getScoreColor(results.overallScore),
-                    borderRadius: 4
-                  }
-                }}
-              />
-            </Paper>
+            </Card>
 
             {/* Core Web Vitals */}
-            <Paper sx={{ p: 4, mb: 4, borderRadius: 3 }}>
-              <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: "#333" }}>
+            <Card variant="elevated" padding="xl" style={{ marginBottom: appleTheme.spacing[6] }}>
+              <Typography variant="title1" style={{ 
+                marginBottom: appleTheme.spacing[4],
+                color: appleTheme.colors.text.primary,
+                fontWeight: appleTheme.typography.fontWeight.semibold
+              }}>
                 Core Web Vitals
               </Typography>
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={6} md={4}>
-                  <Card sx={{ p: 2, textAlign: "center" }}>
-                    <CardContent>
-                      <Timer sx={{ fontSize: 40, color: "#0077b6", mb: 1 }} />
-                      <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                        {results.metrics.firstContentfulPaint}s
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        First Contentful Paint
-                      </Typography>
-                      <Chip 
-                        label={results.metrics.firstContentfulPaint <= 1.8 ? "Good" : "Needs Improvement"}
-                        size="small"
-                        sx={{ 
-                          mt: 1,
-                          backgroundColor: results.metrics.firstContentfulPaint <= 1.8 ? "#28a745" : "#ffc107",
-                          color: "white"
-                        }}
-                      />
-                    </CardContent>
+              <HStack spacing={4} wrap="wrap">
+                {Object.entries(results.metrics).map(([key, metric]) => (
+                  <Card key={key} variant="outlined" padding="lg" style={{ 
+                    flex: 1, 
+                    minWidth: "200px", 
+                    textAlign: "center",
+                    borderColor: getScoreColor(metric.score) + "30"
+                  }}>
+                    <Typography variant="title2" style={{ 
+                      color: getScoreColor(metric.score),
+                      fontWeight: appleTheme.typography.fontWeight.bold,
+                      marginBottom: appleTheme.spacing[1]
+                    }}>
+                      {metric.value}{metric.unit}
+                    </Typography>
+                    <Typography variant="caption" style={{ 
+                      color: appleTheme.colors.text.tertiary,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px"
+                    }}>
+                      {key.replace(/([A-Z])/g, ' $1').trim()}
+                    </Typography>
+                    <Box style={{
+                      marginTop: appleTheme.spacing[2],
+                      padding: `${appleTheme.spacing[1]} ${appleTheme.spacing[2]}`,
+                      backgroundColor: getScoreColor(metric.score) + "20",
+                      color: getScoreColor(metric.score),
+                      borderRadius: appleTheme.borderRadius.base,
+                      fontSize: appleTheme.typography.fontSize.xs,
+                      fontWeight: appleTheme.typography.fontWeight.semibold
+                    }}>
+                      Score: {metric.score}
+                    </Box>
                   </Card>
-                </Grid>
-                <Grid item xs={12} sm={6} md={4}>
-                  <Card sx={{ p: 2, textAlign: "center" }}>
-                    <CardContent>
-                      <TrendingUp sx={{ fontSize: 40, color: "#0077b6", mb: 1 }} />
-                      <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                        {results.metrics.largestContentfulPaint}s
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Largest Contentful Paint
-                      </Typography>
-                      <Chip 
-                        label={results.metrics.largestContentfulPaint <= 2.5 ? "Good" : "Needs Improvement"}
-                        size="small"
-                        sx={{ 
-                          mt: 1,
-                          backgroundColor: results.metrics.largestContentfulPaint <= 2.5 ? "#28a745" : "#ffc107",
-                          color: "white"
-                        }}
-                      />
-                    </CardContent>
-                  </Card>
-                </Grid>
-                <Grid item xs={12} sm={6} md={4}>
-                  <Card sx={{ p: 2, textAlign: "center" }}>
-                    <CardContent>
-                      <Memory sx={{ fontSize: 40, color: "#0077b6", mb: 1 }} />
-                      <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                        {results.metrics.cumulativeLayoutShift}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Cumulative Layout Shift
-                      </Typography>
-                      <Chip 
-                        label={results.metrics.cumulativeLayoutShift <= 0.1 ? "Good" : "Needs Improvement"}
-                        size="small"
-                        sx={{ 
-                          mt: 1,
-                          backgroundColor: results.metrics.cumulativeLayoutShift <= 0.1 ? "#28a745" : "#ffc107",
-                          color: "white"
-                        }}
-                      />
-                    </CardContent>
-                  </Card>
-                </Grid>
-              </Grid>
-            </Paper>
+                ))}
+              </HStack>
+            </Card>
 
-            {/* Performance Issues */}
-            <Paper sx={{ p: 4, borderRadius: 3 }}>
-              <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: "#333" }}>
+            {/* Issues List */}
+            <Card variant="elevated" padding="xl" style={{ marginBottom: appleTheme.spacing[6] }}>
+              <Typography variant="title1" style={{ 
+                marginBottom: appleTheme.spacing[4],
+                color: appleTheme.colors.text.primary,
+                fontWeight: appleTheme.typography.fontWeight.semibold
+              }}>
                 Performance Issues
               </Typography>
               
-              {results.issues.length === 0 ? (
-                <Alert severity="success">
-                  <Typography variant="h6">Excellent! No performance issues found.</Typography>
-                  <Typography variant="body2">
-                    Your website is performing optimally.
-                  </Typography>
-                </Alert>
-              ) : (
-                <List>
-                  {results.issues.map((issue, index) => (
-                    <React.Fragment key={index}>
-                      <ListItem sx={{ px: 0, py: 2 }}>
-                        <ListItemIcon>
-                          <Box sx={{ color: getSeverityColor(issue.severity) }}>
-                            {getSeverityIcon(issue.severity)}
+              <VStack spacing={4}>
+                {results.issues.map((issue, index) => (
+                  <Card key={index} variant="outlined" padding="lg">
+                    <HStack spacing={3} align="flex-start">
+                      <Box style={{ color: getSeverityColor(issue.severity), marginTop: appleTheme.spacing[1] }}>
+                        {getSeverityIcon(issue.severity)}
+                      </Box>
+                      <Box style={{ flex: 1 }}>
+                        <HStack spacing={2} align="center" style={{ marginBottom: appleTheme.spacing[2] }}>
+                          <Typography variant="title2" style={{ 
+                            color: appleTheme.colors.text.primary,
+                            fontWeight: appleTheme.typography.fontWeight.semibold
+                          }}>
+                            {issue.title}
+                          </Typography>
+                          <Box style={{
+                            padding: `${appleTheme.spacing[1]} ${appleTheme.spacing[2]}`,
+                            backgroundColor: getSeverityColor(issue.severity),
+                            color: "white",
+                            borderRadius: appleTheme.borderRadius.base,
+                            fontSize: appleTheme.typography.fontSize.xs,
+                            fontWeight: appleTheme.typography.fontWeight.semibold
+                          }}>
+                            {issue.severity.toUpperCase()}
                           </Box>
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={
-                            <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                              <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                                {issue.title}
-                              </Typography>
-                              <Chip
-                                label={issue.category}
-                                size="small"
-                                variant="outlined"
-                                sx={{ mr: 1 }}
-                              />
-                              <Chip
-                                label={issue.severity.toUpperCase()}
-                                size="small"
-                                sx={{
-                                  backgroundColor: getSeverityColor(issue.severity),
-                                  color: "white",
-                                  fontWeight: 600,
-                                  fontSize: "10px"
-                                }}
-                              />
-                            </Box>
-                          }
-                          secondary={
-                            <Box>
-                              <Typography variant="body2" sx={{ mb: 1, color: "#666" }}>
-                                {issue.description}
-                              </Typography>
-                              <Typography variant="body2" sx={{ mb: 1, color: "#dc3545", fontWeight: 600 }}>
-                                Impact: {issue.impact}
-                              </Typography>
-                              <Alert severity="info" sx={{ mt: 1, mb: 1 }}>
-                                <Typography variant="body2">
-                                  <strong>💡 Suggestion:</strong> {issue.suggestion}
-                                </Typography>
-                              </Alert>
-                              <Typography variant="body2" sx={{ color: "#28a745", fontWeight: 600 }}>
-                                Potential Savings: {issue.savings}
-                              </Typography>
-                            </Box>
-                          }
-                        />
-                      </ListItem>
-                      {index < results.issues.length - 1 && <Divider />}
-                    </React.Fragment>
-                  ))}
-                </List>
-              )}
-            </Paper>
+                          <Box style={{
+                            padding: `${appleTheme.spacing[1]} ${appleTheme.spacing[2]}`,
+                            backgroundColor: appleTheme.colors.gray[100],
+                            color: appleTheme.colors.text.secondary,
+                            borderRadius: appleTheme.borderRadius.base,
+                            fontSize: appleTheme.typography.fontSize.xs,
+                            fontWeight: appleTheme.typography.fontWeight.medium
+                          }}>
+                            {issue.category}
+                          </Box>
+                        </HStack>
+                        <Typography variant="body" style={{ 
+                          marginBottom: appleTheme.spacing[2],
+                          color: appleTheme.colors.text.secondary
+                        }}>
+                          {issue.description}
+                        </Typography>
+                        <Typography variant="body" style={{ 
+                          marginBottom: appleTheme.spacing[2],
+                          color: appleTheme.colors.text.primary,
+                          fontWeight: appleTheme.typography.fontWeight.medium
+                        }}>
+                          <strong>Impact:</strong> {issue.impact}
+                        </Typography>
+                        <Card variant="outlined" padding="md" style={{ 
+                          backgroundColor: appleTheme.colors.info + "10",
+                          borderColor: appleTheme.colors.info + "30",
+                          marginBottom: appleTheme.spacing[2]
+                        }}>
+                          <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
+                            <strong>💡 Suggestion:</strong> {issue.suggestion}
+                          </Typography>
+                        </Card>
+                        <Card variant="outlined" padding="md" style={{ backgroundColor: appleTheme.colors.gray[50] }}>
+                          <Typography variant="caption" style={{ 
+                            color: appleTheme.colors.text.tertiary,
+                            display: "block",
+                            marginBottom: appleTheme.spacing[1]
+                          }}>
+                            Implementation:
+                          </Typography>
+                          <Typography variant="body" style={{ 
+                            fontFamily: "SF Mono, Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace",
+                            fontSize: appleTheme.typography.fontSize.sm,
+                            color: appleTheme.colors.text.primary
+                          }}>
+                            {issue.code}
+                          </Typography>
+                        </Card>
+                      </Box>
+                    </HStack>
+                  </Card>
+                ))}
+              </VStack>
+            </Card>
 
             {/* Recommendations */}
-            <Paper sx={{ p: 4, mt: 4, borderRadius: 3 }}>
-              <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: "#333" }}>
-                Optimization Recommendations
+            <Card variant="elevated" padding="xl">
+              <Typography variant="title1" style={{ 
+                marginBottom: appleTheme.spacing[4],
+                color: appleTheme.colors.text.primary,
+                fontWeight: appleTheme.typography.fontWeight.semibold
+              }}>
+                Quick Recommendations
               </Typography>
-              <List>
+              <VStack spacing={2}>
                 {results.recommendations.map((recommendation, index) => (
-                  <ListItem key={index}>
-                    <ListItemIcon>
-                      <CheckCircle sx={{ color: "#28a745" }} />
-                    </ListItemIcon>
-                    <ListItemText primary={recommendation} />
-                  </ListItem>
+                  <HStack key={index} spacing={2} align="center">
+                    <CheckCircle style={{ color: appleTheme.colors.success, fontSize: "20px" }} />
+                    <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
+                      {recommendation}
+                    </Typography>
+                  </HStack>
                 ))}
-              </List>
-            </Paper>
+              </VStack>
+            </Card>
           </Box>
         )}
 
         {/* Best Practices */}
-        <Paper sx={{ p: 4, borderRadius: 3 }}>
-          <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: "#333" }}>
+        <Card variant="elevated" padding="xl" style={{ marginBottom: appleTheme.spacing[6] }}>
+          <Typography variant="title1" style={{ 
+            marginBottom: appleTheme.spacing[4],
+            color: appleTheme.colors.text.primary,
+            fontWeight: appleTheme.typography.fontWeight.semibold
+          }}>
             Performance Best Practices
           </Typography>
           
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: "#28a745" }}>
-                ✅ Optimization Techniques
+          <HStack spacing={6} align="flex-start" wrap="wrap">
+            <Box style={{ flex: 1, minWidth: "300px" }}>
+              <Typography variant="title2" style={{ 
+                marginBottom: appleTheme.spacing[3],
+                color: appleTheme.colors.success,
+                fontWeight: appleTheme.typography.fontWeight.semibold
+              }}>
+                ✅ Core Optimizations
               </Typography>
-              <List dense>
-                <ListItem>
-                  <ListItemIcon>
-                    <CheckCircle sx={{ color: "#28a745" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Compress and optimize images (WebP, AVIF)" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <CheckCircle sx={{ color: "#28a745" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Minify CSS, JavaScript, and HTML" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <CheckCircle sx={{ color: "#28a745" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Enable gzip/brotli compression" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <CheckCircle sx={{ color: "#28a745" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Use CDN for static assets" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <CheckCircle sx={{ color: "#28a745" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Implement proper caching headers" />
-                </ListItem>
-              </List>
-            </Grid>
+              <VStack spacing={2}>
+                {[
+                  "Optimize images (WebP, compression, lazy loading)",
+                  "Minimize and compress CSS/JavaScript",
+                  "Enable gzip/brotli compression",
+                  "Use a Content Delivery Network (CDN)",
+                  "Implement proper caching strategies"
+                ].map((item, index) => (
+                  <HStack key={index} spacing={2} align="center">
+                    <CheckCircle style={{ color: appleTheme.colors.success, fontSize: "20px" }} />
+                    <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
+                      {item}
+                    </Typography>
+                  </HStack>
+                ))}
+              </VStack>
+            </Box>
             
-            <Grid item xs={12} md={6}>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: "#17a2b8" }}>
-                🚀 Advanced Optimizations
+            <Box style={{ flex: 1, minWidth: "300px" }}>
+              <Typography variant="title2" style={{ 
+                marginBottom: appleTheme.spacing[3],
+                color: appleTheme.colors.info,
+                fontWeight: appleTheme.typography.fontWeight.semibold
+              }}>
+                🚀 Advanced Techniques
               </Typography>
-              <List dense>
-                <ListItem>
-                  <ListItemIcon>
-                    <Info sx={{ color: "#17a2b8" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Code splitting and lazy loading" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <Info sx={{ color: "#17a2b8" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Critical CSS inlining" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <Info sx={{ color: "#17a2b8" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Service workers for caching" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <Info sx={{ color: "#17a2b8" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Resource hints (preload, prefetch)" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <Info sx={{ color: "#17a2b8" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="HTTP/2 and HTTP/3 support" />
-                </ListItem>
-              </List>
-            </Grid>
-          </Grid>
-        </Paper>
+              <VStack spacing={2}>
+                {[
+                  "Code splitting and lazy loading",
+                  "Service workers for offline caching",
+                  "Critical CSS inlining",
+                  "Resource hints (preload, prefetch)",
+                  "HTTP/2 and HTTP/3 optimization"
+                ].map((item, index) => (
+                  <HStack key={index} spacing={2} align="center">
+                    <Info style={{ color: appleTheme.colors.info, fontSize: "20px" }} />
+                    <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
+                      {item}
+                    </Typography>
+                  </HStack>
+                ))}
+              </VStack>
+            </Box>
+          </HStack>
+        </Card>
 
         {/* CTA */}
-        <Paper sx={{ 
-          p: 4, 
-          textAlign: "center",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-          color: "white",
-          mt: 4
+        <Card variant="elevated" padding="xl" style={{ 
+          background: "linear-gradient(135deg, #007AFF 0%, #5856D6 100%)",
+          textAlign: "center"
         }}>
-          <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
-            Need More Accessibility Tools?
+          <Typography variant="title1" style={{ 
+            marginBottom: appleTheme.spacing[3],
+            color: "white",
+            fontWeight: appleTheme.typography.fontWeight.semibold
+          }}>
+            Need More Performance Tools?
           </Typography>
-          <Typography variant="body1" sx={{ mb: 3, opacity: 0.9 }}>
-            Explore our full suite of accessibility testing tools.
+          <Typography variant="body" style={{ 
+            marginBottom: appleTheme.spacing[4],
+            color: "white",
+            opacity: 0.9
+          }}>
+            Explore our full suite of performance and accessibility testing tools.
           </Typography>
-          <Button
-            component={Link}
-            href="/tools"
-            variant="contained"
-            size="large"
-            sx={{
-              backgroundColor: "white",
-              color: "#667eea",
-              fontWeight: 600,
-              px: 4,
-              "&:hover": {
-                backgroundColor: "#f8f9fa"
-              }
-            }}
-          >
-            View All Tools
-          </Button>
-        </Paper>
-      </Box>
+          <Link href="/tools" passHref legacyBehavior>
+            <a style={{ textDecoration: "none" }}>
+              <Button
+                variant="secondary"
+                size="large"
+                style={{
+                  backgroundColor: "white",
+                  color: "#007AFF",
+                  fontWeight: appleTheme.typography.fontWeight.semibold
+                }}
+              >
+                View All Tools
+              </Button>
+            </a>
+          </Link>
+        </Card>
+      </Container>
 
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={() => setSnackbarOpen(false)}
-      >
-        <Alert 
-          onClose={() => setSnackbarOpen(false)} 
-          severity="error" 
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
-    </Box>
+      {/* Snackbar */}
+      {snackbarOpen && (
+        <Box style={{
+          position: "fixed",
+          bottom: appleTheme.spacing[6],
+          right: appleTheme.spacing[6],
+          backgroundColor: appleTheme.colors.error,
+          color: "white",
+          padding: `${appleTheme.spacing[3]} ${appleTheme.spacing[4]}`,
+          borderRadius: appleTheme.borderRadius.md,
+          boxShadow: appleTheme.shadows.lg,
+          zIndex: 1000
+        }}>
+          <Typography variant="footnote" style={{ color: "white" }}>
+            {snackbarMessage}
+          </Typography>
+        </Box>
+      )}
+    </div>
   );
 }

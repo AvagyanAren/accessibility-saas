@@ -1,34 +1,40 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Typography,
-  Paper,
-  TextField,
-  Button,
-  Card,
-  CardContent,
-  Alert,
-  Grid,
-  Chip,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Divider,
-  CircularProgress,
-  Snackbar,
-} from "@mui/material";
-import {
-  Image,
-  CheckCircle,
-  Error,
-  Warning,
-  Info,
-  Upload,
-  Refresh,
-  Download,
-} from "@mui/icons-material";
-import Link from "next/link";
+import Typography from "../../components/apple/Typography";
+import Button from "../../components/apple/Button";
+import Card from "../../components/apple/Card";
+import Input from "../../components/apple/Input";
+import { Container, Box, Flex, Stack, Section, HStack } from "../../components/apple/Layout";
+import { appleTheme } from "../../styles/apple-theme";
+
+// Icons
+const ImageIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+    <circle cx="8.5" cy="8.5" r="1.5"/>
+    <polyline points="21,15 16,10 5,21"/>
+  </svg>
+);
+
+const CheckIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <polyline points="20,6 9,17 4,12"/>
+  </svg>
+);
+
+const ErrorIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="12" r="10"/>
+    <line x1="15" y1="9" x2="9" y2="15"/>
+    <line x1="9" y1="9" x2="15" y2="15"/>
+  </svg>
+);
+
+const SearchIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="11" cy="11" r="8"/>
+    <path d="m21 21-4.35-4.35"/>
+  </svg>
+);
 
 export default function AltTextAnalyzer() {
   const [url, setUrl] = useState("");
@@ -37,407 +43,367 @@ export default function AltTextAnalyzer() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
-  const handleAnalyze = async () => {
-    if (!url.trim()) {
-      setSnackbarMessage("Please enter a URL to analyze");
-      setSnackbarOpen(true);
-      return;
-    }
+  const mockAnalysis = async (url) => {
+    // Simulate analysis - in real implementation, this would call an API
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    return {
+      totalImages: 12,
+      imagesWithAlt: 8,
+      imagesWithoutAlt: 3,
+      imagesWithEmptyAlt: 1,
+      issues: [
+        {
+          type: "missing-alt",
+          severity: "error",
+          message: "Image missing alt attribute",
+          element: "<img src='hero.jpg' />",
+          suggestion: "Add descriptive alt text: <img src='hero.jpg' alt='Person using laptop at modern desk' />"
+        },
+        {
+          type: "empty-alt",
+          severity: "warning",
+          message: "Image has empty alt attribute",
+          element: "<img src='decoration.png' alt='' />",
+          suggestion: "If decorative, use alt='' or add descriptive text"
+        },
+        {
+          type: "generic-alt",
+          severity: "warning",
+          message: "Generic alt text detected",
+          element: "<img src='chart.png' alt='image' />",
+          suggestion: "Use specific description: <img src='chart.png' alt='Sales growth chart showing 25% increase' />"
+        }
+      ],
+      score: 75
+    };
+  };
 
+  const handleAnalysis = async () => {
+    if (!url.trim()) return;
+    
     setAnalyzing(true);
+    setResults(null);
+    
     try {
-      // Simulate analysis - in real implementation, this would call an API
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Add protocol if missing
+      let scanUrl = url.trim();
+      if (!scanUrl.startsWith('http://') && !scanUrl.startsWith('https://')) {
+        scanUrl = 'https://' + scanUrl;
+      }
       
-      const mockResults = {
-        totalImages: 12,
-        withAltText: 8,
-        withoutAltText: 4,
-        issues: [
-          {
-            type: "missing",
-            severity: "critical",
-            element: "img",
-            selector: ".hero-image",
-            description: "Hero banner image missing alt text",
-            suggestion: "Add descriptive alt text: 'Modern office workspace with team collaboration'"
-          },
-          {
-            type: "empty",
-            severity: "warning",
-            element: "img",
-            selector: ".decoration-icon",
-            description: "Decorative icon has empty alt text",
-            suggestion: "Use alt='' for decorative images or add meaningful description"
-          },
-          {
-            type: "generic",
-            severity: "warning",
-            element: "img",
-            selector: ".product-image",
-            description: "Product image has generic alt text",
-            suggestion: "Replace 'image' with specific product description"
-          },
-          {
-            type: "too-long",
-            severity: "info",
-            element: "img",
-            selector: ".chart-image",
-            description: "Alt text is too long (over 125 characters)",
-            suggestion: "Keep alt text concise and under 125 characters"
-          }
-        ],
-        score: 67
-      };
-      
-      setResults(mockResults);
+      const analysisResults = await mockAnalysis(scanUrl);
+      setResults(analysisResults);
+      setSnackbarMessage("Alt text analysis completed successfully");
+      setSnackbarOpen(true);
     } catch (error) {
       setSnackbarMessage("Error analyzing images. Please try again.");
       setSnackbarOpen(true);
-    } finally {
-      setAnalyzing(false);
     }
+    
+    setAnalyzing(false);
   };
+
+  const bestPractices = [
+    {
+      type: "do",
+      text: "Be descriptive and specific",
+      description: "Describe what's in the image, not just that it's an image"
+    },
+    {
+      type: "do",
+      text: "Keep it concise (under 125 characters)",
+      description: "Screen readers read alt text in full, so keep it brief"
+    },
+    {
+      type: "do",
+      text: "Use alt='' for decorative images",
+      description: "Empty alt text tells screen readers to skip decorative images"
+    },
+    {
+      type: "do",
+      text: "Include text that appears in the image",
+      description: "If the image contains text, include it in the alt text"
+    },
+    {
+      type: "dont",
+      text: "Use generic text like 'image' or 'photo'",
+      description: "This provides no useful information to screen reader users"
+    },
+    {
+      type: "dont",
+      text: "Start with 'Image of' or 'Picture of'",
+      description: "Screen readers already announce it's an image"
+    },
+    {
+      type: "dont",
+      text: "Repeat the filename",
+      description: "Filenames are usually not descriptive or meaningful"
+    },
+    {
+      type: "dont",
+      text: "Leave alt text empty for meaningful images",
+      description: "This makes important content inaccessible"
+    }
+  ];
 
   const getSeverityColor = (severity) => {
     switch (severity) {
-      case "critical": return "#dc3545";
-      case "warning": return "#ffc107";
-      case "info": return "#17a2b8";
-      default: return "#6c757d";
+      case "error": return appleTheme.colors.error;
+      case "warning": return appleTheme.colors.warning;
+      default: return appleTheme.colors.gray[500];
     }
   };
 
   const getSeverityIcon = (severity) => {
-    switch (severity) {
-      case "critical": return <Error />;
-      case "warning": return <Warning />;
-      case "info": return <Info />;
-      default: return <Info />;
-    }
+    return severity === "error" ? <ErrorIcon /> : <ErrorIcon />;
   };
 
   return (
-    <Box sx={{ minHeight: "100vh", backgroundColor: "#e3f2fd" }}>
-      {/* Header */}
-      <Box sx={{ 
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-        color: "white",
-        py: { xs: 6, sm: 8 },
-        textAlign: "center"
-      }}>
-        <Typography variant="h3" sx={{ 
-          fontWeight: 700, 
-          mb: 2,
-          fontSize: { xs: "28px", sm: "36px" }
-        }}>
-          Alt Text Analyzer
-        </Typography>
-        <Typography variant="h6" sx={{ 
-          opacity: 0.9,
-          maxWidth: "600px",
-          mx: "auto",
-          px: 2
-        }}>
-          Analyze and improve alt text for images on your website. Ensure all images are accessible to screen readers.
-        </Typography>
-      </Box>
-
-      <Box sx={{ maxWidth: "1200px", mx: "auto", p: { xs: 2, sm: 3 } }}>
-        {/* Input Section */}
-        <Paper sx={{ p: 4, mb: 4, borderRadius: 3 }}>
-          <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: "#333" }}>
-            Analyze Website Images
-          </Typography>
-          
-          <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
-            <TextField
-              fullWidth
-              label="Website URL"
-              placeholder="https://example.com"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  backgroundColor: "white",
-                  "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#0077b6",
-                  },
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#0077b6",
-                    borderWidth: 2,
-                  },
-                },
-              }}
-            />
-            <Button
-              variant="contained"
-              onClick={handleAnalyze}
-              disabled={analyzing}
-              startIcon={analyzing ? <CircularProgress size={20} /> : <Image />}
-              sx={{
-                backgroundColor: "#0077b6",
-                px: 4,
-                py: 1.5,
-                fontSize: "16px",
-                fontWeight: 600,
-                "&:hover": {
-                  backgroundColor: "#0056b3",
-                },
-              }}
-            >
-              {analyzing ? "Analyzing..." : "Analyze Images"}
-            </Button>
-          </Box>
-
-          <Alert severity="info" sx={{ mb: 2 }}>
-            <Typography variant="body2">
-              <strong>What we check:</strong> Missing alt text, empty alt attributes, generic descriptions, 
-              overly long alt text, and decorative image handling.
+    <div style={{ backgroundColor: appleTheme.colors.background.secondary, minHeight: "100vh" }}>
+      {/* Hero Section */}
+      <Section background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
+        <Container size="lg">
+          <Box style={{ textAlign: "center" }}>
+            <Typography variant="display" style={{ 
+              marginBottom: appleTheme.spacing[4],
+              color: "#1C1C1E",
+              fontWeight: appleTheme.typography.fontWeight.bold
+            }}>
+              Alt Text Analyzer
             </Typography>
-          </Alert>
-        </Paper>
+            <Typography variant="headline" weight="regular" style={{ 
+              color: "#2C2C2E",
+              maxWidth: "600px",
+              margin: `0 auto ${appleTheme.spacing[8]} auto`,
+              fontWeight: appleTheme.typography.fontWeight.medium
+            }}>
+              Analyze and improve alt text for images on your website to ensure accessibility for screen readers.
+            </Typography>
+          </Box>
+        </Container>
+      </Section>
 
-        {/* Results Section */}
-        {results && (
-          <Box sx={{ mb: 4 }}>
-            {/* Summary Cards */}
-            <Grid container spacing={3} sx={{ mb: 4 }}>
-              <Grid item xs={12} sm={6} md={3}>
-                <Card sx={{ textAlign: "center", p: 2 }}>
-                  <CardContent>
-                    <Typography variant="h4" sx={{ color: "#0077b6", fontWeight: 700 }}>
-                      {results.totalImages}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Total Images
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <Card sx={{ textAlign: "center", p: 2 }}>
-                  <CardContent>
-                    <Typography variant="h4" sx={{ color: "#28a745", fontWeight: 700 }}>
-                      {results.withAltText}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      With Alt Text
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <Card sx={{ textAlign: "center", p: 2 }}>
-                  <CardContent>
-                    <Typography variant="h4" sx={{ color: "#dc3545", fontWeight: 700 }}>
-                      {results.withoutAltText}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Missing Alt Text
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <Card sx={{ textAlign: "center", p: 2 }}>
-                  <CardContent>
-                    <Typography variant="h4" sx={{ color: "#ffc107", fontWeight: 700 }}>
-                      {results.score}%
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Alt Text Score
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            </Grid>
-
-            {/* Issues List */}
-            <Paper sx={{ p: 4, borderRadius: 3 }}>
-              <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: "#333" }}>
-                Alt Text Issues Found
+      <Container size="lg" padding="lg">
+        {/* Input Section */}
+        <Section padding="lg">
+          <Card variant="elevated" padding="large" style={{ marginBottom: appleTheme.spacing[8] }}>
+            <Stack spacing={4}>
+              <Typography variant="title2">
+                Analyze Website Images
+              </Typography>
+              <Typography variant="body" color="secondary">
+                Enter a website URL to analyze all images for proper alt text implementation.
               </Typography>
               
-              {results.issues.length === 0 ? (
-                <Alert severity="success">
-                  <Typography variant="h6">Great! No alt text issues found.</Typography>
-                  <Typography variant="body2">
-                    All images on this page have proper alt text attributes.
-                  </Typography>
-                </Alert>
-              ) : (
-                <List>
-                  {results.issues.map((issue, index) => (
-                    <React.Fragment key={index}>
-                      <ListItem sx={{ px: 0, py: 2 }}>
-                        <ListItemIcon>
-                          <Box sx={{ color: getSeverityColor(issue.severity) }}>
-                            {getSeverityIcon(issue.severity)}
-                          </Box>
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={
-                            <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                              <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                                {issue.description}
-                              </Typography>
-                              <Chip
-                                label={issue.severity.toUpperCase()}
-                                size="small"
-                                sx={{
-                                  backgroundColor: getSeverityColor(issue.severity),
-                                  color: "white",
-                                  fontWeight: 600,
-                                  fontSize: "10px"
-                                }}
-                              />
-                            </Box>
-                          }
-                          secondary={
-                            <Box>
-                              <Typography variant="body2" sx={{ mb: 1, color: "#666" }}>
-                                <strong>Element:</strong> {issue.element} | <strong>Selector:</strong> {issue.selector}
-                              </Typography>
-                              <Alert severity="info" sx={{ mt: 1 }}>
-                                <Typography variant="body2">
-                                  <strong>💡 Suggestion:</strong> {issue.suggestion}
+              <HStack spacing={3} align="flex-end">
+                <Box style={{ flex: 1 }}>
+                  <Input
+                    label="Website URL"
+                    placeholder="https://example.com"
+                    value={url}
+                    onChange={setUrl}
+                    size="large"
+                    startIcon={<SearchIcon />}
+                  />
+                </Box>
+                <Button
+                  variant="primary"
+                  onClick={handleAnalysis}
+                  loading={analyzing}
+                  disabled={!url.trim()}
+                  startIcon={<ImageIcon />}
+                >
+                  {analyzing ? "Analyzing..." : "Analyze Images"}
+                </Button>
+              </HStack>
+            </Stack>
+          </Card>
+
+          {/* Results Section */}
+          {results && (
+            <Stack spacing={6}>
+              {/* Summary Cards */}
+              <div style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                gap: appleTheme.spacing[4]
+              }}>
+                <Card variant="elevated" padding="large">
+                  <Stack spacing={2} align="center">
+                    <Typography variant="title1" color="primary" weight="bold">
+                      {results.totalImages}
+                    </Typography>
+                    <Typography variant="footnote" color="secondary">
+                      Total Images
+                    </Typography>
+                  </Stack>
+                </Card>
+                
+                <Card variant="elevated" padding="large">
+                  <Stack spacing={2} align="center">
+                    <Typography variant="title1" color="success" weight="bold">
+                      {results.imagesWithAlt}
+                    </Typography>
+                    <Typography variant="footnote" color="secondary">
+                      With Alt Text
+                    </Typography>
+                  </Stack>
+                </Card>
+                
+                <Card variant="elevated" padding="large">
+                  <Stack spacing={2} align="center">
+                    <Typography variant="title1" color="error" weight="bold">
+                      {results.imagesWithoutAlt}
+                    </Typography>
+                    <Typography variant="footnote" color="secondary">
+                      Missing Alt
+                    </Typography>
+                  </Stack>
+                </Card>
+                
+                <Card variant="elevated" padding="large">
+                  <Stack spacing={2} align="center">
+                    <Typography variant="title1" color="warning" weight="bold">
+                      {results.imagesWithEmptyAlt}
+                    </Typography>
+                    <Typography variant="footnote" color="secondary">
+                      Empty Alt
+                    </Typography>
+                  </Stack>
+                </Card>
+              </div>
+
+              {/* Issues List */}
+              {results.issues.length > 0 && (
+                <Card variant="outlined" padding="large">
+                  <Stack spacing={4}>
+                    <Typography variant="title3">
+                      Issues Found ({results.issues.length})
+                    </Typography>
+                    
+                    <Stack spacing={3}>
+                      {results.issues.map((issue, index) => (
+                        <Card key={index} variant="filled" padding="large">
+                          <Stack spacing={3}>
+                            <Flex align="flex-start" gap={3}>
+                              <Box style={{ 
+                                color: getSeverityColor(issue.severity),
+                                flexShrink: 0,
+                                marginTop: appleTheme.spacing[0.5]
+                              }}>
+                                {getSeverityIcon(issue.severity)}
+                              </Box>
+                              <Box style={{ flex: 1 }}>
+                                <Typography variant="callout" weight="semibold" style={{ marginBottom: appleTheme.spacing[1] }}>
+                                  {issue.message}
                                 </Typography>
-                              </Alert>
-                            </Box>
-                          }
-                        />
-                      </ListItem>
-                      {index < results.issues.length - 1 && <Divider />}
-                    </React.Fragment>
-                  ))}
-                </List>
+                                <Typography variant="footnote" color="secondary" style={{ marginBottom: appleTheme.spacing[2] }}>
+                                  {issue.suggestion}
+                                </Typography>
+                                
+                                <Box style={{
+                                  backgroundColor: appleTheme.colors.gray[50],
+                                  padding: appleTheme.spacing[2],
+                                  borderRadius: appleTheme.borderRadius.sm,
+                                  fontFamily: appleTheme.typography.fontFamily.mono,
+                                  fontSize: appleTheme.typography.fontSize.sm,
+                                  color: appleTheme.colors.text.secondary,
+                                  overflowX: "auto"
+                                }}>
+                                  <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+                                    {issue.element}
+                                  </pre>
+                                </Box>
+                              </Box>
+                            </Flex>
+                          </Stack>
+                        </Card>
+                      ))}
+                    </Stack>
+                  </Stack>
+                </Card>
               )}
-            </Paper>
-          </Box>
-        )}
+            </Stack>
+          )}
 
-        {/* Best Practices */}
-        <Paper sx={{ p: 4, borderRadius: 3 }}>
-          <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: "#333" }}>
-            Alt Text Best Practices
-          </Typography>
-          
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: "#28a745" }}>
-                ✅ Do's
+          {/* Best Practices */}
+          <Card variant="elevated" padding="large" style={{ marginTop: appleTheme.spacing[8] }}>
+            <Stack spacing={6}>
+              <Typography variant="title2">
+                Alt Text Best Practices
               </Typography>
-              <List dense>
-                <ListItem>
-                  <ListItemIcon>
-                    <CheckCircle sx={{ color: "#28a745" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Be descriptive and specific" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <CheckCircle sx={{ color: "#28a745" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Keep it concise (under 125 characters)" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <CheckCircle sx={{ color: "#28a745" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Use alt='' for decorative images" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <CheckCircle sx={{ color: "#28a745" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Include text that appears in the image" />
-                </ListItem>
-              </List>
-            </Grid>
-            
-            <Grid item xs={12} md={6}>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: "#dc3545" }}>
-                ❌ Don'ts
-              </Typography>
-              <List dense>
-                <ListItem>
-                  <ListItemIcon>
-                    <Error sx={{ color: "#dc3545" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Use generic text like 'image' or 'photo'" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <Error sx={{ color: "#dc3545" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Start with 'Image of' or 'Picture of'" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <Error sx={{ color: "#dc3545" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Repeat the filename" />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <Error sx={{ color: "#dc3545" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Leave alt text empty for meaningful images" />
-                </ListItem>
-              </List>
-            </Grid>
-          </Grid>
-        </Paper>
+              
+              <div style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+                gap: appleTheme.spacing[4]
+              }}>
+                <Box>
+                  <Typography variant="callout" weight="semibold" color="success" style={{ marginBottom: appleTheme.spacing[3] }}>
+                    ✅ Do's
+                  </Typography>
+                  <Stack spacing={2}>
+                    {bestPractices.filter(p => p.type === "do").map((practice, index) => (
+                      <Flex key={index} align="flex-start" gap={2}>
+                        <CheckIcon style={{ color: isDarkMode ? '#30D158' : appleTheme.colors.success, flexShrink: 0, marginTop: appleTheme.spacing[0.5] }} />
+                        <Box>
+                          <Typography variant="footnote" weight="medium">
+                            {practice.text}
+                          </Typography>
+                          <Typography variant="caption1" color="tertiary">
+                            {practice.description}
+                          </Typography>
+                        </Box>
+                      </Flex>
+                    ))}
+                  </Stack>
+                </Box>
+                
+                <Box>
+                  <Typography variant="callout" weight="semibold" color="error" style={{ marginBottom: appleTheme.spacing[3] }}>
+                    ❌ Don'ts
+                  </Typography>
+                  <Stack spacing={2}>
+                    {bestPractices.filter(p => p.type === "dont").map((practice, index) => (
+                      <Flex key={index} align="flex-start" gap={2}>
+                        <ErrorIcon style={{ color: appleTheme.colors.error, flexShrink: 0, marginTop: appleTheme.spacing[0.5] }} />
+                        <Box>
+                          <Typography variant="footnote" weight="medium">
+                            {practice.text}
+                          </Typography>
+                          <Typography variant="caption1" color="tertiary">
+                            {practice.description}
+                          </Typography>
+                        </Box>
+                      </Flex>
+                    ))}
+                  </Stack>
+                </Box>
+              </div>
+            </Stack>
+          </Card>
+        </Section>
+      </Container>
 
-        {/* CTA */}
-        <Paper sx={{ 
-          p: 4, 
-          textAlign: "center",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+      {/* Snackbar for notifications */}
+      {snackbarOpen && (
+        <Box style={{
+          position: "fixed",
+          bottom: appleTheme.spacing[6],
+          right: appleTheme.spacing[6],
+          backgroundColor: appleTheme.colors.success,
           color: "white",
-          mt: 4
+          padding: `${appleTheme.spacing[3]} ${appleTheme.spacing[4]}`,
+          borderRadius: appleTheme.borderRadius.md,
+          boxShadow: appleTheme.shadows.lg,
+          zIndex: 1000
         }}>
-          <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
-            Need More Accessibility Tools?
+          <Typography variant="footnote" color="white">
+            {snackbarMessage}
           </Typography>
-          <Typography variant="body1" sx={{ mb: 3, opacity: 0.9 }}>
-            Explore our full suite of accessibility testing tools.
-          </Typography>
-          <Button
-            component={Link}
-            href="/tools"
-            variant="contained"
-            size="large"
-            sx={{
-              backgroundColor: "white",
-              color: "#667eea",
-              fontWeight: 600,
-              px: 4,
-              "&:hover": {
-                backgroundColor: "#f8f9fa"
-              }
-            }}
-          >
-            View All Tools
-          </Button>
-        </Paper>
-      </Box>
-
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={() => setSnackbarOpen(false)}
-      >
-        <Alert 
-          onClose={() => setSnackbarOpen(false)} 
-          severity="error" 
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
-    </Box>
+        </Box>
+      )}
+    </div>
   );
 }

@@ -1,21 +1,44 @@
-import React, { useState } from "react";
-import {
-  Box,
-  Typography,
-  Paper,
-  TextField,
-  Button,
-  Grid,
-  Card,
-  CardContent,
-  Alert,
-  Chip,
-  Slider,
-  InputAdornment,
-} from "@mui/material";
-import { Contrast, CheckCircle, Error, Refresh } from "@mui/icons-material";
+import React, { useState, useEffect } from "react";
+import Typography from "../../components/apple/Typography";
+import Button from "../../components/apple/Button";
+import Card from "../../components/apple/Card";
+import Input from "../../components/apple/Input";
+import { Container, Box, Flex, Stack, Section, HStack } from "../../components/apple/Layout";
+import { appleTheme } from "../../styles/apple-theme";
+import { useTheme } from "../../contexts/ThemeContext";
+
+// Icons
+const ContrastIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="12" r="3"/>
+    <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1"/>
+  </svg>
+);
+
+const CheckIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <polyline points="20,6 9,17 4,12"/>
+  </svg>
+);
+
+const ErrorIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="12" r="10"/>
+    <line x1="15" y1="9" x2="9" y2="15"/>
+    <line x1="9" y1="9" x2="15" y2="15"/>
+  </svg>
+);
+
+const RefreshIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <polyline points="23,4 23,10 17,10"/>
+    <polyline points="1,20 1,14 7,14"/>
+    <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+  </svg>
+);
 
 export default function ColorContrastChecker() {
+  const { isDarkMode } = useTheme();
   const [foreground, setForeground] = useState("#000000");
   const [background, setBackground] = useState("#ffffff");
   const [contrastRatio, setContrastRatio] = useState(21);
@@ -59,261 +82,267 @@ export default function ColorContrastChecker() {
   };
 
   // Check compliance
-  const checkCompliance = (ratio) => {
-    const aa = ratio >= 4.5;
-    const aaa = ratio >= 7;
-    const aaLarge = ratio >= 3;
-    
-    return { aa, aaa, aaLarge };
-  };
-
-  // Handle color change
-  const handleColorChange = (type, color) => {
-    if (type === 'foreground') {
-      setForeground(color);
-    } else {
-      setBackground(color);
-    }
-    
-    const ratio = getContrastRatio(
-      type === 'foreground' ? color : foreground,
-      type === 'background' ? color : background
-    );
-    
+  const checkCompliance = (fg, bg) => {
+    const ratio = getContrastRatio(fg, bg);
     setContrastRatio(ratio);
-    const compliance = checkCompliance(ratio);
-    setAaCompliant(compliance.aa);
-    setAaaCompliant(compliance.aaa);
-    setAaLargeCompliant(compliance.aaLarge);
-  };
-
-  // Generate random colors
-  const generateRandomColors = () => {
-    const randomForeground = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
-    const randomBackground = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
     
-    setForeground(randomForeground);
-    setBackground(randomBackground);
+    // WCAG AA: 4.5:1 for normal text, 3:1 for large text
+    // WCAG AAA: 7:1 for normal text, 4.5:1 for large text
+    setAaCompliant(ratio >= 4.5);
+    setAaaCompliant(ratio >= 7);
+    setAaLargeCompliant(ratio >= 3);
+  };
+
+  const handleForegroundChange = (color) => {
+    setForeground(color);
+    checkCompliance(color, background);
+  };
+
+  const handleBackgroundChange = (color) => {
+    setBackground(color);
+    checkCompliance(foreground, color);
+  };
+
+  const randomizeColors = () => {
+    const randomColor = () => {
+      const letters = '0123456789ABCDEF';
+      let color = '#';
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    };
     
-    const ratio = getContrastRatio(randomForeground, randomBackground);
-    setContrastRatio(ratio);
-    const compliance = checkCompliance(ratio);
-    setAaCompliant(compliance.aa);
-    setAaaCompliant(compliance.aaa);
-    setAaLargeCompliant(compliance.aaLarge);
+    const newFg = randomColor();
+    const newBg = randomColor();
+    setForeground(newFg);
+    setBackground(newBg);
+    checkCompliance(newFg, newBg);
   };
 
-  const getContrastGrade = (ratio) => {
-    if (ratio >= 7) return { grade: "AAA", color: "#28a745" };
-    if (ratio >= 4.5) return { grade: "AA", color: "#ffc107" };
-    if (ratio >= 3) return { grade: "AA Large", color: "#fd7e14" };
-    return { grade: "Fail", color: "#dc3545" };
+  const getComplianceColor = (compliant) => {
+    return compliant ? appleTheme.colors.success : appleTheme.colors.error;
   };
 
-  const grade = getContrastGrade(contrastRatio);
+  const getComplianceIcon = (compliant) => {
+    return compliant ? <CheckIcon style={{ color: isDarkMode ? '#30D158' : appleTheme.colors.success }} /> : <ErrorIcon style={{ color: isDarkMode ? '#FF453A' : appleTheme.colors.error }} />;
+  };
+
+  // Initialize contrast calculation on mount
+  useEffect(() => {
+    checkCompliance(foreground, background);
+  }, []);
+
+  const themeColors = isDarkMode ? appleTheme.colors.dark : appleTheme.colors;
 
   return (
-    <Box sx={{ minHeight: "100vh", backgroundColor: "#e3f2fd", p: 3 }}>
-      <Box sx={{ maxWidth: "800px", mx: "auto" }}>
-        {/* Header */}
-        <Paper sx={{ p: 4, mb: 4, textAlign: "center" }}>
-          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", mb: 2 }}>
-            <Contrast sx={{ fontSize: 40, color: "#0077b6", mr: 2 }} />
-            <Typography variant="h3" sx={{ fontWeight: 700, color: "#333" }}>
+    <div style={{ backgroundColor: themeColors.background.secondary, minHeight: "100vh" }}>
+      {/* Hero Section */}
+      <Section background={isDarkMode ? "linear-gradient(135deg, #1C1C1E 0%, #2C2C2E 100%)" : "linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)"} padding="xl">
+        <Container size="lg">
+          <Box style={{ textAlign: "center" }}>
+            <Typography variant="display" style={{ 
+              marginBottom: appleTheme.spacing[4],
+              color: isDarkMode ? '#FFFFFF' : "#1C1C1E",
+              fontWeight: appleTheme.typography.fontWeight.bold
+            }}>
               Color Contrast Checker
             </Typography>
+            <Typography variant="headline" weight="regular" style={{ 
+              color: isDarkMode ? '#FFFFFF' : "#2C2C2E",
+              maxWidth: "600px",
+              margin: `0 auto ${appleTheme.spacing[8]} auto`,
+              fontWeight: appleTheme.typography.fontWeight.medium
+            }}>
+              Test color combinations to ensure they meet WCAG accessibility standards.
+            </Typography>
           </Box>
-          <Typography variant="h6" sx={{ color: "#666", mb: 3 }}>
-            Test color combinations for WCAG accessibility compliance
-          </Typography>
-          <Button
-            variant="outlined"
-            startIcon={<Refresh />}
-            onClick={generateRandomColors}
-            sx={{ borderColor: "#0077b6", color: "#0077b6" }}
-          >
-            Generate Random Colors
-          </Button>
-        </Paper>
+        </Container>
+      </Section>
 
-        <Grid container spacing={3}>
-          {/* Color Inputs */}
-          <Grid item xs={12} md={6}>
-            <Paper sx={{ p: 3 }}>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
-                Color Input
+      <Container size="lg" padding="lg">
+        {/* Color Input Section */}
+        <Section padding="lg">
+          <Card variant="elevated" padding="large" style={{ marginBottom: appleTheme.spacing[8] }}>
+            <Stack spacing={6}>
+              <Typography variant="title2" style={{
+                color: isDarkMode ? '#FFFFFF' : undefined
+              }}>
+                Choose Your Colors
               </Typography>
               
-              <Box sx={{ mb: 3 }}>
-                <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Foreground Color (Text)
-                </Typography>
-                <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-                  <TextField
-                    fullWidth
+              <div style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+                gap: appleTheme.spacing[6]
+              }}>
+                <Box>
+                  <Input
+                    label="Foreground Color"
+                    type="color"
                     value={foreground}
-                    onChange={(e) => handleColorChange('foreground', e.target.value)}
-                    placeholder="#000000"
-                    size="small"
-                    InputProps={{
-                      startAdornment: <InputAdornment position="start">#</InputAdornment>,
-                    }}
-                  />
-                  <Box
-                    sx={{
-                      width: 50,
-                      height: 40,
-                      backgroundColor: foreground,
-                      border: "1px solid #ccc",
-                      borderRadius: 1,
-                    }}
+                    onChange={handleForegroundChange}
+                    size="large"
                   />
                 </Box>
-              </Box>
-
-              <Box sx={{ mb: 3 }}>
-                <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Background Color
-                </Typography>
-                <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-                  <TextField
-                    fullWidth
+                <Box>
+                  <Input
+                    label="Background Color"
+                    type="color"
                     value={background}
-                    onChange={(e) => handleColorChange('background', e.target.value)}
-                    placeholder="#ffffff"
-                    size="small"
-                    InputProps={{
-                      startAdornment: <InputAdornment position="start">#</InputAdornment>,
-                    }}
-                  />
-                  <Box
-                    sx={{
-                      width: 50,
-                      height: 40,
-                      backgroundColor: background,
-                      border: "1px solid #ccc",
-                      borderRadius: 1,
-                    }}
+                    onChange={handleBackgroundChange}
+                    size="large"
                   />
                 </Box>
-              </Box>
-            </Paper>
-          </Grid>
+              </div>
+              
+              <HStack justify="center">
+                <Button
+                  variant="outline"
+                  onClick={randomizeColors}
+                  startIcon={<RefreshIcon />}
+                >
+                  Randomize Colors
+                </Button>
+              </HStack>
+            </Stack>
+          </Card>
 
-          {/* Results */}
-          <Grid item xs={12} md={6}>
-            <Paper sx={{ p: 3 }}>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
-                Contrast Results
+          {/* Preview Section */}
+          <Card variant="outlined" padding="large" style={{ marginBottom: appleTheme.spacing[8] }}>
+            <Stack spacing={4}>
+              <Typography variant="title3" style={{
+                color: isDarkMode ? '#FFFFFF' : undefined
+              }}>
+                Preview
+              </Typography>
+              
+              <Box style={{
+                backgroundColor: background,
+                padding: appleTheme.spacing[8],
+                borderRadius: appleTheme.borderRadius.lg,
+                textAlign: "center",
+                border: `2px solid ${appleTheme.colors.gray[200]}`
+              }}>
+                <Typography 
+                  variant="title1" 
+                  style={{ 
+                    color: foreground,
+                    fontWeight: appleTheme.typography.fontWeight.bold
+                  }}
+                >
+                  Sample Text
+                </Typography>
+                <Typography 
+                  variant="body" 
+                  style={{ 
+                    color: foreground,
+                    marginTop: appleTheme.spacing[2]
+                  }}
+                >
+                  This is how your text will look with these colors.
+                </Typography>
+              </Box>
+            </Stack>
+          </Card>
+
+          {/* Results Section */}
+          <Card variant="elevated" padding="large">
+            <Stack spacing={6}>
+              <Typography variant="title2" style={{
+                color: isDarkMode ? '#FFFFFF' : undefined
+              }}>
+                Contrast Analysis
               </Typography>
               
               {/* Contrast Ratio */}
-              <Box sx={{ mb: 3, textAlign: "center" }}>
-                <Typography variant="h2" sx={{ 
-                  fontWeight: 700, 
-                  color: grade.color,
-                  mb: 1
+              <Box style={{ textAlign: "center" }}>
+                <Typography variant="display" weight="bold" style={{ 
+                  marginBottom: appleTheme.spacing[2],
+                  color: isDarkMode ? '#FFFFFF' : appleTheme.colors.primary[500]
                 }}>
                   {contrastRatio.toFixed(2)}:1
                 </Typography>
-                <Chip
-                  label={grade.grade}
-                  sx={{
-                    backgroundColor: grade.color,
-                    color: "white",
-                    fontWeight: 600,
-                    fontSize: "16px",
-                    px: 2,
-                    py: 1
-                  }}
-                />
-              </Box>
-
-              {/* Compliance Status */}
-              <Box sx={{ mb: 3 }}>
-                <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600 }}>
-                  WCAG Compliance
+                <Typography variant="body" style={{
+                  color: isDarkMode ? '#AEAEB2' : undefined
+                }}>
+                  Contrast Ratio
                 </Typography>
-                
-                <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                  {aaCompliant ? <CheckCircle sx={{ color: "#28a745", mr: 1 }} /> : <Error sx={{ color: "#dc3545", mr: 1 }} />}
-                  <Typography variant="body2" sx={{ color: aaCompliant ? "#28a745" : "#dc3545" }}>
-                    AA (4.5:1) - Normal Text
-                  </Typography>
-                </Box>
-                
-                <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                  {aaaCompliant ? <CheckCircle sx={{ color: "#28a745", mr: 1 }} /> : <Error sx={{ color: "#dc3545", mr: 1 }} />}
-                  <Typography variant="body2" sx={{ color: aaaCompliant ? "#28a745" : "#dc3545" }}>
-                    AAA (7:1) - Enhanced
-                  </Typography>
-                </Box>
-                
-                <Box sx={{ display: "flex", alignItems: "center" }}>
-                  {aaLargeCompliant ? <CheckCircle sx={{ color: "#28a745", mr: 1 }} /> : <Error sx={{ color: "#dc3545", mr: 1 }} />}
-                  <Typography variant="body2" sx={{ color: aaLargeCompliant ? "#28a745" : "#dc3545" }}>
-                    AA Large (3:1) - Large Text
-                  </Typography>
-                </Box>
               </Box>
-            </Paper>
-          </Grid>
-
-          {/* Preview */}
-          <Grid item xs={12}>
-            <Paper sx={{ p: 3 }}>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
-                Live Preview
-              </Typography>
               
-              <Box sx={{ 
-                backgroundColor: background, 
-                p: 4, 
-                borderRadius: 2,
-                border: "1px solid #ccc"
+              {/* Compliance Checks */}
+              <div style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+                gap: appleTheme.spacing[4]
               }}>
-                <Typography 
-                  variant="h4" 
-                  sx={{ 
-                    color: foreground,
-                    fontWeight: 600,
-                    mb: 2
-                  }}
-                >
-                  Sample Heading Text
-                </Typography>
-                <Typography 
-                  variant="body1" 
-                  sx={{ 
-                    color: foreground,
-                    fontSize: "16px",
-                    lineHeight: 1.5
-                  }}
-                >
-                  This is sample body text to demonstrate how the color combination looks in practice. 
-                  The contrast ratio of {contrastRatio.toFixed(2)}:1 {aaCompliant ? 'meets' : 'does not meet'} 
-                  WCAG AA standards for normal text.
-                </Typography>
-              </Box>
-            </Paper>
-          </Grid>
-
-          {/* Tips */}
-          <Grid item xs={12}>
-            <Alert severity="info" sx={{ mb: 3 }}>
-              <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
-                💡 Tips for Better Contrast
-              </Typography>
-              <Typography variant="body2">
-                • Aim for at least 4.5:1 ratio for normal text (AA compliance)<br/>
-                • Use 7:1 ratio for enhanced accessibility (AAA compliance)<br/>
-                • Large text (18pt+) only needs 3:1 ratio<br/>
-                • Test with actual content, not just color swatches
-              </Typography>
-            </Alert>
-          </Grid>
-        </Grid>
-      </Box>
-    </Box>
+                <Card variant="outlined" padding="large">
+                  <Stack spacing={3} align="center">
+                    <Flex align="center" gap={2}>
+                      {getComplianceIcon(aaCompliant)}
+                      <Typography variant="callout" weight="semibold" color={getComplianceColor(aaCompliant)}>
+                        WCAG AA
+                      </Typography>
+                    </Flex>
+                    <Typography variant="footnote" align="center" style={{
+                      color: isDarkMode ? '#AEAEB2' : undefined
+                    }}>
+                      Normal text (4.5:1 minimum)
+                    </Typography>
+                    <Typography variant="caption1" weight="semibold" style={{
+                      color: getComplianceColor(aaCompliant)
+                    }}>
+                      {aaCompliant ? "PASS" : "FAIL"}
+                    </Typography>
+                  </Stack>
+                </Card>
+                
+                <Card variant="outlined" padding="large">
+                  <Stack spacing={3} align="center">
+                    <Flex align="center" gap={2}>
+                      {getComplianceIcon(aaaCompliant)}
+                      <Typography variant="callout" weight="semibold" color={getComplianceColor(aaaCompliant)}>
+                        WCAG AAA
+                      </Typography>
+                    </Flex>
+                    <Typography variant="footnote" align="center" style={{
+                      color: isDarkMode ? '#AEAEB2' : undefined
+                    }}>
+                      Normal text (7:1 minimum)
+                    </Typography>
+                    <Typography variant="caption1" weight="semibold" style={{
+                      color: getComplianceColor(aaaCompliant)
+                    }}>
+                      {aaaCompliant ? "PASS" : "FAIL"}
+                    </Typography>
+                  </Stack>
+                </Card>
+                
+                <Card variant="outlined" padding="large">
+                  <Stack spacing={3} align="center">
+                    <Flex align="center" gap={2}>
+                      {getComplianceIcon(aaLargeCompliant)}
+                      <Typography variant="callout" weight="semibold" color={getComplianceColor(aaLargeCompliant)}>
+                        WCAG AA Large
+                      </Typography>
+                    </Flex>
+                    <Typography variant="footnote" align="center" style={{
+                      color: isDarkMode ? '#AEAEB2' : undefined
+                    }}>
+                      Large text (3:1 minimum)
+                    </Typography>
+                    <Typography variant="caption1" weight="semibold" style={{
+                      color: getComplianceColor(aaLargeCompliant)
+                    }}>
+                      {aaLargeCompliant ? "PASS" : "FAIL"}
+                    </Typography>
+                  </Stack>
+                </Card>
+              </div>
+            </Stack>
+          </Card>
+        </Section>
+      </Container>
+    </div>
   );
 }

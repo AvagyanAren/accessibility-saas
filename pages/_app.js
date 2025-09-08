@@ -1,23 +1,22 @@
-import Navbar from "../components/Navbar";
-import { CssBaseline, Box, ThemeProvider } from "@mui/material";
-import theme from "../theme";
+import Navbar from "../components/NavbarApple";
+import { ThemeProvider } from "../contexts/ThemeContext";
+import "../styles/apple-globals.css";
 
 function MyApp({ Component, pageProps }) {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Box
-        sx={{
+    <ThemeProvider>
+      <div
+        style={{
           minHeight: "100vh",
           width: "100%",
-          background: "#e3f2fd",
+          backgroundColor: "#F5F5F7",
           display: "flex",
           flexDirection: "column",
         }}
       >
         <Navbar />
         <Component {...pageProps} />
-      </Box>
+      </div>
     </ThemeProvider>
   );
 }

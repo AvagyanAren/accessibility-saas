@@ -1,40 +1,85 @@
 import React from "react";
-import {
-  Box,
-  Typography,
-  Paper,
-  Grid,
-  Card,
-  CardContent,
-  CardActions,
-  Button,
-  Chip,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
-  Divider,
-} from "@mui/material";
-import {
-  CheckCircle,
-  Article,
-  Code,
-  DesignServices,
-  School,
-  Download,
-  OpenInNew,
-} from "@mui/icons-material";
+import Typography from "../components/apple/Typography";
+import Button from "../components/apple/Button";
+import Card from "../components/apple/Card";
+import { Container, Box, Flex, Stack, Section, HStack } from "../components/apple/Layout";
+import { appleTheme } from "../styles/apple-theme";
+import { useTheme } from "../contexts/ThemeContext";
 import Link from "next/link";
 
+// Icons
+const ArticleIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+    <polyline points="14,2 14,8 20,8"/>
+    <line x1="16" y1="13" x2="8" y2="13"/>
+    <line x1="16" y1="17" x2="8" y2="17"/>
+    <polyline points="10,9 9,9 8,9"/>
+  </svg>
+);
+
+const SchoolIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+    <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+  </svg>
+);
+
+const CodeIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <polyline points="16,18 22,12 16,6"/>
+    <polyline points="8,6 2,12 8,18"/>
+  </svg>
+);
+
+const DesignIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+    <line x1="8" y1="21" x2="16" y2="21"/>
+    <line x1="12" y1="17" x2="12" y2="21"/>
+  </svg>
+);
+
+const DownloadIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+    <polyline points="7,10 12,15 17,10"/>
+    <line x1="12" y1="15" x2="12" y2="3"/>
+  </svg>
+);
+
+const ExternalLinkIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+    <polyline points="15,3 21,3 21,9"/>
+    <line x1="10" y1="14" x2="21" y2="3"/>
+  </svg>
+);
+
+const ClockIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="12" r="10"/>
+    <polyline points="12,6 12,12 16,14"/>
+  </svg>
+);
+
+const TagIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+    <line x1="7" y1="7" x2="7.01" y2="7"/>
+  </svg>
+);
+
 export default function Resources() {
+  const { isDarkMode } = useTheme();
   const articles = [
     {
       title: "10 Common Accessibility Issues and How to Fix Them",
       description: "Learn about the most frequent accessibility problems found on websites and practical solutions to resolve them.",
       category: "Beginner",
       readTime: "5 min read",
-      icon: <Article />,
-      color: "#0077b6",
+      icon: <ArticleIcon />,
+      color: appleTheme.colors.primary[500],
       href: "/articles/10-common-accessibility-issues",
       available: true
     },
@@ -43,469 +88,324 @@ export default function Resources() {
       description: "Comprehensive overview of Web Content Accessibility Guidelines with real-world examples and implementation tips.",
       category: "Advanced",
       readTime: "15 min read",
-      icon: <School />,
-      color: "#28a745",
+      icon: <SchoolIcon />,
+      color: appleTheme.colors.success,
       href: "/articles/wcag-2.1-guide",
       available: false
     },
     {
-      title: "Color Contrast: Making Text Readable for Everyone",
-      description: "Understanding color contrast ratios and tools to ensure your text is accessible to users with visual impairments.",
-      category: "Design",
-      readTime: "8 min read",
-      icon: <DesignServices />,
-      color: "#ffc107",
-      href: "/articles/color-contrast-guide",
-      available: false
-    },
-    {
-      title: "Keyboard Navigation Best Practices",
-      description: "Essential techniques for creating keyboard-accessible interfaces that work for all users.",
+      title: "Building Accessible React Components",
+      description: "Best practices for creating accessible React components that work with screen readers and keyboard navigation.",
       category: "Development",
-      readTime: "6 min read",
-      icon: <Code />,
-      color: "#6f42c1",
-      href: "/articles/keyboard-navigation-guide",
+      readTime: "8 min read",
+      icon: <CodeIcon />,
+      color: appleTheme.colors.warning,
+      href: "/articles/accessible-react-components",
       available: false
-    }
-  ];
-
-  const checklists = [
-    {
-      title: "Designer's Accessibility Checklist",
-      items: [
-        "Ensure sufficient color contrast (4.5:1 minimum)",
-        "Use clear, readable fonts (minimum 16px)",
-        "Provide alternative text for images",
-        "Design focus states for interactive elements",
-        "Plan for different screen sizes and zoom levels"
-      ]
     },
     {
-      title: "Developer's Accessibility Checklist",
-      items: [
-        "Add semantic HTML elements (header, main, nav, etc.)",
-        "Implement proper heading hierarchy (H1, H2, H3)",
-        "Ensure all interactive elements are keyboard accessible",
-        "Add ARIA labels where needed",
-        "Test with screen readers"
-      ]
+      title: "Designing for Color Blindness",
+      description: "How to create designs that are accessible to users with color vision deficiencies.",
+      category: "Design",
+      readTime: "6 min read",
+      icon: <DesignIcon />,
+      color: "#FF6B35",
+      href: "/articles/designing-for-color-blindness",
+      available: false
     },
     {
-      title: "Content Creator's Accessibility Checklist",
-      items: [
-        "Write descriptive alt text for images",
-        "Use clear, concise language",
-        "Provide captions for videos",
-        "Structure content with proper headings",
-        "Avoid using color alone to convey information"
-      ]
+      title: "Accessibility Testing Checklist",
+      description: "A comprehensive checklist to ensure your website meets accessibility standards before launch.",
+      category: "Testing",
+      readTime: "4 min read",
+      icon: <ArticleIcon />,
+      color: appleTheme.colors.primary[600],
+      href: "/articles/accessibility-testing-checklist",
+      available: false
+    },
+    {
+      title: "Screen Reader Testing Guide",
+      description: "Learn how to test your website with screen readers and ensure proper navigation.",
+      category: "Testing",
+      readTime: "10 min read",
+      icon: <SchoolIcon />,
+      color: appleTheme.colors.success,
+      href: "/articles/screen-reader-testing",
+      available: false
     }
   ];
 
   const tools = [
     {
       name: "WAVE Web Accessibility Evaluator",
-      description: "Free browser extension for testing accessibility",
-      link: "https://wave.webaim.org/",
-      type: "Browser Extension"
+      description: "Free web accessibility evaluation tool",
+      url: "https://wave.webaim.org/",
+      category: "Testing"
     },
     {
       name: "axe DevTools",
-      description: "Comprehensive accessibility testing for developers",
-      link: "https://www.deque.com/axe/devtools/",
-      type: "Browser Extension"
+      description: "Browser extension for accessibility testing",
+      url: "https://www.deque.com/axe/devtools/",
+      category: "Development"
     },
     {
-      name: "Color Contrast Analyzer",
-      description: "Test color combinations for accessibility compliance",
-      link: "https://www.tpgi.com/color-contrast-checker/",
-      type: "Web Tool"
+      name: "Color Oracle",
+      description: "Color blindness simulator for Windows, Mac, and Linux",
+      url: "https://colororacle.org/",
+      category: "Design"
     },
     {
-      name: "Screen Reader Testing",
-      description: "Test with NVDA (free) or JAWS (paid) screen readers",
-      link: "https://www.nvaccess.org/",
-      type: "Software"
+      name: "WebAIM Contrast Checker",
+      description: "Check color contrast ratios for accessibility",
+      url: "https://webaim.org/resources/contrastchecker/",
+      category: "Design"
     }
   ];
 
-  return (
-    <Box sx={{ minHeight: "100vh", backgroundColor: "#e3f2fd" }}>
-      {/* Header */}
-      <Box sx={{ 
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-        color: "white",
-        py: { xs: 6, sm: 8 },
-        textAlign: "center"
-      }}>
-        <Typography variant="h3" sx={{ 
-          fontWeight: 700, 
-          mb: 2,
-          fontSize: { xs: "28px", sm: "36px" }
-        }}>
-          Accessibility Resources
-        </Typography>
-        <Typography variant="h6" sx={{ 
-          opacity: 0.9,
-          maxWidth: "600px",
-          mx: "auto",
-          px: 2
-        }}>
-          Learn, implement, and master web accessibility with our comprehensive guides, 
-          checklists, and tools.
-        </Typography>
-      </Box>
+  const getCategoryColor = (category) => {
+    const colors = {
+      "Beginner": appleTheme.colors.primary[500],
+      "Advanced": appleTheme.colors.success,
+      "Development": appleTheme.colors.warning,
+      "Design": "#FF6B35",
+      "Testing": appleTheme.colors.primary[600]
+    };
+    return colors[category] || appleTheme.colors.gray[500];
+  };
 
-      <Box sx={{ maxWidth: "1200px", mx: "auto", p: { xs: 2, sm: 3 } }}>
+  return (
+    <div style={{ backgroundColor: appleTheme.colors.background.secondary, minHeight: "100vh" }}>
+      {/* Hero Section */}
+      <Section background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
+        <Container size="lg">
+          <Box style={{ textAlign: "center" }}>
+            <Typography variant="display" style={{ 
+              marginBottom: appleTheme.spacing[4],
+              color: "#1C1C1E",
+              fontWeight: appleTheme.typography.fontWeight.bold
+            }}>
+              Accessibility Resources
+            </Typography>
+            <Typography variant="headline" weight="regular" style={{ 
+              color: "#2C2C2E",
+              maxWidth: "600px",
+              margin: `0 auto ${appleTheme.spacing[8]} auto`,
+              fontWeight: appleTheme.typography.fontWeight.medium
+            }}>
+              Learn, grow, and build more accessible digital experiences with our comprehensive guides and tools.
+            </Typography>
+          </Box>
+        </Container>
+      </Section>
+
+      <Container size="lg" padding="lg">
         {/* Articles Section */}
-        <Box sx={{ mb: 6 }}>
-          <Typography variant="h4" sx={{ 
-            fontWeight: 600, 
-            mb: 3, 
-            color: "#333",
-            textAlign: "center"
+        <Section padding="lg">
+          <Typography variant="title2" style={{ 
+            marginBottom: appleTheme.spacing[8],
+            color: isDarkMode ? '#FFFFFF' : '#000000'
           }}>
-            📚 Learning Articles
+            Articles & Guides
           </Typography>
-          <Grid container spacing={3}>
+          
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
+            gap: appleTheme.spacing[6],
+            marginBottom: appleTheme.spacing[12]
+          }}>
             {articles.map((article, index) => (
-              <Grid item xs={12} sm={6} md={3} key={index}>
-                {article.available ? (
-                  <Link href={article.href} passHref legacyBehavior>
-                    <Card sx={{ 
-                      height: "100%", 
-                      display: "flex", 
-                      flexDirection: "column",
-                      transition: "transform 0.2s, box-shadow 0.2s",
-                      "&:hover": {
-                        transform: "translateY(-4px)",
-                        boxShadow: 4
-                      },
-                      cursor: "pointer",
-                      textDecoration: "none",
-                      "&:hover .read-button": {
-                        backgroundColor: `${article.color}20`,
-                        color: article.color
-                      }
-                    }}>
-                      <CardContent sx={{ flexGrow: 1 }}>
-                        <Box sx={{ 
-                          display: "flex", 
-                          alignItems: "center", 
-                          mb: 2,
-                          color: article.color
-                        }}>
+              <Link key={index} href={article.href} passHref legacyBehavior>
+                <a style={{ textDecoration: "none" }}>
+                  <Card 
+                    variant="elevated" 
+                    padding="large" 
+                    hover
+                    style={{
+                      height: "100%",
+                      cursor: article.available ? "pointer" : "not-allowed",
+                      opacity: article.available ? 1 : 0.6
+                    }}
+                  >
+                    <Stack spacing={4}>
+                      <Flex align="flex-start" justify="space-between" gap={3}>
+                        <Box style={{ color: article.color, flexShrink: 0 }}>
                           {article.icon}
-                          <Chip 
-                            label={article.category} 
-                            size="small" 
-                            sx={{ 
-                              ml: 1, 
-                              backgroundColor: `${article.color}20`,
-                              color: article.color,
-                              fontWeight: 500
-                            }} 
-                          />
-                          <Chip 
-                            label="Available" 
-                            size="small" 
-                            sx={{ 
-                              ml: 1, 
-                              backgroundColor: "#28a745",
-                              color: "white",
-                              fontWeight: 500,
-                              fontSize: "10px"
-                            }} 
-                          />
                         </Box>
-                        <Typography variant="h6" sx={{ 
-                          fontWeight: 600, 
-                          mb: 1,
-                          fontSize: "16px",
-                          color: "#333"
+                        <Box style={{
+                          padding: `${appleTheme.spacing[1]} ${appleTheme.spacing[2]}`,
+                          backgroundColor: getCategoryColor(article.category),
+                          color: "white",
+                          borderRadius: appleTheme.borderRadius.base,
+                          fontSize: appleTheme.typography.fontSize.xs,
+                          fontWeight: appleTheme.typography.fontWeight.semibold,
+                          textTransform: "uppercase"
+                        }}>
+                          {article.category}
+                        </Box>
+                      </Flex>
+                      
+                      <Box>
+                        <Typography variant="callout" weight="semibold" style={{ 
+                          marginBottom: appleTheme.spacing[2],
+                          color: isDarkMode ? '#FFFFFF' : '#000000'
                         }}>
                           {article.title}
                         </Typography>
-                        <Typography variant="body2" sx={{ 
-                          color: "#666", 
-                          mb: 2,
-                          fontSize: "14px"
+                        <Typography variant="footnote" style={{
+                          color: isDarkMode ? '#E5E5EA' : '#1C1C1E'
                         }}>
                           {article.description}
                         </Typography>
-                        <Typography variant="caption" sx={{ 
-                          color: "#999",
-                          fontSize: "12px"
-                        }}>
-                          {article.readTime}
-                        </Typography>
-                      </CardContent>
-                      <CardActions>
-                        <Button 
-                          className="read-button"
-                          size="small" 
-                          endIcon={<OpenInNew />}
-                          sx={{ 
-                            color: article.color,
-                            transition: "all 0.2s",
-                            "&:hover": {
-                              backgroundColor: `${article.color}20`,
-                              color: article.color
-                            }
-                          }}
-                        >
-                          Read Article
-                        </Button>
-                      </CardActions>
-                    </Card>
-                  </Link>
-                ) : (
-                  <Card sx={{ 
-                    height: "100%", 
-                    display: "flex", 
-                    flexDirection: "column",
-                    opacity: 0.7,
-                    cursor: "default"
-                  }}>
-                    <CardContent sx={{ flexGrow: 1 }}>
-                      <Box sx={{ 
-                        display: "flex", 
-                        alignItems: "center", 
-                        mb: 2,
-                        color: article.color
-                      }}>
-                        {article.icon}
-                        <Chip 
-                          label={article.category} 
-                          size="small" 
-                          sx={{ 
-                            ml: 1, 
-                            backgroundColor: `${article.color}20`,
-                            color: article.color,
-                            fontWeight: 500
-                          }} 
-                        />
-                        <Chip 
-                          label="Coming Soon" 
-                          size="small" 
-                          sx={{ 
-                            ml: 1, 
-                            backgroundColor: "#ffc107",
-                            color: "#333",
-                            fontWeight: 500,
-                            fontSize: "10px"
-                          }} 
-                        />
                       </Box>
-                      <Typography variant="h6" sx={{ 
-                        fontWeight: 600, 
-                        mb: 1,
-                        fontSize: "16px",
-                        color: "#333"
-                      }}>
-                        {article.title}
-                      </Typography>
-                      <Typography variant="body2" sx={{ 
-                        color: "#666", 
-                        mb: 2,
-                        fontSize: "14px"
-                      }}>
-                        {article.description}
-                      </Typography>
-                      <Typography variant="caption" sx={{ 
-                        color: "#999",
-                        fontSize: "12px"
-                      }}>
-                        {article.readTime}
-                      </Typography>
-                    </CardContent>
-                    <CardActions>
-                      <Button 
-                        size="small" 
-                        disabled
-                        sx={{ color: "#999" }}
-                      >
-                        Coming Soon
-                      </Button>
-                    </CardActions>
+                      
+                      <HStack justify="space-between" align="center">
+                        <HStack spacing={2} align="center">
+                          <ClockIcon style={{ color: isDarkMode ? '#AEAEB2' : '#6D6D70' }} />
+                          <Typography variant="caption1" style={{
+                            color: isDarkMode ? '#AEAEB2' : '#6D6D70'
+                          }}>
+                            {article.readTime}
+                          </Typography>
+                        </HStack>
+                        
+                        {article.available ? (
+                          <Typography variant="caption1" weight="medium" style={{
+                            color: isDarkMode ? '#007AFF' : appleTheme.colors.primary[500]
+                          }}>
+                            Read Article →
+                          </Typography>
+                        ) : (
+                          <Typography variant="caption1" style={{
+                            color: isDarkMode ? '#AEAEB2' : '#6D6D70'
+                          }}>
+                            Coming Soon
+                          </Typography>
+                        )}
+                      </HStack>
+                    </Stack>
                   </Card>
-                )}
-              </Grid>
+                </a>
+              </Link>
             ))}
-          </Grid>
-        </Box>
+          </div>
+        </Section>
 
-        {/* Checklists Section */}
-        <Box sx={{ mb: 6 }}>
-          <Typography variant="h4" sx={{ 
-            fontWeight: 600, 
-            mb: 3, 
-            color: "#333",
-            textAlign: "center"
-          }}>
-            ✅ Quick Checklists
+        {/* Recommended Tools Section */}
+        <Section padding="lg">
+          <Typography variant="title2" style={{ marginBottom: appleTheme.spacing[8] }}>
+            Recommended Tools
           </Typography>
-          <Grid container spacing={3}>
-            {checklists.map((checklist, index) => (
-              <Grid item xs={12} md={4} key={index}>
-                <Paper sx={{ 
-                  p: 3, 
-                  height: "100%",
-                  border: "1px solid #e9ecef"
-                }}>
-                  <Typography variant="h6" sx={{ 
-                    fontWeight: 600, 
-                    mb: 2,
-                    color: "#333"
-                  }}>
-                    {checklist.title}
-                  </Typography>
-                  <List dense>
-                    {checklist.items.map((item, itemIndex) => (
-                      <ListItem key={itemIndex} sx={{ px: 0 }}>
-                        <ListItemIcon sx={{ minWidth: 32 }}>
-                          <CheckCircle sx={{ color: "#28a745", fontSize: 20 }} />
-                        </ListItemIcon>
-                        <ListItemText 
-                          primary={item}
-                          primaryTypographyProps={{ 
-                            fontSize: "14px",
-                            color: "#555"
-                          }}
-                        />
-          </ListItem>
-                    ))}
-        </List>
-                </Paper>
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
-
-        {/* Tools Section */}
-        <Box sx={{ mb: 6 }}>
-          <Typography variant="h4" sx={{ 
-            fontWeight: 600, 
-            mb: 3, 
-            color: "#333",
-            textAlign: "center"
+          
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+            gap: appleTheme.spacing[6],
+            marginBottom: appleTheme.spacing[12]
           }}>
-            🛠️ Recommended Tools
-          </Typography>
-          <Grid container spacing={2}>
             {tools.map((tool, index) => (
-              <Grid item xs={12} sm={6} md={3} key={index}>
-                <Paper 
-                  component="a"
-                  href={tool.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  sx={{ 
-                    p: 2, 
-                    height: "100%",
-                    border: "1px solid #e9ecef",
-                    transition: "all 0.2s",
-                    cursor: "pointer",
-                    textDecoration: "none",
-                    "&:hover": {
-                      boxShadow: 4,
-                      transform: "translateY(-2px)",
-                      "& .visit-button": {
-                        backgroundColor: "#0077b6",
-                        color: "white"
-                      }
-                    }
-                  }}
-                >
-                  <Typography variant="h6" sx={{ 
-                    fontWeight: 600, 
-                    mb: 1,
-                    fontSize: "16px",
-                    color: "#333"
-                  }}>
-                    {tool.name}
-                  </Typography>
-                  <Typography variant="body2" sx={{ 
-                    color: "#666", 
-                    mb: 2,
-                    fontSize: "14px"
-                  }}>
-                    {tool.description}
-                  </Typography>
-                  <Box sx={{ 
-                    display: "flex", 
-                    justifyContent: "space-between", 
-                    alignItems: "center"
-                  }}>
-                    <Chip 
-                      label={tool.type} 
-                      size="small" 
-                      variant="outlined"
-                      sx={{ fontSize: "11px" }}
-                    />
-                    <Button 
-                      className="visit-button"
-                      size="small" 
-                      endIcon={<OpenInNew />}
-                      sx={{ 
-                        fontSize: "12px",
-                        transition: "all 0.2s",
-                        "&:hover": {
-                          backgroundColor: "#0077b6",
-                          color: "white"
-                        }
-                      }}
+              <Card key={index} variant="outlined" padding="large" hover>
+                <Stack spacing={3}>
+                  <Flex align="flex-start" justify="space-between" gap={3}>
+                    <Box>
+                      <Typography variant="callout" weight="semibold" style={{ marginBottom: appleTheme.spacing[1] }}>
+                        {tool.name}
+                      </Typography>
+                      <Typography variant="footnote" color="secondary">
+                        {tool.description}
+                      </Typography>
+                    </Box>
+                    <ExternalLinkIcon style={{ color: appleTheme.colors.text.tertiary, flexShrink: 0 }} />
+                  </Flex>
+                  
+                  <HStack justify="space-between" align="center">
+                    <Box style={{
+                      padding: `${appleTheme.spacing[1]} ${appleTheme.spacing[2]}`,
+                      backgroundColor: appleTheme.colors.gray[100],
+                      borderRadius: appleTheme.borderRadius.base,
+                      fontSize: appleTheme.typography.fontSize.xs,
+                      fontWeight: appleTheme.typography.fontWeight.medium,
+                      color: appleTheme.colors.text.secondary
+                    }}>
+                      {tool.category}
+                    </Box>
+                    
+                    <a 
+                      href={tool.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style={{ textDecoration: "none" }}
                     >
-                      Visit
-                    </Button>
-                  </Box>
-                </Paper>
-              </Grid>
+                      <Button variant="ghost" size="small">
+                        Visit Tool
+                      </Button>
+                    </a>
+                  </HStack>
+                </Stack>
+              </Card>
             ))}
-          </Grid>
-        </Box>
+          </div>
+        </Section>
 
-        {/* CTA Section */}
-        <Paper sx={{ 
-          p: 4, 
+        {/* Newsletter Section */}
+        <Card variant="elevated" style={{ 
+          background: "linear-gradient(135deg, #007AFF 0%, #5856D6 100%)",
           textAlign: "center",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-          color: "white"
+          padding: `${appleTheme.spacing[12]} ${appleTheme.spacing[8]}`,
+          margin: `${appleTheme.spacing[8]} 0`,
+          borderRadius: appleTheme.borderRadius.xl,
+          boxShadow: "0 20px 40px rgba(0, 122, 255, 0.3)"
         }}>
-          <Typography variant="h5" sx={{ 
-            fontWeight: 600, 
-            mb: 2
-          }}>
-            Ready to Test Your Website?
-          </Typography>
-          <Typography variant="body1" sx={{ 
-            mb: 3, 
-            opacity: 0.9,
-            maxWidth: "500px",
-            mx: "auto"
-          }}>
-            Use our free accessibility checker to scan your website and get 
-            detailed reports with actionable fix suggestions.
-          </Typography>
-          <Button 
-            variant="contained" 
-            size="large"
-            sx={{ 
-              backgroundColor: "white",
-              color: "#667eea",
-              fontWeight: 600,
-              px: 4,
-              "&:hover": {
-                backgroundColor: "#f8f9fa"
-              }
-            }}
-            href="/"
-          >
-            Start Free Scan
-          </Button>
-        </Paper>
-      </Box>
-    </Box>
+          <Stack spacing={6} align="center">
+            <Typography variant="title1" style={{ 
+              color: "white",
+              fontWeight: appleTheme.typography.fontWeight.bold,
+              marginBottom: appleTheme.spacing[2]
+            }}>
+              Stay Updated
+            </Typography>
+            <Typography variant="headline" style={{ 
+              color: "white",
+              opacity: 0.95,
+              maxWidth: "500px",
+              fontWeight: appleTheme.typography.fontWeight.medium,
+              lineHeight: appleTheme.typography.lineHeight.relaxed
+            }}>
+              Get the latest accessibility tips, guides, and industry news delivered to your inbox.
+            </Typography>
+            <HStack spacing={4} wrap="wrap" justify="center" style={{ marginTop: appleTheme.spacing[4] }}>
+              <Button
+                variant="secondary"
+                size="large"
+                style={{
+                  backgroundColor: "white",
+                  color: "#007AFF",
+                  fontWeight: appleTheme.typography.fontWeight.semibold,
+                  padding: `${appleTheme.spacing[4]} ${appleTheme.spacing[8]}`,
+                  borderRadius: appleTheme.borderRadius.lg,
+                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                  transition: "all 0.3s ease"
+                }}
+              >
+                Subscribe to Newsletter
+              </Button>
+              <Button
+                variant="outline"
+                size="large"
+                style={{
+                  borderColor: "rgba(255, 255, 255, 0.3)",
+                  color: "white",
+                  padding: `${appleTheme.spacing[4]} ${appleTheme.spacing[8]}`,
+                  borderRadius: appleTheme.borderRadius.lg,
+                  transition: "all 0.3s ease"
+                }}
+              >
+                Follow on Twitter
+              </Button>
+            </HStack>
+          </Stack>
+        </Card>
+      </Container>
+    </div>
   );
 }
