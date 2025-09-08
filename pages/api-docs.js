@@ -122,7 +122,7 @@ export default function ApiDocs() {
 });
 
 const data = await response.json();
-console.log(data);`,
+// console.log(data);`,
     
     python: `import requests
 

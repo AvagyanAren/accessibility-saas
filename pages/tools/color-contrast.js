@@ -166,7 +166,7 @@ export default function ColorContrastChecker() {
           <Card variant="elevated" padding="large" style={{ marginBottom: appleTheme.spacing[8] }}>
             <Stack spacing={6}>
               <Typography variant="title2" style={{
-                color: isDarkMode ? '#FFFFFF' : undefined
+                color: isDarkMode ? '#FFFFFF' : '#000000'
               }}>
                 Choose Your Colors
               </Typography>
@@ -212,7 +212,7 @@ export default function ColorContrastChecker() {
           <Card variant="outlined" padding="large" style={{ marginBottom: appleTheme.spacing[8] }}>
             <Stack spacing={4}>
               <Typography variant="title3" style={{
-                color: isDarkMode ? '#FFFFFF' : undefined
+                color: isDarkMode ? '#FFFFFF' : '#000000'
               }}>
                 Preview
               </Typography>
@@ -250,7 +250,7 @@ export default function ColorContrastChecker() {
           <Card variant="elevated" padding="large">
             <Stack spacing={6}>
               <Typography variant="title2" style={{
-                color: isDarkMode ? '#FFFFFF' : undefined
+                color: isDarkMode ? '#FFFFFF' : '#000000'
               }}>
                 Contrast Analysis
               </Typography>
@@ -264,7 +264,7 @@ export default function ColorContrastChecker() {
                   {contrastRatio.toFixed(2)}:1
                 </Typography>
                 <Typography variant="body" style={{
-                  color: isDarkMode ? '#AEAEB2' : undefined
+                  color: isDarkMode ? '#AEAEB2' : '#6D6D70'
                 }}>
                   Contrast Ratio
                 </Typography>
@@ -285,7 +285,7 @@ export default function ColorContrastChecker() {
                       </Typography>
                     </Flex>
                     <Typography variant="footnote" align="center" style={{
-                      color: isDarkMode ? '#AEAEB2' : undefined
+                      color: isDarkMode ? '#AEAEB2' : '#6D6D70'
                     }}>
                       Normal text (4.5:1 minimum)
                     </Typography>
@@ -306,7 +306,7 @@ export default function ColorContrastChecker() {
                       </Typography>
                     </Flex>
                     <Typography variant="footnote" align="center" style={{
-                      color: isDarkMode ? '#AEAEB2' : undefined
+                      color: isDarkMode ? '#AEAEB2' : '#6D6D70'
                     }}>
                       Normal text (7:1 minimum)
                     </Typography>
@@ -327,7 +327,7 @@ export default function ColorContrastChecker() {
                       </Typography>
                     </Flex>
                     <Typography variant="footnote" align="center" style={{
-                      color: isDarkMode ? '#AEAEB2' : undefined
+                      color: isDarkMode ? '#AEAEB2' : '#6D6D70'
                     }}>
                       Large text (3:1 minimum)
                     </Typography>

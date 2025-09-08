@@ -2,7 +2,7 @@ import React from "react";
 import Typography from "../components/apple/Typography";
 import Button from "../components/apple/Button";
 import Card from "../components/apple/Card";
-import { Container, Box, Flex, Stack, Section, Grid } from "../components/apple/Layout";
+import { Container, Box, Flex, Stack, Section } from "../components/apple/Layout";
 import { appleTheme } from "../styles/apple-theme";
 import { useTheme } from "../contexts/ThemeContext";
 import Link from "next/link";
