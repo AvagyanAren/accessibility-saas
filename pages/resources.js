@@ -24,6 +24,7 @@ import {
   Download,
   OpenInNew,
 } from "@mui/icons-material";
+import Link from "next/link";
 
 export default function Resources() {
   const articles = [
@@ -33,7 +34,9 @@ export default function Resources() {
       category: "Beginner",
       readTime: "5 min read",
       icon: <Article />,
-      color: "#0077b6"
+      color: "#0077b6",
+      href: "/articles/10-common-accessibility-issues",
+      available: true
     },
     {
       title: "Complete Guide to WCAG 2.1 Guidelines",
@@ -41,7 +44,9 @@ export default function Resources() {
       category: "Advanced",
       readTime: "15 min read",
       icon: <School />,
-      color: "#28a745"
+      color: "#28a745",
+      href: "/articles/wcag-2.1-guide",
+      available: false
     },
     {
       title: "Color Contrast: Making Text Readable for Everyone",
@@ -49,7 +54,9 @@ export default function Resources() {
       category: "Design",
       readTime: "8 min read",
       icon: <DesignServices />,
-      color: "#ffc107"
+      color: "#ffc107",
+      href: "/articles/color-contrast-guide",
+      available: false
     },
     {
       title: "Keyboard Navigation Best Practices",
@@ -57,7 +64,9 @@ export default function Resources() {
       category: "Development",
       readTime: "6 min read",
       icon: <Code />,
-      color: "#6f42c1"
+      color: "#6f42c1",
+      href: "/articles/keyboard-navigation-guide",
+      available: false
     }
   ];
 
@@ -162,66 +171,166 @@ export default function Resources() {
           <Grid container spacing={3}>
             {articles.map((article, index) => (
               <Grid item xs={12} sm={6} md={3} key={index}>
-                <Card sx={{ 
-                  height: "100%", 
-                  display: "flex", 
-                  flexDirection: "column",
-                  transition: "transform 0.2s, box-shadow 0.2s",
-                  "&:hover": {
-                    transform: "translateY(-4px)",
-                    boxShadow: 4
-                  }
-                }}>
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Box sx={{ 
+                {article.available ? (
+                  <Link href={article.href} passHref legacyBehavior>
+                    <Card sx={{ 
+                      height: "100%", 
                       display: "flex", 
-                      alignItems: "center", 
-                      mb: 2,
-                      color: article.color
+                      flexDirection: "column",
+                      transition: "transform 0.2s, box-shadow 0.2s",
+                      "&:hover": {
+                        transform: "translateY(-4px)",
+                        boxShadow: 4
+                      },
+                      cursor: "pointer",
+                      textDecoration: "none",
+                      "&:hover .read-button": {
+                        backgroundColor: `${article.color}20`,
+                        color: article.color
+                      }
                     }}>
-                      {article.icon}
-                      <Chip 
-                        label={article.category} 
+                      <CardContent sx={{ flexGrow: 1 }}>
+                        <Box sx={{ 
+                          display: "flex", 
+                          alignItems: "center", 
+                          mb: 2,
+                          color: article.color
+                        }}>
+                          {article.icon}
+                          <Chip 
+                            label={article.category} 
+                            size="small" 
+                            sx={{ 
+                              ml: 1, 
+                              backgroundColor: `${article.color}20`,
+                              color: article.color,
+                              fontWeight: 500
+                            }} 
+                          />
+                          <Chip 
+                            label="Available" 
+                            size="small" 
+                            sx={{ 
+                              ml: 1, 
+                              backgroundColor: "#28a745",
+                              color: "white",
+                              fontWeight: 500,
+                              fontSize: "10px"
+                            }} 
+                          />
+                        </Box>
+                        <Typography variant="h6" sx={{ 
+                          fontWeight: 600, 
+                          mb: 1,
+                          fontSize: "16px",
+                          color: "#333"
+                        }}>
+                          {article.title}
+                        </Typography>
+                        <Typography variant="body2" sx={{ 
+                          color: "#666", 
+                          mb: 2,
+                          fontSize: "14px"
+                        }}>
+                          {article.description}
+                        </Typography>
+                        <Typography variant="caption" sx={{ 
+                          color: "#999",
+                          fontSize: "12px"
+                        }}>
+                          {article.readTime}
+                        </Typography>
+                      </CardContent>
+                      <CardActions>
+                        <Button 
+                          className="read-button"
+                          size="small" 
+                          endIcon={<OpenInNew />}
+                          sx={{ 
+                            color: article.color,
+                            transition: "all 0.2s",
+                            "&:hover": {
+                              backgroundColor: `${article.color}20`,
+                              color: article.color
+                            }
+                          }}
+                        >
+                          Read Article
+                        </Button>
+                      </CardActions>
+                    </Card>
+                  </Link>
+                ) : (
+                  <Card sx={{ 
+                    height: "100%", 
+                    display: "flex", 
+                    flexDirection: "column",
+                    opacity: 0.7,
+                    cursor: "default"
+                  }}>
+                    <CardContent sx={{ flexGrow: 1 }}>
+                      <Box sx={{ 
+                        display: "flex", 
+                        alignItems: "center", 
+                        mb: 2,
+                        color: article.color
+                      }}>
+                        {article.icon}
+                        <Chip 
+                          label={article.category} 
+                          size="small" 
+                          sx={{ 
+                            ml: 1, 
+                            backgroundColor: `${article.color}20`,
+                            color: article.color,
+                            fontWeight: 500
+                          }} 
+                        />
+                        <Chip 
+                          label="Coming Soon" 
+                          size="small" 
+                          sx={{ 
+                            ml: 1, 
+                            backgroundColor: "#ffc107",
+                            color: "#333",
+                            fontWeight: 500,
+                            fontSize: "10px"
+                          }} 
+                        />
+                      </Box>
+                      <Typography variant="h6" sx={{ 
+                        fontWeight: 600, 
+                        mb: 1,
+                        fontSize: "16px",
+                        color: "#333"
+                      }}>
+                        {article.title}
+                      </Typography>
+                      <Typography variant="body2" sx={{ 
+                        color: "#666", 
+                        mb: 2,
+                        fontSize: "14px"
+                      }}>
+                        {article.description}
+                      </Typography>
+                      <Typography variant="caption" sx={{ 
+                        color: "#999",
+                        fontSize: "12px"
+                      }}>
+                        {article.readTime}
+                      </Typography>
+                    </CardContent>
+                    <CardActions>
+                      <Button 
                         size="small" 
-                        sx={{ 
-                          ml: 1, 
-                          backgroundColor: `${article.color}20`,
-                          color: article.color,
-                          fontWeight: 500
-                        }} 
-                      />
-                    </Box>
-                    <Typography variant="h6" sx={{ 
-                      fontWeight: 600, 
-                      mb: 1,
-                      fontSize: "16px"
-                    }}>
-                      {article.title}
-                    </Typography>
-                    <Typography variant="body2" sx={{ 
-                      color: "#666", 
-                      mb: 2,
-                      fontSize: "14px"
-                    }}>
-                      {article.description}
-                    </Typography>
-                    <Typography variant="caption" sx={{ 
-                      color: "#999",
-                      fontSize: "12px"
-                    }}>
-                      {article.readTime}
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Button 
-                      size="small" 
-                      endIcon={<OpenInNew />}
-                      sx={{ color: article.color }}
-                    >
-                      Read Article
-                    </Button>
-                  </CardActions>
-                </Card>
+                        disabled
+                        sx={{ color: "#999" }}
+                      >
+                        Coming Soon
+                      </Button>
+                    </CardActions>
+                  </Card>
+                )}
               </Grid>
             ))}
           </Grid>
@@ -265,9 +374,9 @@ export default function Resources() {
                             color: "#555"
                           }}
                         />
-                      </ListItem>
+          </ListItem>
                     ))}
-                  </List>
+        </List>
                 </Paper>
               </Grid>
             ))}
@@ -287,15 +396,28 @@ export default function Resources() {
           <Grid container spacing={2}>
             {tools.map((tool, index) => (
               <Grid item xs={12} sm={6} md={3} key={index}>
-                <Paper sx={{ 
-                  p: 2, 
-                  height: "100%",
-                  border: "1px solid #e9ecef",
-                  transition: "box-shadow 0.2s",
-                  "&:hover": {
-                    boxShadow: 2
-                  }
-                }}>
+                <Paper 
+                  component="a"
+                  href={tool.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{ 
+                    p: 2, 
+                    height: "100%",
+                    border: "1px solid #e9ecef",
+                    transition: "all 0.2s",
+                    cursor: "pointer",
+                    textDecoration: "none",
+                    "&:hover": {
+                      boxShadow: 4,
+                      transform: "translateY(-2px)",
+                      "& .visit-button": {
+                        backgroundColor: "#0077b6",
+                        color: "white"
+                      }
+                    }
+                  }}
+                >
                   <Typography variant="h6" sx={{ 
                     fontWeight: 600, 
                     mb: 1,
@@ -323,9 +445,17 @@ export default function Resources() {
                       sx={{ fontSize: "11px" }}
                     />
                     <Button 
+                      className="visit-button"
                       size="small" 
                       endIcon={<OpenInNew />}
-                      sx={{ fontSize: "12px" }}
+                      sx={{ 
+                        fontSize: "12px",
+                        transition: "all 0.2s",
+                        "&:hover": {
+                          backgroundColor: "#0077b6",
+                          color: "white"
+                        }
+                      }}
                     >
                       Visit
                     </Button>

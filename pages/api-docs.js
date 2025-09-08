@@ -376,7 +376,12 @@ echo json_encode($data['violations']);
         onClose={() => setSnackbarOpen(false)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={() => setSnackbarOpen(false)} severity="success">
+        <Alert 
+          onClose={() => setSnackbarOpen(false)} 
+          severity="success"
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>

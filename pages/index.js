@@ -753,37 +753,51 @@ export default function Home() {
                       alignItems: "center",
                       justifyContent: "center"
                     }}>
-                      {/* Background Circle */}
-                      <Box sx={{
-                        position: "absolute",
-                        width: "100%",
-                        height: "100%",
-                        borderRadius: "50%",
-                        backgroundColor: "#f8f9fa",
-                        border: "8px solid #e9ecef"
-                      }} />
+                      {/* SVG Circle Progress */}
+                      <svg
+                        width="100%"
+                        height="100%"
+                        viewBox="0 0 100 100"
+                        style={{ position: "absolute", transform: "rotate(-90deg)" }}
+                      >
+                        {/* Background Circle */}
+                        <circle
+                          cx="50"
+                          cy="50"
+                          r="45"
+                          fill="none"
+                          stroke="#e9ecef"
+                          strokeWidth="8"
+                        />
+                        {/* Progress Circle */}
+                        <circle
+                          cx="50"
+                          cy="50"
+                          r="45"
+                          fill="none"
+                          stroke={summary.color}
+                          strokeWidth="8"
+                          strokeLinecap="round"
+                          strokeDasharray={`${2 * Math.PI * 45}`}
+                          strokeDashoffset={`${2 * Math.PI * 45 * (1 - summary.score / 100)}`}
+                          style={{
+                            transition: "stroke-dashoffset 0.5s ease-in-out"
+                          }}
+                        />
+                      </svg>
                       
-                      {/* Progress Circle */}
+                      {/* Inner Circle with Score */}
                       <Box sx={{
                         position: "absolute",
-                        width: "100%",
-                        height: "100%",
-                        borderRadius: "50%",
-                        background: `conic-gradient(${summary.color} 0deg ${summary.score * 3.6}deg, #e9ecef ${summary.score * 3.6}deg 360deg)`,
-                        border: "8px solid transparent"
-                      }} />
-                      
-                      {/* Inner Circle */}
-                      <Box sx={{
-                        position: "absolute",
-                        width: "calc(100% - 16px)",
-                        height: "calc(100% - 16px)",
+                        width: "calc(100% - 20px)",
+                        height: "calc(100% - 20px)",
                         borderRadius: "50%",
                         backgroundColor: "white",
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
-                        justifyContent: "center"
+                        justifyContent: "center",
+                        zIndex: 1
                       }}>
                         <Typography variant="h3" sx={{ 
                           color: summary.color, 
@@ -991,42 +1005,9 @@ export default function Home() {
                 <Typography variant="subtitle1" sx={{ color: "#333", mb: 1 }}>
                   {getFriendlyTitle(v.help)}
                 </Typography>
-                <Typography variant="body2" sx={{ color: "#666", fontSize: "14px", lineHeight: 1.4, mb: 1 }}>
+                <Typography variant="body2" sx={{ color: "#666", fontSize: "14px", lineHeight: 1.4, mb: 2 }}>
                   {getDetailedDescription(v.help)}
                 </Typography>
-                
-                {/* Fix Suggestion */}
-                <Box sx={{ 
-                  backgroundColor: "#f8f9fa", 
-                  border: "1px solid #e9ecef", 
-                  borderRadius: 2, 
-                  p: 2, 
-                  mb: 2 
-                }}>
-                  <Typography variant="body2" sx={{ 
-                    color: "#495057", 
-                    fontSize: "13px", 
-                    fontWeight: 500, 
-                    mb: 1,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 0.5
-                  }}>
-                    💡 How to fix:
-                  </Typography>
-                  <Typography variant="body2" sx={{ 
-                    color: "#212529", 
-                    fontSize: "13px", 
-                    lineHeight: 1.4,
-                    fontFamily: "monospace",
-                    backgroundColor: "white",
-                    padding: 1,
-                    borderRadius: 1,
-                    border: "1px solid #dee2e6"
-                  }}>
-                    {getFixSuggestion(v.help)}
-                  </Typography>
-                </Box>
                 
                 <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 1 }}>
                   <IconButton size="small" onClick={() => toggleRow(idx)}>
@@ -1043,10 +1024,10 @@ export default function Home() {
 
               {/* Accordion Content */}
               {expandedRows[idx] && (
+                <Box sx={{ mt: 1 }}>
                 <Paper
                   elevation={0}
                   sx={{
-                    mt: 1,
                     p: 2,
                     border: "1px solid #ccc",
                     borderRadius: 2,
@@ -1054,7 +1035,8 @@ export default function Home() {
                     fontSize: 14,
                     overflowX: "auto",
                     whiteSpace: "pre",
-                    backgroundColor: "white",
+                      backgroundColor: "white",
+                      mb: 2
                   }}
                 >
                   {v.nodes.map((n, i) => (
@@ -1066,6 +1048,39 @@ export default function Home() {
                     />
                   ))}
                 </Paper>
+                  
+                  {/* Fix Suggestion */}
+                  <Box sx={{ 
+                    backgroundColor: "#f8f9fa", 
+                    border: "1px solid #e9ecef", 
+                    borderRadius: 2, 
+                    p: 2
+                  }}>
+                    <Typography variant="body2" sx={{ 
+                      color: "#495057", 
+                      fontSize: "13px", 
+                      fontWeight: 500, 
+                      mb: 1,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 0.5
+                    }}>
+                      💡 How to fix:
+                    </Typography>
+                    <Typography variant="body2" sx={{ 
+                      color: "#212529", 
+                      fontSize: "13px", 
+                      lineHeight: 1.4,
+                      fontFamily: "monospace",
+                      backgroundColor: "white",
+                      padding: 1,
+                      borderRadius: 1,
+                      border: "1px solid #dee2e6"
+                    }}>
+                      {getFixSuggestion(v.help)}
+                    </Typography>
+                  </Box>
+                </Box>
               )}
             </Paper>
           ))}
@@ -1119,6 +1134,7 @@ export default function Home() {
           onClose={() => setSnackbarOpen(false)} 
           severity={snackbarSeverity}
           sx={{ width: '100%' }}
+          variant="filled"
         >
           {snackbarMessage}
         </Alert>
