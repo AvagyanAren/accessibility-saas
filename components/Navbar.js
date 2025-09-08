@@ -35,10 +35,16 @@ export default function Navbar() {
           flexWrap: "wrap",
           justifyContent: "center"
         }}>
-          {["Home", "About", "Pricing", "Resources"].map((page) => (
+          {[
+            { name: "Home", href: "/" },
+            { name: "About", href: "/about" },
+            { name: "Pricing", href: "/pricing" },
+            { name: "Resources", href: "/resources" },
+            { name: "API Docs", href: "/api-docs" }
+          ].map((page) => (
             <Link
-              key={page}
-              href={page === "Home" ? "/" : `/${page.toLowerCase()}`}
+              key={page.name}
+              href={page.href}
               passHref
               legacyBehavior
             >
@@ -54,7 +60,7 @@ export default function Navbar() {
                   "&:hover": { backgroundColor: "rgba(0,119,182,0.1)" },
                 }}
               >
-                {page}
+                {page.name}
               </Button>
             </Link>
           ))}

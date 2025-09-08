@@ -13,8 +13,16 @@ import {
   MenuItem,
   AppBar,
   Toolbar,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Snackbar,
+  Alert,
 } from "@mui/material";
-import { ExpandMore, ExpandLess, ContentCopy } from "@mui/icons-material";
+import { ExpandMore, ExpandLess, ContentCopy, Download, Email, GetApp } from "@mui/icons-material";
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 export default function Home() {
   const [url, setUrl] = useState("");
@@ -24,6 +32,12 @@ export default function Home() {
   const [filter, setFilter] = useState("");
   const [hoveredFilter, setHoveredFilter] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [emailDialogOpen, setEmailDialogOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [emailSending, setEmailSending] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
   const handleScan = async () => {
     setScanning(true);
@@ -199,7 +213,218 @@ export default function Home() {
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
-    alert("Copied!");
+    setSnackbarMessage("Copied to clipboard!");
+    setSnackbarOpen(true);
+  };
+
+  const exportToPDF = async () => {
+    try {
+      const element = document.getElementById('accessibility-report');
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true
+      });
+      
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgWidth = 210;
+      const pageHeight = 295;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      
+      let position = 0;
+      
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+      
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+      
+      const fileName = `accessibility-report-${url.replace(/[^a-zA-Z0-9]/g, '-')}-${new Date().toISOString().split('T')[0]}.pdf`;
+      pdf.save(fileName);
+      
+      setSnackbarMessage("PDF report downloaded successfully!");
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error('PDF export error:', error);
+      setSnackbarMessage("Failed to generate PDF report");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    }
+  };
+
+  const exportToCSV = () => {
+    try {
+      const csvData = violations.map((v, index) => ({
+        'Issue #': index + 1,
+        'Title': getFriendlyTitle(v.help),
+        'Description': getDetailedDescription(v.help),
+        'Severity': v.impact.charAt(0).toUpperCase() + v.impact.slice(1),
+        'Fix Suggestion': getFixSuggestion(v.help),
+        'Help Text': v.help,
+        'Impact': v.impact,
+        'Tags': v.tags ? v.tags.join(', ') : '',
+        'Nodes': v.nodes ? v.nodes.length : 0
+      }));
+
+      const headers = Object.keys(csvData[0]);
+      const csvContent = [
+        headers.join(','),
+        ...csvData.map(row => 
+          headers.map(header => 
+            `"${String(row[header]).replace(/"/g, '""')}"`
+          ).join(',')
+        )
+      ].join('\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      
+      const fileName = `accessibility-report-${url.replace(/[^a-zA-Z0-9]/g, '-')}-${new Date().toISOString().split('T')[0]}.csv`;
+      link.setAttribute('download', fileName);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      setSnackbarMessage("CSV report downloaded successfully!");
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error('CSV export error:', error);
+      setSnackbarMessage("Failed to generate CSV report");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    }
+  };
+
+  const sendEmailReport = async () => {
+    if (!email) {
+      setSnackbarMessage("Please enter a valid email address");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+      return;
+    }
+
+    setEmailSending(true);
+    try {
+      const reportData = {
+        url: url,
+        score: getScoreSummary(violations),
+        violations: violations.map((v, index) => ({
+          title: getFriendlyTitle(v.help),
+          description: getDetailedDescription(v.help),
+          severity: v.impact.charAt(0).toUpperCase() + v.impact.slice(1),
+          fix: getFixSuggestion(v.help)
+        })),
+        scanDate: new Date().toISOString(),
+        email: email
+      };
+
+      const response = await fetch('/api/send-report', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reportData),
+      });
+
+      if (response.ok) {
+        setSnackbarMessage("Report sent successfully! Check your email.");
+        setSnackbarOpen(true);
+        setEmailDialogOpen(false);
+        setEmail("");
+      } else {
+        throw new Error('Failed to send email');
+      }
+    } catch (error) {
+      console.error('Email send error:', error);
+      setSnackbarMessage("Failed to send email report");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    }
+    setEmailSending(false);
+  };
+
+  const calculateAccessibilityScore = (violations) => {
+    if (!violations || violations.length === 0) {
+      return {
+        score: 100,
+        grade: "A+",
+        color: "#28a745",
+        message: "Excellent! No accessibility issues found."
+      };
+    }
+
+    // Calculate score based on violation severity
+    let totalPenalty = 0;
+    const severityWeights = {
+      critical: 25,
+      serious: 15,
+      moderate: 8,
+      minor: 3
+    };
+
+    violations.forEach(violation => {
+      const weight = severityWeights[violation.impact] || 5;
+      totalPenalty += weight;
+    });
+
+    // Calculate score (100 - penalty, minimum 0)
+    const score = Math.max(0, 100 - totalPenalty);
+    
+    // Determine grade and color
+    let grade, color, message;
+    if (score >= 90) {
+      grade = "A+";
+      color = "#28a745";
+      message = "Excellent accessibility!";
+    } else if (score >= 80) {
+      grade = "A";
+      color = "#28a745";
+      message = "Very good accessibility!";
+    } else if (score >= 70) {
+      grade = "B";
+      color = "#ffc107";
+      message = "Good accessibility with room for improvement.";
+    } else if (score >= 60) {
+      grade = "C";
+      color = "#fd7e14";
+      message = "Fair accessibility, needs attention.";
+    } else if (score >= 50) {
+      grade = "D";
+      color = "#dc3545";
+      message = "Poor accessibility, significant issues found.";
+    } else {
+      grade = "F";
+      color = "#dc3545";
+      message = "Very poor accessibility, urgent fixes needed.";
+    }
+
+    return { score: Math.round(score), grade, color, message };
+  };
+
+  const getScoreSummary = (violations) => {
+    const scoreData = calculateAccessibilityScore(violations);
+    const criticalCount = violations.filter(v => v.impact === 'critical').length;
+    const seriousCount = violations.filter(v => v.impact === 'serious').length;
+    const moderateCount = violations.filter(v => v.impact === 'moderate').length;
+    const minorCount = violations.filter(v => v.impact === 'minor').length;
+
+    return {
+      ...scoreData,
+      criticalCount,
+      seriousCount,
+      moderateCount,
+      minorCount,
+      totalIssues: violations.length
+    };
   };
 
   const filteredViolations = violations.filter(
@@ -219,20 +444,20 @@ export default function Home() {
     >
       {/* Hero Section */}
       <Box
-        sx={{
+  sx={{
           minHeight: { xs: "40vh", sm: "35vh" },
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
           justifyContent: "flex-start",
           pt: { xs: 4, sm: 2 },
           px: { xs: 3, sm: 2 },
-        }}
-      >
-        {/* Title */}
-        <Typography
-          variant="h3"
+  }}
+>
+  {/* Title */}
+  <Typography
+    variant="h3"
           sx={{ 
             fontWeight: 700, 
             mb: 1, 
@@ -241,11 +466,11 @@ export default function Home() {
             textAlign: "center",
             px: 2
           }}
-        >
-          Web Accessibility Checker
-        </Typography>
+  >
+    Web Accessibility Checker
+  </Typography>
 
-        {/* Subtitle */}
+  {/* Subtitle */}
         <Typography 
           variant="body1" 
           sx={{ 
@@ -257,17 +482,17 @@ export default function Home() {
             maxWidth: { xs: "100%", sm: "500px" }
           }}
         >
-          Enter a URL below to quickly check accessibility issues
-        </Typography>
+    Enter a URL below to quickly check accessibility issues
+  </Typography>
 
-        {/* Input + Button */}
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", sm: "row" },
+  {/* Input + Button */}
+  <Box
+    sx={{
+      display: "flex",
+      flexDirection: { xs: "column", sm: "row" },
             alignItems: { xs: "stretch", sm: "flex-end" },
-            gap: 2,
-            width: "100%",
+      gap: 2,
+      width: "100%",
             maxWidth: { xs: "100%", sm: 500, md: 600 },
             px: { xs: 2, sm: 0 },
           }}
@@ -282,9 +507,9 @@ export default function Home() {
             <Typography variant="body2" sx={{ color: "#555", fontSize: "12px" }}>
               Website URL
             </Typography>
-            <TextField
-              variant="outlined"
-              fullWidth
+    <TextField
+      variant="outlined"
+      fullWidth
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               placeholder="Enter website URL"
@@ -326,9 +551,9 @@ export default function Home() {
       }}
     >
       {scanning ? "Scanning..." : "Scan"}
-        </Button>
-        </Box>
-      </Box>
+    </Button>
+  </Box>
+</Box>
 
       {/* Spacer */}
       <Box sx={{ height: { xs: 3, sm: 4 } }} />
@@ -355,8 +580,8 @@ export default function Home() {
             Filter by severity
           </Typography>
           <FormControl size="small" sx={{ minWidth: "100%" }}>
-            <Select
-              value={filter}
+          <Select
+            value={filter}
               onChange={(e) => {
                 setFilter(e.target.value);
                 setHoveredFilter("");
@@ -436,8 +661,8 @@ export default function Home() {
             >
               Minor
             </MenuItem>
-            </Select>
-          </FormControl>
+          </Select>
+        </FormControl>
         </Box>
       )}
 
@@ -484,8 +709,248 @@ export default function Home() {
             width: "100%",
             maxWidth: "1200px",
             mx: "auto",
-          }}
-        >
+        }}
+      >
+        {/* Accessibility Score Summary */}
+        {violations.length > 0 && (
+          <Box id="accessibility-report" sx={{ 
+            gridColumn: "1 / -1", 
+            mb: 4,
+            px: { xs: 2, sm: 0 }
+          }}>
+            {(() => {
+              const summary = getScoreSummary(violations);
+              return (
+                <Paper elevation={0} sx={{
+                  p: { xs: 3, sm: 4 },
+                  borderRadius: 4,
+                  backgroundColor: "white",
+                  textAlign: "center",
+                  border: "1px solid #e9ecef"
+                }}>
+                  {/* Header */}
+                  <Typography variant="h5" sx={{ 
+                    color: "#333", 
+                    fontWeight: 600, 
+                    mb: 3,
+                    fontSize: { xs: "20px", sm: "24px" }
+                  }}>
+                    Accessibility Score
+                  </Typography>
+
+                  {/* Radial Progress Indicator */}
+                  <Box sx={{ 
+                    display: "flex", 
+                    justifyContent: "center", 
+                    mb: 4,
+                    position: "relative"
+                  }}>
+                    <Box sx={{
+                      width: { xs: 120, sm: 140 },
+                      height: { xs: 120, sm: 140 },
+                      position: "relative",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center"
+                    }}>
+                      {/* Background Circle */}
+                      <Box sx={{
+                        position: "absolute",
+                        width: "100%",
+                        height: "100%",
+                        borderRadius: "50%",
+                        backgroundColor: "#f8f9fa",
+                        border: "8px solid #e9ecef"
+                      }} />
+                      
+                      {/* Progress Circle */}
+                      <Box sx={{
+                        position: "absolute",
+                        width: "100%",
+                        height: "100%",
+                        borderRadius: "50%",
+                        background: `conic-gradient(${summary.color} 0deg ${summary.score * 3.6}deg, #e9ecef ${summary.score * 3.6}deg 360deg)`,
+                        border: "8px solid transparent"
+                      }} />
+                      
+                      {/* Inner Circle */}
+                      <Box sx={{
+                        position: "absolute",
+                        width: "calc(100% - 16px)",
+                        height: "calc(100% - 16px)",
+                        borderRadius: "50%",
+                        backgroundColor: "white",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center"
+                      }}>
+                        <Typography variant="h3" sx={{ 
+                          color: summary.color, 
+                          fontWeight: 700,
+                          fontSize: { xs: "28px", sm: "32px" },
+                          lineHeight: 1
+                        }}>
+                          {summary.score}
+                        </Typography>
+                        <Typography variant="body2" sx={{ 
+                          color: "#666",
+                          fontSize: { xs: "12px", sm: "14px" },
+                          fontWeight: 500
+                        }}>
+                          / 100
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Box>
+
+                  {/* Key Stats Row */}
+                  <Box sx={{ 
+                    display: "grid", 
+                    gridTemplateColumns: { xs: "repeat(2, 1fr)", sm: "repeat(4, 1fr)" },
+                    gap: { xs: 2, sm: 3 },
+                    mb: 3
+                  }}>
+                    <Box sx={{ textAlign: "center" }}>
+                      <Typography variant="h4" sx={{ 
+                        color: "#333", 
+                        fontWeight: 700,
+                        fontSize: { xs: "24px", sm: "28px" },
+                        mb: 0.5
+                      }}>
+                        {summary.totalIssues}
+                      </Typography>
+                      <Typography variant="body2" sx={{ 
+                        color: "#666",
+                        fontSize: { xs: "12px", sm: "14px" },
+                        fontWeight: 500
+                      }}>
+                        Total Issues
+                      </Typography>
+                    </Box>
+                    
+                    <Box sx={{ textAlign: "center" }}>
+                      <Typography variant="h4" sx={{ 
+                        color: "#ff4c4c", 
+                        fontWeight: 700,
+                        fontSize: { xs: "24px", sm: "28px" },
+                        mb: 0.5
+                      }}>
+                        {summary.criticalCount}
+                      </Typography>
+                      <Typography variant="body2" sx={{ 
+                        color: "#666",
+                        fontSize: { xs: "12px", sm: "14px" },
+                        fontWeight: 500
+                      }}>
+                        Critical
+                      </Typography>
+                    </Box>
+                    
+                    <Box sx={{ textAlign: "center" }}>
+                      <Typography variant="h4" sx={{ 
+                        color: "#ff9f43", 
+                        fontWeight: 700,
+                        fontSize: { xs: "24px", sm: "28px" },
+                        mb: 0.5
+                      }}>
+                        {summary.seriousCount}
+                      </Typography>
+                      <Typography variant="body2" sx={{ 
+                        color: "#666",
+                        fontSize: { xs: "12px", sm: "14px" },
+                        fontWeight: 500
+                      }}>
+                        Serious
+                      </Typography>
+                    </Box>
+                    
+                    <Box sx={{ textAlign: "center" }}>
+                      <Typography variant="h4" sx={{ 
+                        color: "#ffc107", 
+                        fontWeight: 700,
+                        fontSize: { xs: "24px", sm: "28px" },
+                        mb: 0.5
+                      }}>
+                        {summary.moderateCount + summary.minorCount}
+                      </Typography>
+                      <Typography variant="body2" sx={{ 
+                        color: "#666",
+                        fontSize: { xs: "12px", sm: "14px" },
+                        fontWeight: 500
+                      }}>
+                        Other
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  {/* Status Message */}
+                  <Typography variant="body1" sx={{ 
+                    color: summary.color,
+                    fontWeight: 600,
+                    fontSize: { xs: "14px", sm: "16px" },
+                    mb: 3
+                  }}>
+                    {summary.message}
+                  </Typography>
+
+                  {/* Export Buttons */}
+                  <Box sx={{ 
+                    display: "flex", 
+                    gap: 2, 
+                    justifyContent: "center",
+                    flexWrap: "wrap"
+                  }}>
+                    <Button
+                      variant="outlined"
+                      startIcon={<Download />}
+                      onClick={exportToPDF}
+                      sx={{
+                        borderColor: "#0077b6",
+                        color: "#0077b6",
+                        "&:hover": {
+                          borderColor: "#005a8b",
+                          backgroundColor: "#f0f8ff"
+                        }
+                      }}
+                    >
+                      Download PDF
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      startIcon={<GetApp />}
+                      onClick={exportToCSV}
+                      sx={{
+                        borderColor: "#28a745",
+                        color: "#28a745",
+                        "&:hover": {
+                          borderColor: "#1e7e34",
+                          backgroundColor: "#f0fff4"
+                        }
+                      }}
+                    >
+                      Export CSV
+                    </Button>
+                    <Button
+                      variant="contained"
+                      startIcon={<Email />}
+                      onClick={() => setEmailDialogOpen(true)}
+                      sx={{
+                        backgroundColor: "#6f42c1",
+                        "&:hover": {
+                          backgroundColor: "#5a32a3"
+                        }
+                      }}
+                    >
+                      Email Report
+                    </Button>
+                  </Box>
+                </Paper>
+              );
+            })()}
+          </Box>
+        )}
+
           {filteredViolations.map((v, idx) => (
             <Paper
               key={idx}
@@ -606,6 +1071,58 @@ export default function Home() {
           ))}
         </Box>
       )}
+
+      {/* Email Dialog */}
+      <Dialog open={emailDialogOpen} onClose={() => setEmailDialogOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Email Accessibility Report</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" sx={{ mb: 2, color: "#666" }}>
+            Enter your email address to receive a detailed accessibility report.
+          </Typography>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Email Address"
+            type="email"
+            fullWidth
+            variant="outlined"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="your@email.com"
+          />
+          <Typography variant="caption" sx={{ mt: 1, color: "#666", display: "block" }}>
+            By providing your email, you'll receive the report and occasional accessibility tips. 
+            Unsubscribe anytime.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEmailDialogOpen(false)}>Cancel</Button>
+          <Button 
+            onClick={sendEmailReport} 
+            variant="contained"
+            disabled={emailSending || !email}
+            sx={{ backgroundColor: "#6f42c1" }}
+          >
+            {emailSending ? "Sending..." : "Send Report"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Snackbar for notifications */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={4000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert 
+          onClose={() => setSnackbarOpen(false)} 
+          severity={snackbarSeverity}
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
