@@ -1,1 +1,1 @@
-self.__BUILD_MANIFEST = {__rewrites:{afterFiles:[],beforeFiles:[],fallback:[]},sortedPages:["\u002F_app"]};self.__BUILD_MANIFEST_CB && self.__BUILD_MANIFEST_CB()
+self.__BUILD_MANIFEST = {__rewrites:{afterFiles:[],beforeFiles:[],fallback:[]},"/_error":["static\u002Fchunks\u002Fpages\u002F_error.js"],"/api-docs":["static\u002Fchunks\u002Fpages\u002Fapi-docs.js"],"/pricing":["static\u002Fchunks\u002Fpages\u002Fpricing.js"],sortedPages:["\u002F_app","\u002F_error","\u002Fapi-docs","\u002Fpricing"]};self.__BUILD_MANIFEST_CB && self.__BUILD_MANIFEST_CB()

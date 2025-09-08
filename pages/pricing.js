@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Typography from "../components/apple/Typography";
 import Button from "../components/apple/Button";
 import Card from "../components/apple/Card";
@@ -48,8 +48,15 @@ const HeadphonesIcon = () => (
   </svg>
 );
 
+const ChevronDownIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <polyline points="6,9 12,15 18,9"/>
+  </svg>
+);
+
 export default function Pricing() {
   const { isDarkMode } = useTheme();
+  const [expandedFAQ, setExpandedFAQ] = useState(null);
   const plans = [
     {
       name: "Free",
@@ -273,12 +280,12 @@ export default function Pricing() {
                     <Box style={{ color: isDarkMode ? '#007AFF' : appleTheme.colors.primary[500] }}>
                       {feature.icon}
                     </Box>
-                    <Typography variant="callout" weight="semibold" align="center" style={{
+                    <Typography variant="callout" weight="bold" align="center" style={{
                       color: isDarkMode ? '#FFFFFF' : '#000000'
                     }}>
                       {feature.title}
                     </Typography>
-                    <Typography variant="footnote" align="center" style={{
+                    <Typography variant="footnote" weight="regular" align="center" style={{
                       color: isDarkMode ? '#E5E5EA' : '#1C1C1E'
                     }}>
                       {feature.description}
@@ -292,15 +299,13 @@ export default function Pricing() {
           {/* FAQ Section */}
           <Card variant="elevated" padding="xl">
             <Stack spacing={6}>
-              <Typography variant="title2" align="center">
+              <Typography variant="title2" align="center" style={{
+                color: isDarkMode ? '#FFFFFF' : '#000000'
+              }}>
                 Frequently Asked Questions
               </Typography>
               
-              <div style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
-                gap: appleTheme.spacing[6]
-              }}>
+              <Stack spacing={3}>
                 {[
                   {
                     question: "Can I change plans anytime?",
@@ -318,17 +323,67 @@ export default function Pricing() {
                     question: "Is there a free trial?",
                     answer: "Yes! All paid plans come with a 14-day free trial. No credit card required."
                   }
-                ].map((faq, index) => (
-                  <Box key={index}>
-                    <Typography variant="callout" weight="semibold" style={{ marginBottom: appleTheme.spacing[2] }}>
-                      {faq.question}
-                    </Typography>
-                    <Typography variant="footnote" color="secondary">
-                      {faq.answer}
-                    </Typography>
-                  </Box>
-                ))}
-              </div>
+                ].map((faq, index) => {
+                  const isExpanded = expandedFAQ === index;
+                  return (
+                    <Card key={index} variant="outlined" padding="large" hover>
+                      <Box>
+                        <div style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          width: "100%"
+                        }}>
+                          <Typography variant="callout" weight="semibold" style={{ 
+                            color: isDarkMode ? '#FFFFFF' : '#000000',
+                            flex: 1,
+                            margin: 0
+                          }}>
+                            {faq.question}
+                          </Typography>
+                          <button
+                            onClick={() => setExpandedFAQ(isExpanded ? null : index)}
+                            style={{
+                              background: "none",
+                              border: "none",
+                              padding: appleTheme.spacing[1],
+                              cursor: "pointer",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              marginLeft: appleTheme.spacing[2]
+                            }}
+                          >
+                            <Box style={{
+                              transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
+                              transition: "transform 0.2s ease",
+                              color: isDarkMode ? '#FFFFFF' : '#000000',
+                              display: "flex",
+                              alignItems: "center"
+                            }}>
+                              <ChevronDownIcon />
+                            </Box>
+                          </button>
+                        </div>
+                        
+                        {isExpanded && (
+                          <Box style={{ 
+                            marginTop: appleTheme.spacing[3],
+                            paddingTop: appleTheme.spacing[3],
+                            borderTop: `1px solid ${isDarkMode ? appleTheme.colors.dark.gray[300] : appleTheme.colors.gray[200]}`
+                          }}>
+                            <Typography variant="footnote" style={{
+                              color: isDarkMode ? '#E5E5EA' : '#1C1C1E'
+                            }}>
+                              {faq.answer}
+                            </Typography>
+                          </Box>
+                        )}
+                      </Box>
+                    </Card>
+                  );
+                })}
+              </Stack>
             </Stack>
           </Card>
         </Section>

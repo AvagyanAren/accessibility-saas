@@ -187,7 +187,9 @@ print(data)`
         <Section padding="lg">
           <Card variant="elevated" padding="large" style={{ marginBottom: appleTheme.spacing[8] }}>
             <Stack spacing={4}>
-              <Typography variant="title2">
+              <Typography variant="title2" style={{
+                color: isDarkMode ? '#FFFFFF' : '#000000'
+              }}>
                 Quick Start
               </Typography>
               <Typography variant="body" color="secondary">
@@ -229,7 +231,9 @@ print(data)`
         <Section padding="lg">
           <Card variant="outlined" padding="large" style={{ marginBottom: appleTheme.spacing[8] }}>
             <Stack spacing={4}>
-              <Typography variant="title2">
+              <Typography variant="title2" style={{
+                color: isDarkMode ? '#FFFFFF' : '#000000'
+              }}>
                 Test the API
               </Typography>
               <Typography variant="body" color="secondary">
@@ -355,7 +359,10 @@ print(data)`
                           }}>
                             <Flex align="center" justify="space-between" style={{ marginBottom: appleTheme.spacing[1] }}>
                               <HStack spacing={2} align="center">
-                                <Typography variant="footnote" weight="semibold" style={{ fontFamily: appleTheme.typography.fontFamily.mono }}>
+                                <Typography variant="footnote" weight="semibold" style={{ 
+                                  fontFamily: appleTheme.typography.fontFamily.mono,
+                                  color: isDarkMode ? '#FFFFFF' : '#000000'
+                                }}>
                                   {param.name}
                                 </Typography>
                                 <Box style={{
@@ -415,7 +422,10 @@ print(data)`
                   <Flex align="center" justify="space-between">
                     <HStack spacing={2} align="center">
                       <CodeIcon style={{ color: appleTheme.colors.primary[500] }} />
-                      <Typography variant="callout" weight="semibold" style={{ textTransform: "capitalize" }}>
+                      <Typography variant="callout" weight="semibold" style={{ 
+                        textTransform: "capitalize",
+                        color: isDarkMode ? '#FFFFFF' : '#000000'
+                      }}>
                         {language}
                       </Typography>
                     </HStack>
@@ -454,7 +464,9 @@ print(data)`
             <Stack spacing={4}>
               <HStack spacing={3} align="center">
                 <KeyIcon style={{ color: appleTheme.colors.primary[500] }} />
-                <Typography variant="title2">
+                <Typography variant="title2" style={{
+                  color: isDarkMode ? '#FFFFFF' : '#000000'
+                }}>
                   Authentication
                 </Typography>
               </HStack>
