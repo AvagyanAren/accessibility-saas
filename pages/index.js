@@ -152,6 +152,51 @@ export default function Home() {
     return help;
   };
 
+  const getFixSuggestion = (help) => {
+    // Provide actionable fix suggestions for common accessibility issues
+    const fixMap = {
+      "Documents must have <title> element to aid in navigation": "Add a <title> tag in the <head> section: <title>Your Page Title</title>",
+      "<html> element must have a lang attribute": "Add lang attribute to <html> tag: <html lang=\"en\"> (use appropriate language code)",
+      "Document should have one main landmark": "Wrap main content in <main> tags or add role=\"main\" to the main content container",
+      "Page should contain a level-one heading": "Add an <h1> tag with descriptive text that summarizes the page content",
+      "Images must have alternate text": "Add alt attribute to <img> tags: <img src=\"image.jpg\" alt=\"Description of image\">",
+      "Form elements must have labels": "Add <label> tags or aria-label attributes to form inputs: <label for=\"input1\">Field Name</label>",
+      "Elements must have sufficient color contrast": "Increase contrast by using darker text on light backgrounds or lighter text on dark backgrounds. Aim for at least 4.5:1 ratio.",
+      "Interactive elements must be focusable": "Add tabindex=\"0\" to interactive elements or use proper HTML elements like <button> instead of <div>",
+      "ARIA attributes must be valid": "Remove invalid ARIA attributes or fix their values according to ARIA specification",
+      "Elements must not have duplicate attributes": "Remove duplicate attributes from HTML elements - each attribute should appear only once",
+      "Heading levels should only increase by one": "Restructure headings to follow logical order: H1 → H2 → H3 (skip no levels)",
+      "Form fields must have accessible names": "Add proper labels using <label>, aria-label, or aria-labelledby attributes",
+      "Links must have discernible text": "Add descriptive text inside <a> tags or use aria-label: <a href=\"/page\">Go to Page</a>",
+      "Buttons must have discernible text": "Add text inside <button> tags or use aria-label: <button>Submit Form</button>",
+      "Elements must have sufficient color contrast": "Use color contrast tools to test and adjust colors until they meet WCAG AA standards (4.5:1 ratio)"
+    };
+
+    // Try to find exact match first
+    if (fixMap[help]) {
+      return fixMap[help];
+    }
+
+    // Try to find partial matches for common patterns
+    if (help.includes("title")) return "Add a <title> tag in the <head> section: <title>Your Page Title</title>";
+    if (help.includes("lang")) return "Add lang attribute to <html> tag: <html lang=\"en\"> (use appropriate language code)";
+    if (help.includes("main landmark")) return "Wrap main content in <main> tags or add role=\"main\" to the main content container";
+    if (help.includes("level-one heading")) return "Add an <h1> tag with descriptive text that summarizes the page content";
+    if (help.includes("alt text") || help.includes("alternate text")) return "Add alt attribute to <img> tags: <img src=\"image.jpg\" alt=\"Description of image\">";
+    if (help.includes("labels") && help.includes("form")) return "Add <label> tags or aria-label attributes to form inputs: <label for=\"input1\">Field Name</label>";
+    if (help.includes("color contrast")) return "Increase contrast by using darker text on light backgrounds or lighter text on dark backgrounds. Aim for at least 4.5:1 ratio.";
+    if (help.includes("focusable")) return "Add tabindex=\"0\" to interactive elements or use proper HTML elements like <button> instead of <div>";
+    if (help.includes("ARIA")) return "Remove invalid ARIA attributes or fix their values according to ARIA specification";
+    if (help.includes("duplicate")) return "Remove duplicate attributes from HTML elements - each attribute should appear only once";
+    if (help.includes("heading")) return "Restructure headings to follow logical order: H1 → H2 → H3 (skip no levels)";
+    if (help.includes("accessible names")) return "Add proper labels using <label>, aria-label, or aria-labelledby attributes";
+    if (help.includes("discernible text") && help.includes("link")) return "Add descriptive text inside <a> tags or use aria-label: <a href=\"/page\">Go to Page</a>";
+    if (help.includes("discernible text") && help.includes("button")) return "Add text inside <button> tags or use aria-label: <button>Submit Form</button>";
+
+    // If no match found, return a generic suggestion
+    return "Review the element and ensure it follows accessibility best practices. Check WCAG guidelines for specific requirements.";
+  };
+
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
     alert("Copied!");
@@ -481,9 +526,43 @@ export default function Home() {
                 <Typography variant="subtitle1" sx={{ color: "#333", mb: 1 }}>
                   {getFriendlyTitle(v.help)}
                 </Typography>
-                <Typography variant="body2" sx={{ color: "#666", fontSize: "14px", lineHeight: 1.4, mb: 2 }}>
+                <Typography variant="body2" sx={{ color: "#666", fontSize: "14px", lineHeight: 1.4, mb: 1 }}>
                   {getDetailedDescription(v.help)}
                 </Typography>
+                
+                {/* Fix Suggestion */}
+                <Box sx={{ 
+                  backgroundColor: "#f8f9fa", 
+                  border: "1px solid #e9ecef", 
+                  borderRadius: 2, 
+                  p: 2, 
+                  mb: 2 
+                }}>
+                  <Typography variant="body2" sx={{ 
+                    color: "#495057", 
+                    fontSize: "13px", 
+                    fontWeight: 500, 
+                    mb: 1,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 0.5
+                  }}>
+                    💡 How to fix:
+                  </Typography>
+                  <Typography variant="body2" sx={{ 
+                    color: "#212529", 
+                    fontSize: "13px", 
+                    lineHeight: 1.4,
+                    fontFamily: "monospace",
+                    backgroundColor: "white",
+                    padding: 1,
+                    borderRadius: 1,
+                    border: "1px solid #dee2e6"
+                  }}>
+                    {getFixSuggestion(v.help)}
+                  </Typography>
+                </Box>
+                
                 <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 1 }}>
                   <IconButton size="small" onClick={() => toggleRow(idx)}>
                     {expandedRows[idx] ? <ExpandLess /> : <ExpandMore />}
