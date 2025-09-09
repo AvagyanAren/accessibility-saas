@@ -3,8 +3,8 @@
 A comprehensive, modern accessibility testing platform built with Next.js and Apple-inspired design. ScanWeb helps developers, designers, and organizations ensure their websites meet WCAG accessibility standards through automated testing, detailed reporting, and educational resources.
 
 ![ScanWeb Preview](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)
-![Next.js](https://img.shields.io/badge/Next.js-13.5.2-black)
-![React](https://img.shields.io/badge/React-18.2.0-blue)
+![Next.js](https://img.shields.io/badge/Next.js-15.0.3-black)
+![React](https://img.shields.io/badge/React-18.3.1-blue)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ## ✨ Features
@@ -38,7 +38,7 @@ A comprehensive, modern accessibility testing platform built with Next.js and Ap
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 16.0 or later
+- Node.js 18.0 or later (recommended for Next.js 15)
 - npm or yarn package manager
 
 ### Installation
@@ -141,8 +141,8 @@ accessibility-saas/
 ## 🛠️ Technology Stack
 
 ### Frontend
-- **Next.js 13.5.2** - React framework with SSR/SSG
-- **React 18.2.0** - UI library
+- **Next.js 15.0.3** - React framework with SSR/SSG
+- **React 18.3.1** - UI library
 - **Custom Design System** - Apple-inspired components
 - **CSS-in-JS** - Emotion for styling
 - **Context API** - State management
@@ -152,6 +152,7 @@ accessibility-saas/
 - **Playwright** - Browser automation
 - **axe-core** - Accessibility testing engine
 - **Node.js** - Runtime environment
+- **Vercel Speed Insights** - Performance monitoring
 
 ### Testing & Quality
 - **axe-core/playwright** - Automated accessibility testing
@@ -330,6 +331,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Made with ❤️ for a more accessible web**
 
-[🌐 Live Demo](https://accessibility-saas.vercel.app) • [📖 Documentation](/api-docs) • [🐛 Report Bug](https://github.com/AvagyanAren/accessibility-saas/issues) • [✨ Request Feature](https://github.com/AvagyanAren/accessibility-saas/issues)
+[🌐 Live Demo](https://accessibility-saas-1.vercel.app) • [📖 Documentation](/api-docs) • [🐛 Report Bug](https://github.com/AvagyanAren/accessibility-saas/issues) • [✨ Request Feature](https://github.com/AvagyanAren/accessibility-saas/issues)
 
 </div>

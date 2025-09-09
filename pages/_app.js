@@ -1,5 +1,6 @@
 import Navbar from "../components/NavbarApple";
 import { ThemeProvider } from "../contexts/ThemeContext";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "../styles/apple-globals.css";
 
 function MyApp({ Component, pageProps }) {
@@ -16,6 +17,7 @@ function MyApp({ Component, pageProps }) {
       >
         <Navbar />
         <Component {...pageProps} />
+        <SpeedInsights />
       </div>
     </ThemeProvider>
   );
