@@ -12,6 +12,11 @@
   ],
   "rootMainFiles": [],
   "pages": {
+    "/": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/index.js"
+    ],
     "/_app": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
@@ -22,15 +27,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/api-docs": [
+    "/tools/alt-text-analyzer": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/api-docs.js"
-    ],
-    "/pricing": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/pricing.js"
+      "static/chunks/pages/tools/alt-text-analyzer.js"
     ]
   },
   "ampFirstPages": []

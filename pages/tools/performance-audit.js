@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Box, Stack, HStack, VStack } from "../components/apple/Layout";
-import { Typography } from "../components/apple/Typography";
-import { Button } from "../components/apple/Button";
-import { Input } from "../components/apple/Input";
-import { Card } from "../components/apple/Card";
+import { Box, Stack, HStack, VStack } from "../../components/apple/Layout";
+import Typography from "../../components/apple/Typography";
+import Button from "../../components/apple/Button";
+import Input from "../../components/apple/Input";
+import Card from "../../components/apple/Card";
 import { appleTheme } from "../../styles/apple-theme";
 import {
   Speed,

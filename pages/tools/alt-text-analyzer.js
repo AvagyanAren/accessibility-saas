@@ -5,6 +5,7 @@ import Card from "../../components/apple/Card";
 import Input from "../../components/apple/Input";
 import { Container, Box, Flex, Stack, Section, HStack } from "../../components/apple/Layout";
 import { appleTheme } from "../../styles/apple-theme";
+import { useTheme } from "../../contexts/ThemeContext";
 
 // Icons
 const ImageIcon = () => (
@@ -37,6 +38,7 @@ const SearchIcon = () => (
 );
 
 export default function AltTextAnalyzer() {
+  const { isDarkMode } = useTheme();
   const [url, setUrl] = useState("");
   const [analyzing, setAnalyzing] = useState(false);
   const [results, setResults] = useState(null);
