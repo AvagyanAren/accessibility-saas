@@ -2,6 +2,84 @@
 import { chromium } from "playwright";
 import AxeBuilder from "@axe-core/playwright";
 
+// Helper function to analyze HTML for accessibility issues
+function analyzeHTML(html) {
+  const violations = [];
+  
+  // Check for missing alt text on images
+  const imgRegex = /<img[^>]*(?!alt\s*=)[^>]*>/gi;
+  const images = html.match(imgRegex) || [];
+  images.forEach((img, index) => {
+    if (!img.includes('alt=')) {
+      violations.push({
+        id: 'image-alt',
+        impact: 'serious',
+        description: 'Images must have alternate text',
+        help: 'Ensure that image elements have alternate text',
+        nodes: [{
+          target: [`img:nth-of-type(${index + 1})`],
+          html: img
+        }]
+      });
+    }
+  });
+
+  // Check for missing form labels
+  const inputRegex = /<input[^>]*>/gi;
+  const inputs = html.match(inputRegex) || [];
+  inputs.forEach((input, index) => {
+    if (!input.includes('aria-label') && !input.includes('aria-labelledby')) {
+      const idMatch = input.match(/id="([^"]*)"/);
+      if (idMatch) {
+        const id = idMatch[1];
+        const labelRegex = new RegExp(`<label[^>]*for="${id}"[^>]*>`, 'i');
+        if (!labelRegex.test(html)) {
+          violations.push({
+            id: 'label',
+            impact: 'serious',
+            description: 'Form elements must have labels',
+            help: 'Ensure that form elements have labels',
+            nodes: [{
+              target: [`input:nth-of-type(${index + 1})`],
+              html: input
+            }]
+          });
+        }
+      }
+    }
+  });
+
+  // Check for missing lang attribute
+  if (!html.includes('lang=') && !html.includes('xml:lang=')) {
+    violations.push({
+      id: 'html-has-lang',
+      impact: 'serious',
+      description: 'HTML element must have a lang attribute',
+      help: 'Ensure the HTML element has a lang attribute',
+      nodes: [{
+        target: ['html'],
+        html: '<html>'
+      }]
+    });
+  }
+
+  // Check for missing title
+  if (!html.includes('<title>')) {
+    violations.push({
+      id: 'document-title',
+      impact: 'serious',
+      description: 'Documents must have a title element',
+      help: 'Ensure the document has a title element',
+      nodes: [{
+        target: ['head'],
+        html: '<head>'
+      }]
+    });
+  }
+
+  return violations;
+}
+
 export default async function handler(req, res) {
   // Set CORS headers for Next.js 15
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -38,6 +116,7 @@ export default async function handler(req, res) {
       headers: {
         'User-Agent': 'Mozilla/5.0 (compatible; AccessibilityScanner/1.0)'
       },
+      redirect: 'follow',
       timeout: 30000
     });
 
@@ -47,79 +126,8 @@ export default async function handler(req, res) {
 
     const html = await response.text();
     
-    // Basic accessibility analysis using regex
-    const violations = [];
-    
-    // Check for missing alt text on images
-    const imgRegex = /<img[^>]*(?!alt\s*=)[^>]*>/gi;
-    const images = html.match(imgRegex) || [];
-    images.forEach((img, index) => {
-      if (!img.includes('alt=')) {
-        violations.push({
-          id: 'image-alt',
-          impact: 'serious',
-          description: 'Images must have alternate text',
-          help: 'Ensure that image elements have alternate text',
-          nodes: [{
-            target: [`img:nth-of-type(${index + 1})`],
-            html: img
-          }]
-        });
-      }
-    });
-
-    // Check for missing form labels
-    const inputRegex = /<input[^>]*>/gi;
-    const inputs = html.match(inputRegex) || [];
-    inputs.forEach((input, index) => {
-      if (!input.includes('aria-label') && !input.includes('aria-labelledby')) {
-        const idMatch = input.match(/id="([^"]*)"/);
-        if (idMatch) {
-          const id = idMatch[1];
-          const labelRegex = new RegExp(`<label[^>]*for="${id}"[^>]*>`, 'i');
-          if (!labelRegex.test(html)) {
-            violations.push({
-              id: 'label',
-              impact: 'serious',
-              description: 'Form elements must have labels',
-              help: 'Ensure that form elements have labels',
-              nodes: [{
-                target: [`input:nth-of-type(${index + 1})`],
-                html: input
-              }]
-            });
-          }
-        }
-      }
-    });
-
-    // Check for missing lang attribute
-    if (!html.includes('lang=') && !html.includes('xml:lang=')) {
-      violations.push({
-        id: 'html-has-lang',
-        impact: 'serious',
-        description: 'HTML element must have a lang attribute',
-        help: 'Ensure the HTML element has a lang attribute',
-        nodes: [{
-          target: ['html'],
-          html: '<html>'
-        }]
-      });
-    }
-
-    // Check for missing title
-    if (!html.includes('<title>')) {
-      violations.push({
-        id: 'document-title',
-        impact: 'serious',
-        description: 'Documents must have a title element',
-        help: 'Ensure the document has a title element',
-        nodes: [{
-          target: ['head'],
-          html: '<head>'
-        }]
-      });
-    }
+    // Basic accessibility analysis using helper function
+    const violations = analyzeHTML(html);
 
     const results = {
       violations: violations,
@@ -144,6 +152,51 @@ export default async function handler(req, res) {
     return res.status(200).json(results);
   } catch (simpleErr) {
     console.error("Simple scan failed:", simpleErr);
+    
+    // If it's a redirect issue, try with a different approach
+    if (simpleErr.message.includes('redirect count exceeded') || simpleErr.message.includes('fetch failed')) {
+      try {
+        console.log("Trying alternative fetch method...");
+        
+        // Try with a different user agent and no redirects
+        const altResponse = await fetch(url, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+          },
+          redirect: 'manual',
+          timeout: 15000
+        });
+        
+        if (altResponse.ok) {
+          const html = await altResponse.text();
+          const violations = analyzeHTML(html);
+          
+          const results = {
+            violations: violations,
+            passes: [],
+            incomplete: [],
+            inapplicable: [],
+            testEngine: {
+              name: 'simple-accessibility-scanner',
+              version: '1.0.0'
+            },
+            testRunner: {
+              name: 'simple-scanner'
+            },
+            testEnvironment: {
+              userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+              windowWidth: 1280,
+              windowHeight: 720
+            }
+          };
+          
+          console.log("Alternative scan successful");
+          return res.status(200).json(results);
+        }
+      } catch (altErr) {
+        console.error("Alternative scan also failed:", altErr);
+      }
+    }
   }
 
   // Try Playwright as fallback
