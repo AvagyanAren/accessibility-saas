@@ -88,8 +88,8 @@ const Input = ({
       },
       large: {
         fontSize: appleTheme.typography.fontSize.lg,
-        padding: `${appleTheme.spacing[3]} ${appleTheme.spacing[4]}`,
-        height: '52px'
+        padding: `16px`,
+        height: '54px'
       }
     };
 
@@ -108,10 +108,10 @@ const Input = ({
     // Adjust padding for icons
     const paddingAdjustment = {};
     if (startIcon) {
-      paddingAdjustment.paddingLeft = `${parseInt(appleTheme.spacing[10])}px`;
+      paddingAdjustment.paddingLeft = '40px !important'; // Placeholder 40px from left edge
     }
     if (endIcon) {
-      paddingAdjustment.paddingRight = `${parseInt(appleTheme.spacing[10])}px`;
+      paddingAdjustment.paddingRight = '40px !important'; // 16px icon position + 24px spacing
     }
 
     return {
@@ -125,7 +125,7 @@ const Input = ({
   const getIconStyles = (position) => {
     return {
       position: 'absolute',
-      [position]: appleTheme.spacing[3],
+      [position]: '16px !important',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -134,7 +134,8 @@ const Input = ({
         : appleTheme.colors.text.tertiary,
       transition: `color ${appleTheme.transition.duration.base} ${appleTheme.transition.timing.ease}`,
       pointerEvents: 'none',
-      fontSize: '20px'
+      fontSize: '20px',
+      zIndex: 1
     };
   };
 
