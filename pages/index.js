@@ -3,6 +3,7 @@ import Button from "../components/apple/Button";
 import Card from "../components/apple/Card";
 import Input from "../components/apple/Input";
 import Typography from "../components/apple/Typography";
+import AnimatedGradient from "../components/apple/AnimatedGradient";
 import { Container, Box, Flex, Stack, Section } from "../components/apple/Layout";
 import { appleTheme } from "../styles/apple-theme";
 import { useTheme } from "../contexts/ThemeContext";
@@ -226,44 +227,7 @@ export default function Home() {
       overflow: "hidden"
     }}>
       {/* Animated Background Elements */}
-      <div style={{
-        position: "absolute",
-        top: "-50%",
-        left: "-50%",
-        width: "200%",
-        height: "200%",
-        background: isDarkMode 
-          ? "radial-gradient(circle at 20% 80%, rgba(0, 122, 255, 0.25) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(0, 122, 255, 0.15) 0%, transparent 50%)"
-          : "radial-gradient(circle at 20% 80%, rgba(0, 122, 255, 0.3) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(0, 122, 255, 0.2) 0%, transparent 50%)",
-        animation: "float 20s ease-in-out infinite",
-        zIndex: 0
-      }} />
-      
-      <div style={{
-        position: "absolute",
-        top: "10%",
-        right: "-20%",
-        width: "40%",
-        height: "40%",
-        background: isDarkMode 
-          ? "radial-gradient(circle, rgba(0, 122, 255, 0.2) 0%, transparent 70%)"
-          : "radial-gradient(circle, rgba(0, 122, 255, 0.25) 0%, transparent 70%)",
-        animation: "pulse 15s ease-in-out infinite",
-        zIndex: 0
-      }} />
-      
-      <div style={{
-        position: "absolute",
-        bottom: "-30%",
-        left: "10%",
-        width: "60%",
-        height: "60%",
-        background: isDarkMode 
-          ? "radial-gradient(circle, rgba(0, 122, 255, 0.18) 0%, transparent 60%)"
-          : "radial-gradient(circle, rgba(0, 122, 255, 0.22) 0%, transparent 60%)",
-        animation: "drift 25s ease-in-out infinite",
-        zIndex: 0
-      }} />
+      <AnimatedGradient variant="default" intensity="high" />
       {/* Hero Section */}
       <Section 
         background={isDarkMode ? "linear-gradient(135deg, #1C1C1E 0%, #2C2C2E 100%)" : "linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)"} 

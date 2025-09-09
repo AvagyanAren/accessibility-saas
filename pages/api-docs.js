@@ -3,6 +3,7 @@ import Typography from "../components/apple/Typography";
 import Button from "../components/apple/Button";
 import Card from "../components/apple/Card";
 import Input from "../components/apple/Input";
+import AnimatedGradient from "../components/apple/AnimatedGradient";
 import { Container, Box, Flex, Stack, Section, HStack } from "../components/apple/Layout";
 import { appleTheme } from "../styles/apple-theme";
 import { useTheme } from "../contexts/ThemeContext";
@@ -158,7 +159,15 @@ print(data)`
   ];
 
   return (
-    <div style={{ backgroundColor: appleTheme.colors.background.secondary, minHeight: "100vh" }}>
+    <div style={{ 
+      backgroundColor: appleTheme.colors.background.secondary, 
+      minHeight: "100vh",
+      position: "relative",
+      overflow: "hidden"
+    }}>
+      {/* Animated Background Elements */}
+      <AnimatedGradient variant="subtle" intensity="low" />
+      
       {/* Hero Section */}
       <Section background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
         <Container size="lg">
