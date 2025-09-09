@@ -241,15 +241,53 @@ ScanWeb features a sophisticated dark mode implementation:
 
 ## 🚀 Deployment
 
-### Vercel (Recommended)
-1. Connect your GitHub repository to Vercel
-2. Configure environment variables
-3. Deploy automatically on push to main
+### Quick Deploy with Vercel (Recommended)
 
-### Other Platforms
-- **Netlify** - Static site deployment
-- **AWS** - Serverless deployment
-- **Docker** - Containerized deployment
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/AvagyanAren/accessibility-saas)
+
+**Manual Vercel Deployment:**
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Login and deploy
+vercel login
+vercel
+
+# Deploy to production
+vercel --prod
+```
+
+### Other Deployment Options
+
+**Netlify:**
+```bash
+npm run build
+# Drag .next folder to Netlify dashboard
+```
+
+**Railway:**
+```bash
+npm install -g @railway/cli
+railway login
+railway init
+railway up
+```
+
+**Docker:**
+```bash
+docker build -t accessibility-saas .
+docker run -p 3000:3000 accessibility-saas
+```
+
+### 📋 Deployment Checklist
+- ✅ Playwright browsers configured for production
+- ✅ API routes optimized with proper timeouts
+- ✅ Error handling enhanced for production
+- ✅ Environment variables configured
+- ✅ HTTPS enabled (automatic on Vercel/Netlify)
+
+**See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions.**
 
 ## 🤝 Contributing
 
