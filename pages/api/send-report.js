@@ -23,13 +23,8 @@ export default async function handler(req, res) {
     // 2. Store the email in your database for lead generation
     // 3. Generate and attach a PDF report
     
-    console.log('Email report request:', {
-      email,
-      url,
-      score: score.score,
-      violationsCount: violations.length,
-      scanDate
-    });
+    // Log email report request for debugging
+    // console.log('Email report request:', { email, url, score: score.score, violationsCount: violations.length, scanDate });
 
     // Simulate email sending delay
     await new Promise(resolve => setTimeout(resolve, 1000));

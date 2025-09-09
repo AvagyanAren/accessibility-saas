@@ -178,7 +178,7 @@ export default function Pricing() {
                 padding="large"
                 style={{
                   position: "relative",
-                  border: plan.popular ? `2px solid ${appleTheme.colors.primary[500]}` : undefined
+                  border: plan.popular ? `2px solid ${appleTheme.colors.primary[500]}` : "1px solid transparent"
                 }}
               >
                 {plan.popular && (

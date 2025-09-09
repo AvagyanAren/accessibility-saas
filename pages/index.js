@@ -135,13 +135,10 @@ export default function Home() {
   }, []);
 
   const handleScan = async () => {
-    console.log('handleScan called, url:', url);
     if (!url.trim()) {
-      console.log('No URL provided');
       return;
     }
     
-    console.log('Starting scan...');
     setScanning(true);
     setViolations([]);
     setError("");
@@ -353,21 +350,17 @@ export default function Home() {
                       placeholder="Enter website URL"
                       value={url}
                       onChange={(e) => {
-                        console.log('Input changed:', e.target.value);
                         setUrl(e.target.value);
                       }}
                       onKeyPress={(e) => {
-                        console.log('Key pressed:', e.key);
                         if (e.key === 'Enter') {
                           handleScan();
                         }
                       }}
                       onFocus={(e) => {
-                        console.log('Input focused');
                         setInputFocused(true);
                       }}
                       onBlur={(e) => {
-                        console.log('Input blurred');
                         setInputFocused(false);
                       }}
                       style={{
@@ -392,7 +385,6 @@ export default function Home() {
                   variant="primary"
                   size="large"
                   onClick={() => {
-                    console.log('Button clicked, url:', url);
                     handleScan();
                   }}
                   disabled={scanning || !url.trim()}

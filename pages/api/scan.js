@@ -109,8 +109,6 @@ export default async function handler(req, res) {
 
   // Try simple scanner first (no browser required)
   try {
-    console.log("Attempting simple scan method...");
-    
     // Direct simple scan without internal API call
     const response = await fetch(url, {
       headers: {
@@ -163,7 +161,6 @@ export default async function handler(req, res) {
       }
     };
 
-    console.log("Simple scan successful");
     return res.status(200).json(results);
   } catch (simpleErr) {
     console.error("Simple scan failed:", simpleErr);
@@ -171,8 +168,6 @@ export default async function handler(req, res) {
     // If it's a redirect issue, try with a different approach
     if (simpleErr.message.includes('redirect count exceeded') || simpleErr.message.includes('fetch failed')) {
       try {
-        console.log("Trying alternative fetch method...");
-        
         // Try with a different user agent and no redirects
         const altResponse = await fetch(url, {
           headers: {
@@ -210,7 +205,6 @@ export default async function handler(req, res) {
             }
           };
           
-          console.log("Alternative scan successful");
           return res.status(200).json(results);
         }
       } catch (altErr) {
@@ -222,7 +216,6 @@ export default async function handler(req, res) {
   // Try Playwright as fallback
   let browser;
   try {
-    console.log("Attempting Playwright scan...");
     browser = await chromium.launch({ 
       headless: true,
       args: [
@@ -251,20 +244,17 @@ export default async function handler(req, res) {
     await page.waitForLoadState('networkidle', { timeout: 10000 });
 
     const results = await new AxeBuilder({ page }).analyze();
-    console.log("Playwright scan successful");
     res.status(200).json(results);
   } catch (err) {
     console.error("Playwright scan error:", err);
     
     // Try Puppeteer fallback
     try {
-      console.log("Attempting Puppeteer fallback...");
       const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
       const fallbackResponse = await fetch(`${baseUrl}/api/scan-fallback?url=${encodeURIComponent(url)}`);
       const fallbackData = await fallbackResponse.json();
       
       if (fallbackResponse.ok) {
-        console.log("Puppeteer fallback successful");
         return res.status(200).json(fallbackData);
       }
     } catch (fallbackErr) {
@@ -272,8 +262,6 @@ export default async function handler(req, res) {
     }
     
     // Final fallback - return a basic response with common accessibility issues
-    console.log("All methods failed, returning basic accessibility checklist...");
-    
     const basicViolations = [
       {
         id: 'basic-checklist',
