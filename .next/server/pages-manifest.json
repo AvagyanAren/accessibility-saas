@@ -2,9 +2,7 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/tools/screen-reader-simulator": "pages/tools/screen-reader-simulator.js",
-  "/tools": "pages/tools.js",
+  "/": "pages/index.js",
   "/tools/performance-audit": "pages/tools/performance-audit.js",
-  "/tools/keyboard-navigator": "pages/tools/keyboard-navigator.js",
   "/tools/alt-text-analyzer": "pages/tools/alt-text-analyzer.js"
 }

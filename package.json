@@ -4,7 +4,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "postinstall": "npx playwright install chromium",
+    "setup": "npm install && npx playwright install chromium",
+    "verify": "node scripts/verify-setup.js"
   },
   "dependencies": {
     "@axe-core/playwright": "^4.10.2",

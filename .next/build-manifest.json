@@ -12,6 +12,11 @@
   ],
   "rootMainFiles": [],
   "pages": {
+    "/": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/index.js"
+    ],
     "/_app": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
@@ -22,30 +27,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/tools": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/tools.js"
-    ],
-    "/tools/alt-text-analyzer": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/tools/alt-text-analyzer.js"
-    ],
-    "/tools/keyboard-navigator": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/tools/keyboard-navigator.js"
-    ],
     "/tools/performance-audit": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/tools/performance-audit.js"
-    ],
-    "/tools/screen-reader-simulator": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/tools/screen-reader-simulator.js"
     ]
   },
   "ampFirstPages": []

@@ -49,22 +49,47 @@ A comprehensive, modern accessibility testing platform built with Next.js and Ap
    cd accessibility-saas
    ```
 
-2. **Install dependencies**
+2. **Install dependencies and setup Playwright**
    ```bash
+   # Option 1: Use the setup script (recommended)
+   npm run setup
+   
+   # Option 2: Manual installation
    npm install
-   # or
-   yarn install
+   npx playwright install chromium
    ```
 
-3. **Run the development server**
+3. **Verify setup (optional but recommended)**
+   ```bash
+   npm run verify
+   ```
+
+4. **Run the development server**
    ```bash
    npm run dev
    # or
    yarn dev
    ```
 
-4. **Open your browser**
+5. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
+
+### ⚠️ Important Setup Notes
+
+**For the scanning functionality to work properly, you MUST install Playwright browsers:**
+
+```bash
+# If you only ran 'npm install', run this:
+npx playwright install chromium
+
+# Or use the setup script:
+npm run setup
+```
+
+**Common Issues:**
+- **"Failed to scan" error**: Run `npm run setup` to install required browsers
+- **Timeout errors**: Some websites may take longer to load
+- **Network errors**: Check if the URL is accessible and properly formatted
 
 ## 🏗️ Project Structure
 
