@@ -129,7 +129,7 @@ export default async function handler(req, res) {
     if (!response.ok) {
       // Handle specific HTTP status codes
       if (response.status === 498) {
-        throw new Error('Website blocked the request (HTTP 498). Try a different website.');
+        throw new Error('This website (Alibaba) has anti-bot protection. Try scanning a different website like example.com, github.com, or stackoverflow.com.');
       } else if (response.status === 403) {
         throw new Error('Website blocked the request (HTTP 403). Try a different website.');
       } else if (response.status === 429) {

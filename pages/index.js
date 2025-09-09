@@ -51,6 +51,7 @@ export default function Home() {
   const [scanning, setScanning] = useState(false);
   const [emailDialogOpen, setEmailDialogOpen] = useState(false);
   const [error, setError] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
 
   // Load saved scan results on component mount
   useEffect(() => {
@@ -74,6 +75,18 @@ export default function Home() {
   useEffect(() => {
     console.log('Violations state changed:', violations.length, violations);
   }, [violations]);
+
+  // Mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleScan = async () => {
     if (!url.trim()) return;
@@ -195,9 +208,20 @@ export default function Home() {
             </Typography>
             
             {/* URL Input Section */}
-            <Box style={{ maxWidth: "600px", margin: "0 auto" }}>
-              <Flex gap={3} align="stretch">
-                <Box style={{ flex: 1 }}>
+            <Box style={{ 
+              maxWidth: "600px", 
+              margin: "0 auto",
+              width: "100%",
+              padding: "0 16px"
+            }}>
+              <Flex 
+                gap={3} 
+                align="stretch"
+                style={{
+                  flexDirection: isMobile ? "column" : "row"
+                }}
+              >
+                <Box style={{ flex: 1, width: "100%" }}>
                   <Input
                     placeholder="Enter website URL (e.g., https://example.com)"
                     value={url}
@@ -205,8 +229,19 @@ export default function Home() {
                     size="large"
                     variant="filled"
                     startIcon={<SearchIcon />}
+                    style={{
+                      width: "100%",
+                      fontSize: isMobile ? "16px" : "18px"
+                    }}
                   />
                 </Box>
+                <Flex 
+                  gap={2}
+                  style={{
+                    flexDirection: isMobile ? "column" : "row",
+                    width: isMobile ? "100%" : "auto"
+                  }}
+                >
                   <Button
                     variant="primary"
                     size="large"
@@ -214,27 +249,30 @@ export default function Home() {
                     disabled={scanning || !url.trim()}
                     loading={scanning}
                     style={{
-                      minWidth: "140px",
+                      minWidth: isMobile ? "100%" : "140px",
                       backgroundColor: "#007AFF",
                       color: "white",
-                      borderRadius: "9999px"
+                      borderRadius: "9999px",
+                      height: isMobile ? "48px" : "auto"
                     }}
                   >
-                  {scanning ? "Scanning..." : "Scan Website"}
-                </Button>
-                {violations.length > 0 && (
-                  <Button
-                    variant="outline"
-                    size="large"
-                    onClick={clearResults}
-                    style={{
-                      minWidth: "120px",
-                      borderRadius: "9999px"
-                    }}
-                  >
-                    Clear Results
+                    {scanning ? "Scanning..." : "Scan Website"}
                   </Button>
-                )}
+                  {violations.length > 0 && (
+                    <Button
+                      variant="outline"
+                      size="large"
+                      onClick={clearResults}
+                      style={{
+                        minWidth: isMobile ? "100%" : "120px",
+                        borderRadius: "9999px",
+                        height: isMobile ? "48px" : "auto"
+                      }}
+                    >
+                      Clear Results
+                    </Button>
+                  )}
+                </Flex>
               </Flex>
               
               {/* Debug Display */}
@@ -282,17 +320,34 @@ export default function Home() {
           <Section padding="lg">
             {/* Score Summary */}
             <Card variant="elevated" padding="large" style={{ marginBottom: appleTheme.spacing[8] }}>
-              <Flex direction="row" align="center" justify="space-between" wrap="wrap" gap={6}>
-                <Box>
+              <Flex 
+                direction="row" 
+                align="center" 
+                justify="space-between" 
+                wrap="wrap" 
+                gap={6}
+                style={{
+                  flexDirection: isMobile ? "column" : "row",
+                  alignItems: isMobile ? "center" : "flex-start"
+                }}
+              >
+                <Box style={{ textAlign: isMobile ? "center" : "left" }}>
                   <Typography variant="title2" style={{ 
                     marginBottom: appleTheme.spacing[2],
-                    color: appleTheme.colors.text.primary
+                    color: appleTheme.colors.text.primary,
+                    fontSize: isMobile ? "20px" : "24px"
                   }}>
                     Accessibility Score
                   </Typography>
-                  <Flex align="center" gap={4}>
+                  <Flex 
+                    align="center" 
+                    gap={4}
+                    style={{
+                      justifyContent: isMobile ? "center" : "flex-start"
+                    }}
+                  >
                     <Box style={{ 
-                      fontSize: "48px", 
+                      fontSize: isMobile ? "36px" : "48px", 
                       fontWeight: appleTheme.typography.fontWeight.bold,
                       color: getScoreColor(accessibilityScore)
                     }}>
@@ -310,11 +365,30 @@ export default function Home() {
                 </Box>
                 
                 {/* Export Actions */}
-                <Flex gap={3}>
-                  <Button variant="outline" startIcon={<DownloadIcon />}>
+                <Flex 
+                  gap={3}
+                  style={{
+                    flexDirection: isMobile ? "column" : "row",
+                    width: isMobile ? "100%" : "auto"
+                  }}
+                >
+                  <Button 
+                    variant="outline" 
+                    startIcon={<DownloadIcon />}
+                    style={{
+                      width: isMobile ? "100%" : "auto"
+                    }}
+                  >
                     Download PDF
                   </Button>
-                  <Button variant="outline" startIcon={<EmailIcon />}>
+                  <Button 
+                    variant="outline" 
+                    startIcon={<EmailIcon />}
+                    onClick={() => setEmailDialogOpen(true)}
+                    style={{
+                      width: isMobile ? "100%" : "auto"
+                    }}
+                  >
                     Email Report
                   </Button>
                 </Flex>
@@ -330,17 +404,42 @@ export default function Home() {
               </Typography>
               
               {violations.map((violation, index) => (
-                <Card key={index} variant="outlined" padding="large">
+                <Card key={index} variant="outlined" padding="large" style={{
+                  marginBottom: appleTheme.spacing[4]
+                }}>
                   <Stack spacing={3}>
-                    <Flex align="flex-start" justify="space-between" gap={4}>
-                      <Box style={{ flex: 1 }}>
-                        <Flex align="center" gap={2} style={{ marginBottom: appleTheme.spacing[2] }}>
-                          <AlertIcon />
-                          <Typography variant="callout" weight="semibold" style={{
-                            color: isDarkMode ? '#FFFFFF' : '#000000'
-                          }}>
-                            {violation.help}
-                          </Typography>
+                    <Flex 
+                      align="flex-start" 
+                      justify="space-between" 
+                      gap={4}
+                      style={{
+                        flexDirection: isMobile ? "column" : "row"
+                      }}
+                    >
+                      <Box style={{ flex: 1, width: "100%" }}>
+                        <Flex 
+                          align="center" 
+                          gap={2} 
+                          style={{ 
+                            marginBottom: appleTheme.spacing[2],
+                            flexDirection: isMobile ? "column" : "row",
+                            alignItems: isMobile ? "flex-start" : "center"
+                          }}
+                        >
+                          <Flex align="center" gap={2} style={{ width: "100%" }}>
+                            <AlertIcon />
+                            <Typography 
+                              variant="callout" 
+                              weight="semibold" 
+                              style={{
+                                color: isDarkMode ? '#FFFFFF' : '#000000',
+                                fontSize: isMobile ? "14px" : "16px",
+                                flex: 1
+                              }}
+                            >
+                              {violation.help}
+                            </Typography>
+                          </Flex>
                           <Box style={{ 
                             padding: `${appleTheme.spacing[1]} ${appleTheme.spacing[2]}`,
                             backgroundColor: getStatusColor(violation.impact),
@@ -348,7 +447,8 @@ export default function Home() {
                             borderRadius: appleTheme.borderRadius.base,
                             fontSize: appleTheme.typography.fontSize.xs,
                             fontWeight: appleTheme.typography.fontWeight.semibold,
-                            textTransform: "uppercase"
+                            textTransform: "uppercase",
+                            alignSelf: isMobile ? "flex-start" : "center"
                           }}>
                             {violation.impact}
                           </Box>
