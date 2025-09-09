@@ -5,6 +5,7 @@ import Card from "../../components/apple/Card";
 import Input from "../../components/apple/Input";
 import { Container, Box, Flex, Stack, Section, HStack } from "../../components/apple/Layout";
 import { appleTheme } from "../../styles/apple-theme";
+import { useTheme } from "../../contexts/ThemeContext";
 
 // Icons
 const ContrastIcon = () => (
@@ -37,6 +38,7 @@ const RefreshIcon = () => (
 );
 
 export default function ColorContrastChecker() {
+  const { isDarkMode } = useTheme();
   const [foreground, setForeground] = useState("#000000");
   const [background, setBackground] = useState("#ffffff");
   const [contrastRatio, setContrastRatio] = useState(21);

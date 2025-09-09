@@ -1,6 +1,22 @@
 {
   "/_app": "pages/_app.js",
+  "/api-docs": "pages/api-docs.html",
   "/_error": "pages/_error.js",
+  "/about": "pages/about.html",
+  "/api/scan": "pages/api/scan.js",
+  "/": "pages/index.html",
+  "/api/send-report": "pages/api/send-report.js",
+  "/pricing": "pages/pricing.html",
+  "/resources": "pages/resources.html",
+  "/tools": "pages/tools.html",
+  "/articles/10-common-accessibility-issues": "pages/articles/10-common-accessibility-issues.html",
+  "/tools/alt-text-analyzer-apple": "pages/tools/alt-text-analyzer-apple.html",
+  "/tools/alt-text-analyzer": "pages/tools/alt-text-analyzer.html",
+  "/tools/color-contrast-apple": "pages/tools/color-contrast-apple.html",
+  "/tools/keyboard-navigator": "pages/tools/keyboard-navigator.html",
+  "/tools/color-contrast": "pages/tools/color-contrast.html",
+  "/tools/performance-audit": "pages/tools/performance-audit.html",
+  "/tools/screen-reader-simulator": "pages/tools/screen-reader-simulator.html",
   "/_document": "pages/_document.js",
-  "/pricing": "pages/pricing.js"
+  "/404": "pages/404.html"
 }
