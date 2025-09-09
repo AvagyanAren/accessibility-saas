@@ -31,30 +31,61 @@ export default async function handler(req, res) {
 
   let browser;
   try {
+    // Use Vercel's Playwright runtime
     browser = await chromium.launch({ 
       headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'] // For deployment environments
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-accelerated-2d-canvas',
+        '--no-first-run',
+        '--no-zygote',
+        '--disable-gpu'
+      ]
     });
-    const context = await browser.newContext();
+    
+    const context = await browser.newContext({
+      viewport: { width: 1280, height: 720 },
+      userAgent: 'Mozilla/5.0 (compatible; AccessibilityScanner/1.0)'
+    });
+    
     const page = await context.newPage();
 
     // Set a reasonable timeout
     await page.goto(url, { 
-      waitUntil: "networkidle",
+      waitUntil: "domcontentloaded",
       timeout: 30000 // 30 seconds timeout
     });
+
+    // Wait for page to be ready
+    await page.waitForLoadState('networkidle', { timeout: 10000 });
 
     // Run Axe inside the page
     const results = await new AxeBuilder({ page }).analyze();
 
     res.status(200).json(results);
   } catch (err) {
-    console.error("Scan error:", err);
+    console.error("Playwright scan error:", err);
+    
+    // Try fallback method if Playwright fails
+    try {
+      console.log("Attempting fallback scan method...");
+      const fallbackResponse = await fetch(`${process.env.VERCEL_URL || 'http://localhost:3000'}/api/scan-fallback?url=${encodeURIComponent(url)}`);
+      const fallbackData = await fallbackResponse.json();
+      
+      if (fallbackResponse.ok) {
+        console.log("Fallback scan successful");
+        return res.status(200).json(fallbackData);
+      }
+    } catch (fallbackErr) {
+      console.error("Fallback scan also failed:", fallbackErr);
+    }
     
     // Provide more specific error messages
     if (err.message.includes("browser") || err.message.includes("chromium")) {
       res.status(500).json({ 
-        error: "Browser not available. Please run 'npm run setup' to install required browsers." 
+        error: "Browser not available. This might be a temporary issue. Please try again." 
       });
     } else if (err.message.includes("timeout")) {
       res.status(408).json({ 
