@@ -32,13 +32,116 @@ export default async function handler(req, res) {
   // Try simple scanner first (no browser required)
   try {
     console.log("Attempting simple scan method...");
-    const simpleResponse = await fetch(`${process.env.VERCEL_URL || 'http://localhost:3000'}/api/scan-simple?url=${encodeURIComponent(url)}`);
-    const simpleData = await simpleResponse.json();
     
-    if (simpleResponse.ok) {
-      console.log("Simple scan successful");
-      return res.status(200).json(simpleData);
+    // Direct simple scan without internal API call
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; AccessibilityScanner/1.0)'
+      },
+      timeout: 30000
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
     }
+
+    const html = await response.text();
+    
+    // Basic accessibility analysis using regex
+    const violations = [];
+    
+    // Check for missing alt text on images
+    const imgRegex = /<img[^>]*(?!alt\s*=)[^>]*>/gi;
+    const images = html.match(imgRegex) || [];
+    images.forEach((img, index) => {
+      if (!img.includes('alt=')) {
+        violations.push({
+          id: 'image-alt',
+          impact: 'serious',
+          description: 'Images must have alternate text',
+          help: 'Ensure that image elements have alternate text',
+          nodes: [{
+            target: [`img:nth-of-type(${index + 1})`],
+            html: img
+          }]
+        });
+      }
+    });
+
+    // Check for missing form labels
+    const inputRegex = /<input[^>]*>/gi;
+    const inputs = html.match(inputRegex) || [];
+    inputs.forEach((input, index) => {
+      if (!input.includes('aria-label') && !input.includes('aria-labelledby')) {
+        const idMatch = input.match(/id="([^"]*)"/);
+        if (idMatch) {
+          const id = idMatch[1];
+          const labelRegex = new RegExp(`<label[^>]*for="${id}"[^>]*>`, 'i');
+          if (!labelRegex.test(html)) {
+            violations.push({
+              id: 'label',
+              impact: 'serious',
+              description: 'Form elements must have labels',
+              help: 'Ensure that form elements have labels',
+              nodes: [{
+                target: [`input:nth-of-type(${index + 1})`],
+                html: input
+              }]
+            });
+          }
+        }
+      }
+    });
+
+    // Check for missing lang attribute
+    if (!html.includes('lang=') && !html.includes('xml:lang=')) {
+      violations.push({
+        id: 'html-has-lang',
+        impact: 'serious',
+        description: 'HTML element must have a lang attribute',
+        help: 'Ensure the HTML element has a lang attribute',
+        nodes: [{
+          target: ['html'],
+          html: '<html>'
+        }]
+      });
+    }
+
+    // Check for missing title
+    if (!html.includes('<title>')) {
+      violations.push({
+        id: 'document-title',
+        impact: 'serious',
+        description: 'Documents must have a title element',
+        help: 'Ensure the document has a title element',
+        nodes: [{
+          target: ['head'],
+          html: '<head>'
+        }]
+      });
+    }
+
+    const results = {
+      violations: violations,
+      passes: [],
+      incomplete: [],
+      inapplicable: [],
+      testEngine: {
+        name: 'simple-accessibility-scanner',
+        version: '1.0.0'
+      },
+      testRunner: {
+        name: 'simple-scanner'
+      },
+      testEnvironment: {
+        userAgent: 'Mozilla/5.0 (compatible; AccessibilityScanner/1.0)',
+        windowWidth: 1280,
+        windowHeight: 720
+      }
+    };
+
+    console.log("Simple scan successful");
+    return res.status(200).json(results);
   } catch (simpleErr) {
     console.error("Simple scan failed:", simpleErr);
   }
