@@ -190,18 +190,24 @@ export default function Home() {
         <Container size="lg">
           <Box style={{ textAlign: "center" }}>
             <Typography variant="display" style={{ 
-              marginBottom: appleTheme.spacing[6],
+              marginBottom: isMobile ? appleTheme.spacing[4] : appleTheme.spacing[6],
               color: isDarkMode ? '#FFFFFF' : '#000000',
-              fontWeight: appleTheme.typography.fontWeight.bold
+              fontWeight: appleTheme.typography.fontWeight.bold,
+              fontSize: isMobile ? "28px" : "48px",
+              lineHeight: 1.1,
+              padding: isMobile ? "0 20px" : "0"
             }}>
               Website Accessibility Checker
             </Typography>
             <Typography variant="headline" weight="regular" style={{ 
               color: isDarkMode ? '#FFFFFF' : '#1C1C1E',
-              marginBottom: appleTheme.spacing[8],
+              marginBottom: isMobile ? appleTheme.spacing[6] : appleTheme.spacing[8],
               maxWidth: "600px",
-              margin: `0 auto ${appleTheme.spacing[8]} auto`,
-              fontWeight: appleTheme.typography.fontWeight.medium
+              margin: isMobile ? `0 auto ${appleTheme.spacing[6]} auto` : `0 auto ${appleTheme.spacing[8]} auto`,
+              fontWeight: appleTheme.typography.fontWeight.medium,
+              fontSize: isMobile ? "16px" : "20px",
+              lineHeight: 1.4,
+              padding: isMobile ? "0 20px" : "0"
             }}>
               Scan your website for accessibility issues and get actionable insights 
               to make your content accessible to everyone.
@@ -212,18 +218,21 @@ export default function Home() {
               maxWidth: "600px", 
               margin: "0 auto",
               width: "100%",
-              padding: "0 16px"
+              padding: isMobile ? "0 20px" : "0 16px"
             }}>
-              <Flex 
-                gap={3} 
-                align="stretch"
-                style={{
-                  flexDirection: isMobile ? "column" : "row"
-                }}
-              >
-                <Box style={{ flex: 1, width: "100%" }}>
+              <div style={{
+                display: "flex",
+                flexDirection: isMobile ? "column" : "row",
+                gap: isMobile ? "16px" : "12px",
+                alignItems: "stretch"
+              }}>
+                <div style={{ 
+                  flex: 1, 
+                  width: "100%",
+                  minWidth: 0
+                }}>
                   <Input
-                    placeholder="Enter website URL (e.g., https://example.com)"
+                    placeholder="Enter website URL"
                     value={url}
                     onChange={setUrl}
                     size="large"
@@ -231,17 +240,19 @@ export default function Home() {
                     startIcon={<SearchIcon />}
                     style={{
                       width: "100%",
-                      fontSize: isMobile ? "16px" : "18px"
+                      fontSize: isMobile ? "16px" : "18px",
+                      height: isMobile ? "48px" : "auto",
+                      minHeight: "48px"
                     }}
                   />
-                </Box>
-                <Flex 
-                  gap={2}
-                  style={{
-                    flexDirection: isMobile ? "column" : "row",
-                    width: isMobile ? "100%" : "auto"
-                  }}
-                >
+                </div>
+                <div style={{
+                  display: "flex",
+                  flexDirection: isMobile ? "column" : "row",
+                  gap: isMobile ? "12px" : "8px",
+                  width: isMobile ? "100%" : "auto",
+                  minWidth: isMobile ? "100%" : "auto"
+                }}>
                   <Button
                     variant="primary"
                     size="large"
@@ -249,11 +260,14 @@ export default function Home() {
                     disabled={scanning || !url.trim()}
                     loading={scanning}
                     style={{
-                      minWidth: isMobile ? "100%" : "140px",
+                      width: isMobile ? "100%" : "140px",
                       backgroundColor: "#007AFF",
                       color: "white",
                       borderRadius: "9999px",
-                      height: isMobile ? "48px" : "auto"
+                      height: "48px",
+                      minHeight: "48px",
+                      fontSize: isMobile ? "16px" : "18px",
+                      fontWeight: "600"
                     }}
                   >
                     {scanning ? "Scanning..." : "Scan Website"}
@@ -264,16 +278,18 @@ export default function Home() {
                       size="large"
                       onClick={clearResults}
                       style={{
-                        minWidth: isMobile ? "100%" : "120px",
+                        width: isMobile ? "100%" : "120px",
                         borderRadius: "9999px",
-                        height: isMobile ? "48px" : "auto"
+                        height: "48px",
+                        minHeight: "48px",
+                        fontSize: isMobile ? "16px" : "18px"
                       }}
                     >
                       Clear Results
                     </Button>
                   )}
-                </Flex>
-              </Flex>
+                </div>
+              </div>
               
               {/* Debug Display */}
               <Box style={{ marginTop: appleTheme.spacing[4] }}>
@@ -319,64 +335,74 @@ export default function Home() {
         {violations.length > 0 && (
           <Section padding="lg">
             {/* Score Summary */}
-            <Card variant="elevated" padding="large" style={{ marginBottom: appleTheme.spacing[8] }}>
-              <Flex 
-                direction="row" 
-                align="center" 
-                justify="space-between" 
-                wrap="wrap" 
-                gap={6}
-                style={{
-                  flexDirection: isMobile ? "column" : "row",
-                  alignItems: isMobile ? "center" : "flex-start"
-                }}
-              >
-                <Box style={{ textAlign: isMobile ? "center" : "left" }}>
+            <Card variant="elevated" padding="large" style={{ 
+              marginBottom: appleTheme.spacing[8],
+              padding: isMobile ? "20px" : "24px"
+            }}>
+              <div style={{
+                display: "flex",
+                flexDirection: isMobile ? "column" : "row",
+                alignItems: isMobile ? "center" : "flex-start",
+                justifyContent: isMobile ? "center" : "space-between",
+                gap: isMobile ? "20px" : "24px",
+                width: "100%"
+              }}>
+                <div style={{ 
+                  textAlign: isMobile ? "center" : "left",
+                  width: isMobile ? "100%" : "auto"
+                }}>
                   <Typography variant="title2" style={{ 
                     marginBottom: appleTheme.spacing[2],
                     color: appleTheme.colors.text.primary,
-                    fontSize: isMobile ? "20px" : "24px"
+                    fontSize: isMobile ? "20px" : "24px",
+                    fontWeight: "600"
                   }}>
                     Accessibility Score
                   </Typography>
-                  <Flex 
-                    align="center" 
-                    gap={4}
-                    style={{
-                      justifyContent: isMobile ? "center" : "flex-start"
-                    }}
-                  >
-                    <Box style={{ 
+                  <div style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "16px",
+                    justifyContent: isMobile ? "center" : "flex-start"
+                  }}>
+                    <div style={{ 
                       fontSize: isMobile ? "36px" : "48px", 
                       fontWeight: appleTheme.typography.fontWeight.bold,
-                      color: getScoreColor(accessibilityScore)
+                      color: getScoreColor(accessibilityScore),
+                      lineHeight: 1
                     }}>
                       {accessibilityScore}
-                    </Box>
-                    <Box>
-                      <Typography variant="body" color="secondary">
+                    </div>
+                    <div>
+                      <Typography variant="body" color="secondary" style={{
+                        fontSize: isMobile ? "14px" : "16px"
+                      }}>
                         out of 100
                       </Typography>
-                      <Typography variant="caption1" color="tertiary">
+                      <Typography variant="caption1" color="tertiary" style={{
+                        fontSize: isMobile ? "12px" : "14px"
+                      }}>
                         {violations.length} issues found
                       </Typography>
-                    </Box>
-                  </Flex>
-                </Box>
+                    </div>
+                  </div>
+                </div>
                 
                 {/* Export Actions */}
-                <Flex 
-                  gap={3}
-                  style={{
-                    flexDirection: isMobile ? "column" : "row",
-                    width: isMobile ? "100%" : "auto"
-                  }}
-                >
+                <div style={{
+                  display: "flex",
+                  flexDirection: isMobile ? "column" : "row",
+                  gap: isMobile ? "12px" : "12px",
+                  width: isMobile ? "100%" : "auto"
+                }}>
                   <Button 
                     variant="outline" 
                     startIcon={<DownloadIcon />}
                     style={{
-                      width: isMobile ? "100%" : "auto"
+                      width: isMobile ? "100%" : "auto",
+                      height: "44px",
+                      minHeight: "44px",
+                      fontSize: isMobile ? "16px" : "18px"
                     }}
                   >
                     Download PDF
@@ -386,12 +412,15 @@ export default function Home() {
                     startIcon={<EmailIcon />}
                     onClick={() => setEmailDialogOpen(true)}
                     style={{
-                      width: isMobile ? "100%" : "auto"
+                      width: isMobile ? "100%" : "auto",
+                      height: "44px",
+                      minHeight: "44px",
+                      fontSize: isMobile ? "16px" : "18px"
                     }}
                   >
                     Email Report
                   </Button>
-                </Flex>
+                </div>
               </Flex>
             </Card>
 
@@ -405,54 +434,67 @@ export default function Home() {
               
               {violations.map((violation, index) => (
                 <Card key={index} variant="outlined" padding="large" style={{
-                  marginBottom: appleTheme.spacing[4]
+                  marginBottom: appleTheme.spacing[4],
+                  padding: isMobile ? "16px" : "24px"
                 }}>
-                  <Stack spacing={3}>
-                    <Flex 
-                      align="flex-start" 
-                      justify="space-between" 
-                      gap={4}
-                      style={{
-                        flexDirection: isMobile ? "column" : "row"
-                      }}
-                    >
-                      <Box style={{ flex: 1, width: "100%" }}>
-                        <Flex 
-                          align="center" 
-                          gap={2} 
-                          style={{ 
-                            marginBottom: appleTheme.spacing[2],
-                            flexDirection: isMobile ? "column" : "row",
-                            alignItems: isMobile ? "flex-start" : "center"
-                          }}
-                        >
-                          <Flex align="center" gap={2} style={{ width: "100%" }}>
-                            <AlertIcon />
-                            <Typography 
-                              variant="callout" 
-                              weight="semibold" 
-                              style={{
-                                color: isDarkMode ? '#FFFFFF' : '#000000',
-                                fontSize: isMobile ? "14px" : "16px",
-                                flex: 1
-                              }}
-                            >
-                              {violation.help}
-                            </Typography>
-                          </Flex>
-                          <Box style={{ 
-                            padding: `${appleTheme.spacing[1]} ${appleTheme.spacing[2]}`,
-                            backgroundColor: getStatusColor(violation.impact),
-                            color: "white",
-                            borderRadius: appleTheme.borderRadius.base,
-                            fontSize: appleTheme.typography.fontSize.xs,
-                            fontWeight: appleTheme.typography.fontWeight.semibold,
-                            textTransform: "uppercase",
-                            alignSelf: isMobile ? "flex-start" : "center"
-                          }}>
-                            {violation.impact}
-                          </Box>
-                        </Flex>
+                  <div style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: isMobile ? "12px" : "16px"
+                  }}>
+                    <div style={{
+                      display: "flex",
+                      flexDirection: isMobile ? "column" : "row",
+                      alignItems: isMobile ? "flex-start" : "center",
+                      justifyContent: "space-between",
+                      gap: isMobile ? "12px" : "16px",
+                      width: "100%"
+                    }}>
+                      <div style={{ 
+                        flex: 1, 
+                        width: "100%",
+                        minWidth: 0
+                      }}>
+                        <div style={{ 
+                          display: "flex",
+                          alignItems: "flex-start",
+                          gap: "8px",
+                          marginBottom: isMobile ? "8px" : "12px"
+                        }}>
+                          <AlertIcon style={{
+                            width: isMobile ? "16px" : "20px",
+                            height: isMobile ? "16px" : "20px",
+                            flexShrink: 0,
+                            marginTop: "2px"
+                          }} />
+                          <Typography 
+                            variant="callout" 
+                            weight="semibold" 
+                            style={{
+                              color: isDarkMode ? '#FFFFFF' : '#000000',
+                              fontSize: isMobile ? "14px" : "16px",
+                              lineHeight: 1.4,
+                              flex: 1
+                            }}
+                          >
+                            {violation.help}
+                          </Typography>
+                        </div>
+                        <div style={{ 
+                          padding: isMobile ? "6px 12px" : "8px 16px",
+                          backgroundColor: getStatusColor(violation.impact),
+                          color: "white",
+                          borderRadius: "6px",
+                          fontSize: isMobile ? "11px" : "12px",
+                          fontWeight: "600",
+                          textTransform: "uppercase",
+                          alignSelf: "flex-start",
+                          display: "inline-block"
+                        }}>
+                          {violation.impact}
+                        </div>
+                      </div>
+                    </div>
                         
                         <Typography variant="footnote" style={{ 
                           marginBottom: appleTheme.spacing[3],
