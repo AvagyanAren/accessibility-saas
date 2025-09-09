@@ -9,7 +9,7 @@
       "memory": 512
     }
   },
-  "installCommand": "npm install && npx playwright install chromium --with-deps",
+  "installCommand": "npm install && npx playwright install chromium",
   "buildCommand": "npm run build",
   "outputDirectory": ".next"
 }
