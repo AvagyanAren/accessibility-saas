@@ -1,13 +1,15 @@
 {
   "functions": {
     "pages/api/scan.js": {
-      "maxDuration": 30
+      "maxDuration": 60,
+      "memory": 1024
+    },
+    "pages/api/send-report.js": {
+      "maxDuration": 30,
+      "memory": 512
     }
   },
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
-    }
-  ]
+  "installCommand": "npm install && npx playwright install chromium --with-deps",
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next"
 }
