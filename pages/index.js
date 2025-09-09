@@ -71,10 +71,6 @@ export default function Home() {
     }
   }, []);
 
-  // Debug violations state changes
-  useEffect(() => {
-    console.log('Violations state changed:', violations.length, violations);
-  }, [violations]);
 
   // Mobile detection
   useEffect(() => {
@@ -91,7 +87,6 @@ export default function Home() {
   const handleScan = async () => {
     if (!url.trim()) return;
     
-    console.log('Starting scan for URL:', url);
     setScanning(true);
     setViolations([]);
     setError("");
@@ -103,32 +98,20 @@ export default function Home() {
         scanUrl = 'https://' + scanUrl;
       }
       
-      console.log('Fetching from API:', scanUrl);
       const res = await fetch(`/api/scan?url=${encodeURIComponent(scanUrl)}`);
-      console.log('Response status:', res.status);
-      
       const data = await res.json();
-      console.log('Response data:', data);
       
       if (!res.ok) {
         throw new Error(data.error || 'Scan failed');
       }
       
       const newViolations = data.violations || [];
-      console.log('Violations found:', newViolations.length, newViolations);
       
       // Save results to localStorage
       localStorage.setItem('scanUrl', url.trim());
       localStorage.setItem('scanViolations', JSON.stringify(newViolations));
       
-      console.log('Setting violations state...');
       setViolations(newViolations);
-      console.log('State should be updated now');
-      
-      // Force a re-render by updating a dummy state
-      setTimeout(() => {
-        console.log('Current violations state:', violations);
-      }, 100);
       
     } catch (err) {
       console.error("Scan error:", err);
@@ -136,7 +119,6 @@ export default function Home() {
     }
 
     setScanning(false);
-    console.log('Scan completed, scanning set to false');
   };
 
   const clearResults = () => {
@@ -290,22 +272,6 @@ export default function Home() {
                   )}
                 </div>
               </div>
-              
-              {/* Debug Display */}
-              <Box style={{ marginTop: appleTheme.spacing[4] }}>
-                <Typography 
-                  variant="caption1" 
-                  style={{ 
-                    textAlign: "center",
-                    padding: appleTheme.spacing[2],
-                    backgroundColor: isDarkMode ? '#2C2C2E' : '#F2F2F7',
-                    borderRadius: appleTheme.borderRadius.small,
-                    fontSize: '12px'
-                  }}
-                >
-                  Debug: Violations count: {violations.length}, Scanning: {scanning ? 'true' : 'false'}
-                </Typography>
-              </Box>
 
               {/* Error Display */}
               {error && (
@@ -421,11 +387,11 @@ export default function Home() {
                     Email Report
                   </Button>
                 </div>
-              </Flex>
+              </div>
             </Card>
 
             {/* Violations List */}
-            <Stack spacing={4}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               <Typography variant="title3" style={{
                 color: isDarkMode ? '#FFFFFF' : '#000000'
               }}>
@@ -496,39 +462,41 @@ export default function Home() {
                       </div>
                     </div>
                         
-                        <Typography variant="footnote" style={{ 
-                          marginBottom: appleTheme.spacing[3],
-                          color: isDarkMode ? '#E5E5EA' : '#1C1C1E'
-                        }}>
-                          {violation.description}
-                        </Typography>
-                        
-                        {violation.nodes && violation.nodes.length > 0 && (
-                          <Box style={{
-                            backgroundColor: isDarkMode ? appleTheme.colors.dark.gray[200] : appleTheme.colors.gray[50],
-                            padding: appleTheme.spacing[3],
-                            borderRadius: appleTheme.borderRadius.md,
-                            fontFamily: appleTheme.typography.fontFamily.mono,
-                            fontSize: appleTheme.typography.fontSize.sm,
-                            color: isDarkMode ? '#E5E5EA' : '#1C1C1E',
-                            overflowX: "auto"
-                          }}>
-                            {violation.nodes[0].html}
-                          </Box>
-                        )}
+                    <Typography variant="footnote" style={{ 
+                      marginBottom: appleTheme.spacing[3],
+                      color: isDarkMode ? '#E5E5EA' : '#1C1C1E'
+                    }}>
+                      {violation.description}
+                    </Typography>
+                    
+                    {violation.nodes && violation.nodes.length > 0 && (
+                      <Box style={{
+                        backgroundColor: isDarkMode ? appleTheme.colors.dark.gray[200] : appleTheme.colors.gray[50],
+                        padding: appleTheme.spacing[3],
+                        borderRadius: appleTheme.borderRadius.md,
+                        fontFamily: appleTheme.typography.fontFamily.mono,
+                        fontSize: appleTheme.typography.fontSize.sm,
+                        color: isDarkMode ? '#E5E5EA' : '#1C1C1E',
+                        overflowX: "auto"
+                      }}>
+                        {violation.nodes[0].html}
                       </Box>
-                    </Flex>
+                    )}
                     
                     {/* Fix Suggestion */}
-                    <Box style={{
+                    <div style={{
                       backgroundColor: isDarkMode ? appleTheme.colors.dark.gray[200] : appleTheme.colors.primary[50],
                       padding: appleTheme.spacing[3],
                       borderRadius: appleTheme.borderRadius.md,
                       borderLeft: `4px solid ${appleTheme.colors.primary[500]}`
                     }}>
-                      <Flex align="flex-start" gap={2}>
+                      <div style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        gap: "8px"
+                      }}>
                         <CheckIcon style={{ color: isDarkMode ? '#30D158' : appleTheme.colors.success }} />
-                        <Box>
+                        <div>
                           <Typography variant="footnote" weight="semibold" style={{ 
                             marginBottom: appleTheme.spacing[1],
                             color: isDarkMode ? '#FFFFFF' : '#000000'
@@ -541,13 +509,13 @@ export default function Home() {
                             Review the element and ensure it follows accessibility best practices. 
                             Check WCAG guidelines for specific requirements.
                           </Typography>
-                        </Box>
-                      </Flex>
-                    </Box>
-                  </Stack>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </Card>
               ))}
-            </Stack>
+            </div>
           </Section>
         )}
 
