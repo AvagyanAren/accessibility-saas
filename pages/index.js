@@ -87,17 +87,21 @@ export default function Home() {
       const res = await fetch(`/api/scan?url=${encodeURIComponent(scanUrl)}`);
       const data = await res.json();
       
+      console.log('Scan response:', res.status, data);
+      
       if (!res.ok) {
         throw new Error(data.error || 'Scan failed');
       }
       
       const newViolations = data.violations || [];
+      console.log('Violations found:', newViolations.length, newViolations);
       
       // Save results to localStorage
       localStorage.setItem('scanUrl', url.trim());
       localStorage.setItem('scanViolations', JSON.stringify(newViolations));
       
       setViolations(newViolations);
+      console.log('State updated with violations');
     } catch (err) {
       console.error("Scan error:", err);
       setError(err.message || "Failed to scan website. Please try again.");
@@ -217,6 +221,22 @@ export default function Home() {
                 )}
               </Flex>
               
+              {/* Debug Display */}
+              <Box style={{ marginTop: appleTheme.spacing[4] }}>
+                <Typography 
+                  variant="caption1" 
+                  style={{ 
+                    textAlign: "center",
+                    padding: appleTheme.spacing[2],
+                    backgroundColor: isDarkMode ? '#2C2C2E' : '#F2F2F7',
+                    borderRadius: appleTheme.borderRadius.small,
+                    fontSize: '12px'
+                  }}
+                >
+                  Debug: Violations count: {violations.length}, Scanning: {scanning ? 'true' : 'false'}
+                </Typography>
+              </Box>
+
               {/* Error Display */}
               {error && (
                 <Box style={{ marginTop: appleTheme.spacing[4] }}>
