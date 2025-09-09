@@ -50,6 +50,7 @@ export default function Home() {
   const [violations, setViolations] = useState([]);
   const [scanning, setScanning] = useState(false);
   const [emailDialogOpen, setEmailDialogOpen] = useState(false);
+  const [error, setError] = useState("");
 
   // Load saved scan results on component mount
   useEffect(() => {
@@ -74,6 +75,7 @@ export default function Home() {
     
     setScanning(true);
     setViolations([]);
+    setError("");
 
     try {
       // Add protocol if missing
@@ -84,6 +86,11 @@ export default function Home() {
       
       const res = await fetch(`/api/scan?url=${encodeURIComponent(scanUrl)}`);
       const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.error || 'Scan failed');
+      }
+      
       const newViolations = data.violations || [];
       
       // Save results to localStorage
@@ -93,7 +100,7 @@ export default function Home() {
       setViolations(newViolations);
     } catch (err) {
       console.error("Scan error:", err);
-      // Could add a toast notification here
+      setError(err.message || "Failed to scan website. Please try again.");
     }
 
     setScanning(false);
@@ -102,6 +109,7 @@ export default function Home() {
   const clearResults = () => {
     setUrl("");
     setViolations([]);
+    setError("");
     localStorage.removeItem('scanUrl');
     localStorage.removeItem('scanViolations');
   };
@@ -208,6 +216,25 @@ export default function Home() {
                   </Button>
                 )}
               </Flex>
+              
+              {/* Error Display */}
+              {error && (
+                <Box style={{ marginTop: appleTheme.spacing[4] }}>
+                  <Typography 
+                    variant="body" 
+                    color="error"
+                    style={{ 
+                      textAlign: "center",
+                      padding: appleTheme.spacing[3],
+                      backgroundColor: isDarkMode ? '#FF3B30' : '#FFEBEE',
+                      borderRadius: appleTheme.borderRadius.medium,
+                      border: `1px solid ${isDarkMode ? '#FF3B30' : '#FFCDD2'}`
+                    }}
+                  >
+                    {error}
+                  </Typography>
+                </Box>
+              )}
             </Box>
           </Box>
         </Container>
