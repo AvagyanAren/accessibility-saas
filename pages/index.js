@@ -70,9 +70,15 @@ export default function Home() {
     }
   }, []);
 
+  // Debug violations state changes
+  useEffect(() => {
+    console.log('Violations state changed:', violations.length, violations);
+  }, [violations]);
+
   const handleScan = async () => {
     if (!url.trim()) return;
     
+    console.log('Starting scan for URL:', url);
     setScanning(true);
     setViolations([]);
     setError("");
@@ -84,10 +90,12 @@ export default function Home() {
         scanUrl = 'https://' + scanUrl;
       }
       
+      console.log('Fetching from API:', scanUrl);
       const res = await fetch(`/api/scan?url=${encodeURIComponent(scanUrl)}`);
-      const data = await res.json();
+      console.log('Response status:', res.status);
       
-      console.log('Scan response:', res.status, data);
+      const data = await res.json();
+      console.log('Response data:', data);
       
       if (!res.ok) {
         throw new Error(data.error || 'Scan failed');
@@ -100,14 +108,22 @@ export default function Home() {
       localStorage.setItem('scanUrl', url.trim());
       localStorage.setItem('scanViolations', JSON.stringify(newViolations));
       
+      console.log('Setting violations state...');
       setViolations(newViolations);
-      console.log('State updated with violations');
+      console.log('State should be updated now');
+      
+      // Force a re-render by updating a dummy state
+      setTimeout(() => {
+        console.log('Current violations state:', violations);
+      }, 100);
+      
     } catch (err) {
       console.error("Scan error:", err);
       setError(err.message || "Failed to scan website. Please try again.");
     }
 
     setScanning(false);
+    console.log('Scan completed, scanning set to false');
   };
 
   const clearResults = () => {
