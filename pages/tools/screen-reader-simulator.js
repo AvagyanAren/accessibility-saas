@@ -18,7 +18,7 @@ import {
 } from "@mui/icons-material";
 import Link from "next/link";
 
-const { Container, Section } = require("../components/apple/Layout");
+import { Container, Section } from "../../components/apple/Layout";
 
 export default function ScreenReaderSimulator() {
   const [url, setUrl] = useState("");
@@ -44,7 +44,7 @@ export default function ScreenReaderSimulator() {
         overallScore: 82,
         totalElements: 45,
         accessibleElements: 37,
-        issues: 8,
+        issueCount: 8,
         screenReaderOutput: [
           "Heading level 1: Welcome to our website",
           "Navigation landmark: Main navigation",
@@ -282,7 +282,7 @@ export default function ScreenReaderSimulator() {
                   fontWeight: appleTheme.typography.fontWeight.bold,
                   marginBottom: appleTheme.spacing[2]
                 }}>
-                  {results.issues}
+                  {results.issueCount}
                 </Typography>
                 <Typography variant="body" style={{ color: appleTheme.colors.text.secondary }}>
                   Issues Found

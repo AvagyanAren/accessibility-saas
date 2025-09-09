@@ -18,7 +18,7 @@ import {
 } from "@mui/icons-material";
 import Link from "next/link";
 
-const { Container, Section } = require("../components/apple/Layout");
+import { Container, Section } from "../../components/apple/Layout";
 
 export default function PerformanceAudit() {
   const [url, setUrl] = useState("");
