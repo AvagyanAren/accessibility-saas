@@ -106,6 +106,15 @@ const ChevronUpIcon = memo(() => (
   </svg>
 ));
 
+const ClearIcon = memo(({ color = "currentColor" }) => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" aria-hidden="true">
+    <polyline points="3,6 5,6 21,6"/>
+    <path d="m19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"/>
+    <line x1="10" y1="11" x2="10" y2="17"/>
+    <line x1="14" y1="11" x2="14" y2="17"/>
+  </svg>
+));
+
 // Violation Card Component with Apple-style Accordion functionality
 const ViolationCard = ({ violation, isDarkMode, getStatusColor }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -122,17 +131,28 @@ const ViolationCard = ({ violation, isDarkMode, getStatusColor }) => {
         overflow: "hidden",
         minHeight: "120px",
         display: "flex",
-        flexDirection: "column"
+        flexDirection: "column",
+        position: "relative",
+        zIndex: 1,
+        height: "auto",
+        contain: "layout style"
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.15)";
-        e.currentTarget.style.transform = "translateY(-2px)";
+        e.currentTarget.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.15)";
+        e.currentTarget.style.transform = "translateY(-3px)";
+        e.currentTarget.style.borderColor = "#007AFF";
+        e.currentTarget.style.backgroundColor = "#F8F9FA";
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
         e.currentTarget.style.transform = "translateY(0)";
+        e.currentTarget.style.borderColor = "#E5E5EA";
+        e.currentTarget.style.backgroundColor = "#FFFFFF";
       }}
-      onClick={() => setIsExpanded(!isExpanded)}
+      onClick={() => {
+        console.log(`Card ${violation.id || 'unknown'} clicked, current state:`, isExpanded);
+        setIsExpanded(!isExpanded);
+      }}
     >
       {/* Header - Always Visible */}
       <div style={{
@@ -248,13 +268,14 @@ const ViolationCard = ({ violation, isDarkMode, getStatusColor }) => {
       </div>
       
       {/* Expandable Content */}
-      {isExpanded && (
+      {isExpanded ? (
         <div style={{
           borderTop: "1px solid #F2F2F7",
           backgroundColor: "#FAFAFA",
           animation: "fadeIn 0.3s ease-in-out",
           flex: "0 0 auto",
-          overflow: "visible"
+          overflow: "visible",
+          display: "block"
         }}>
           <div style={{ padding: "20px" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -271,35 +292,51 @@ const ViolationCard = ({ violation, isDarkMode, getStatusColor }) => {
                   }}>
                     Code
                   </Typography>
-                  <div style={{
-                    backgroundColor: "#FFFFFF",
-                    padding: "16px",
-                    borderRadius: "8px",
-                    fontFamily: "'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace",
-                    fontSize: "12px",
-                    color: "#1C1C1E",
-                    overflowX: "auto",
-                    border: "1px solid #E5E5EA",
-                    lineHeight: 1.6,
-                    textAlign: "left",
-                    whiteSpace: "pre-wrap",
-                    wordBreak: "break-word",
-                    maxHeight: "200px",
-                    overflowY: "auto"
-                  }}>
+                  <div 
+                    style={{
+                      backgroundColor: "#FFFFFF",
+                      padding: "16px",
+                      borderRadius: "8px",
+                      fontFamily: "'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace",
+                      fontSize: "12px",
+                      color: "#1C1C1E",
+                      overflowX: "auto",
+                      border: "1px solid #E5E5EA",
+                      lineHeight: 1.6,
+                      textAlign: "left",
+                      whiteSpace: "pre-wrap",
+                      wordBreak: "break-word",
+                      maxHeight: "200px",
+                      overflowY: "auto",
+                      userSelect: "text",
+                      cursor: "text"
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                    }}
+                  >
                     {violation.nodes[0].html}
                   </div>
                 </div>
               )}
               
               {/* How to Fix Section */}
-              <div style={{
-                backgroundColor: "#FFFFFF",
-                padding: "16px",
-                borderRadius: "12px",
-                border: "1px solid #E3F2FD",
-                borderLeft: "4px solid #007AFF"
-              }}>
+              <div 
+                style={{
+                  backgroundColor: "#FFFFFF",
+                  padding: "16px",
+                  borderRadius: "12px",
+                  border: "1px solid #E3F2FD",
+                  borderLeft: "4px solid #007AFF",
+                  userSelect: "text",
+                  cursor: "text"
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                }}
+              >
                 <div style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
                   <div style={{
                     padding: "6px",
@@ -338,7 +375,7 @@ const ViolationCard = ({ violation, isDarkMode, getStatusColor }) => {
             </div>
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 };
@@ -368,23 +405,12 @@ export default function Home() {
       const now = Date.now();
       const isDataExpired = savedTimestamp && (now - parseInt(savedTimestamp)) > TIMEOUT_DURATION;
       
-      // Debug logging
-      if (savedTimestamp) {
-        const timestamp = parseInt(savedTimestamp);
-        const timeDiff = now - timestamp;
-        const minutesDiff = Math.floor(timeDiff / (1000 * 60));
-        console.log(`Cache check: ${minutesDiff} minutes since last scan, timeout: ${TIMEOUT_DURATION / (1000 * 60)} minutes`);
-        console.log(`Timestamp: ${timestamp}, Now: ${now}, Diff: ${timeDiff}ms`);
-      } else {
-        console.log('No timestamp found in cache');
-      }
       
       if (isDataExpired) {
         // Clear expired data
         localStorage.removeItem('scanUrl');
         localStorage.removeItem('scanViolations');
         localStorage.removeItem('scanTimestamp');
-        console.log('Previous scan data expired and cleared');
         return;
       }
       
@@ -701,34 +727,6 @@ export default function Home() {
     </Button>
               </div>
               
-              {/* Clear Results Button - appears below when there are results */}
-      {violations.length > 0 && (
-                <div style={{
-    display: "flex",
-                  justifyContent: "center",
-                  marginTop: "16px"
-                }}>
-                  <Button
-                    variant="outline"
-                    size="large"
-                    onClick={clearResults}
-                    style={{
-                      minWidth: "140px",
-                      height: "44px",
-                      minHeight: "44px",
-                      backgroundColor: "transparent",
-                      color: "#007AFF",
-                      border: "2px solid #007AFF",
-                      borderRadius: "12px",
-                      fontSize: "16px",
-                      fontWeight: "600",
-                      padding: "12px 24px"
-                    }}
-                  >
-                    Clear Results
-                  </Button>
-                </div>
-              )}
 
               {/* Error Display */}
               {error && (
@@ -749,9 +747,9 @@ export default function Home() {
         </Box>
       )}
             </Box>
-            
+
             {/* Results Section - positioned right after search section */}
-            {violations.length > 0 && (
+      {violations.length > 0 && (
               <Box style={{ 
                 marginTop: isMobile ? appleTheme.spacing[8] : appleTheme.spacing[12],
                 maxWidth: "1200px",
@@ -805,7 +803,7 @@ export default function Home() {
                       letterSpacing: "-0.5px"
                     }}>
                       Accessibility Score
-                    </Typography>
+          </Typography>
                     <div style={{
                       display: "flex",
                       alignItems: "center",
@@ -833,7 +831,7 @@ export default function Home() {
                           fontWeight: "500"
                         }}>
                           out of 100
-                        </Typography>
+          </Typography>
                         <div style={{
                           display: "flex",
                           alignItems: "center",
@@ -851,7 +849,7 @@ export default function Home() {
                             fontWeight: "500"
                           }}>
                             {violations.length} {violations.length === 1 ? 'issue' : 'issues'} found
-  </Typography>
+          </Typography>
                         </div>
                       </div>
                     </div>
@@ -865,6 +863,7 @@ export default function Home() {
                     gap: "8px",
                     flexShrink: 0
                   }}>
+                    <div style={{ display: "flex", gap: "8px" }}>
                     <button 
                       style={{
                         height: "32px",
@@ -911,7 +910,7 @@ export default function Home() {
                         fontSize: "13px",
                         fontWeight: "500",
                         padding: "6px 12px",
-                  display: "flex",
+                display: "flex",
                   alignItems: "center",
                         justifyContent: "center",
                         gap: "4px",
@@ -936,6 +935,38 @@ export default function Home() {
                       <EmailIcon style={{ width: "14px", height: "14px" }} />
                       Email Report
                     </button>
+                    </div>
+                    <button 
+                      onClick={clearResults}
+                      style={{
+                        height: "32px",
+                        backgroundColor: "transparent",
+                        color: "#1C1C1E",
+                        border: "none",
+                        borderRadius: "6px",
+                        fontSize: "13px",
+                        fontWeight: "500",
+                        padding: "6px 12px",
+                  display: "flex",
+                  alignItems: "center",
+                        justifyContent: "center",
+                        gap: "4px",
+                        cursor: "pointer",
+                        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                        fontFamily: "inherit"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = "#F0F8FF";
+                        e.target.style.transform = "translateY(-1px)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = "transparent";
+                        e.target.style.transform = "translateY(0)";
+                      }}
+                    >
+                      <ClearIcon color="#FF3B30" style={{ width: "14px", height: "14px" }} />
+                      Clear Results
+                    </button>
                   </div>
                 </div>
 
@@ -949,45 +980,6 @@ export default function Home() {
                   }}>
                     Accessibility Issues ({violations.length})
                   </Typography>
-                  {dataFromCache && (
-                    <div style={{
-                      padding: "2px 6px",
-                      backgroundColor: "#E3F2FD",
-                      color: "#1976D2",
-                      borderRadius: "4px",
-                      fontSize: "11px",
-                      fontWeight: "500",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.5px"
-                    }}>
-                      Cached
-                    </div>
-                  )}
-                  {/* Debug: Manual clear button - remove in production */}
-                  {process.env.NODE_ENV === 'development' && (
-                    <button
-                      onClick={() => {
-                        localStorage.removeItem('scanUrl');
-                        localStorage.removeItem('scanViolations');
-                        localStorage.removeItem('scanTimestamp');
-                        setUrl("");
-                        setViolations([]);
-                        setDataFromCache(false);
-                        console.log('Cache manually cleared');
-                      }}
-                      style={{
-                        padding: "2px 6px",
-                        backgroundColor: "#FFEBEE",
-                        color: "#D32F2F",
-                        border: "1px solid #FFCDD2",
-                        borderRadius: "4px",
-                        fontSize: "10px",
-                        cursor: "pointer"
-                      }}
-                    >
-                      Clear Cache
-                    </button>
-                  )}
                 </div>
 
                 {/* Violations Grid */}
@@ -995,14 +987,15 @@ export default function Home() {
                   display: "grid",
                   gridTemplateColumns: isMobile 
                     ? "1fr" 
-                    : "repeat(auto-fit, minmax(350px, 1fr))",
+                    : "repeat(auto-fit, minmax(300px, 1fr))",
                   gap: isMobile ? "12px" : "20px",
                   maxWidth: "100%",
-                  width: "100%"
+                  width: "100%",
+                  alignItems: "start"
                 }}>
                   {violations.map((violation, index) => (
                     <ViolationCard 
-                      key={index} 
+                      key={`violation-${index}-${violation.id || 'unknown'}`} 
                       violation={violation} 
                       isDarkMode={isDarkMode}
                       getStatusColor={getStatusColor}
