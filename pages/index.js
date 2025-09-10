@@ -362,9 +362,22 @@ export default function Home() {
       const savedTimestamp = localStorage.getItem('scanTimestamp');
       
       // Check if data is older than 30 minutes (1800000 ms)
-      const TIMEOUT_DURATION = 30 * 60 * 1000; // 30 minutes
+      // const TIMEOUT_DURATION = 30 * 60 * 1000; // 30 minutes
+      // For testing: 10 seconds timeout
+      const TIMEOUT_DURATION = 10 * 1000; // 10 seconds for testing
       const now = Date.now();
       const isDataExpired = savedTimestamp && (now - parseInt(savedTimestamp)) > TIMEOUT_DURATION;
+      
+      // Debug logging
+      if (savedTimestamp) {
+        const timestamp = parseInt(savedTimestamp);
+        const timeDiff = now - timestamp;
+        const minutesDiff = Math.floor(timeDiff / (1000 * 60));
+        console.log(`Cache check: ${minutesDiff} minutes since last scan, timeout: ${TIMEOUT_DURATION / (1000 * 60)} minutes`);
+        console.log(`Timestamp: ${timestamp}, Now: ${now}, Diff: ${timeDiff}ms`);
+      } else {
+        console.log('No timestamp found in cache');
+      }
       
       if (isDataExpired) {
         // Clear expired data
@@ -949,6 +962,31 @@ export default function Home() {
                     }}>
                       Cached
                     </div>
+                  )}
+                  {/* Debug: Manual clear button - remove in production */}
+                  {process.env.NODE_ENV === 'development' && (
+                    <button
+                      onClick={() => {
+                        localStorage.removeItem('scanUrl');
+                        localStorage.removeItem('scanViolations');
+                        localStorage.removeItem('scanTimestamp');
+                        setUrl("");
+                        setViolations([]);
+                        setDataFromCache(false);
+                        console.log('Cache manually cleared');
+                      }}
+                      style={{
+                        padding: "2px 6px",
+                        backgroundColor: "#FFEBEE",
+                        color: "#D32F2F",
+                        border: "1px solid #FFCDD2",
+                        borderRadius: "4px",
+                        fontSize: "10px",
+                        cursor: "pointer"
+                      }}
+                    >
+                      Clear Cache
+                    </button>
                   )}
                 </div>
 
