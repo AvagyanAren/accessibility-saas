@@ -3,7 +3,7 @@ import { chromium } from "playwright";
 import AxeBuilder from "@axe-core/playwright";
 
 // Helper function to analyze HTML for accessibility issues
-function analyzeHTML(html) {
+const analyzeHTML = (html) => {
   const violations = [];
   
   // Check for missing alt text on images
@@ -78,7 +78,28 @@ function analyzeHTML(html) {
   }
 
   return violations;
-}
+};
+
+// Simple in-memory rate limiting (for production, use Redis)
+const rateLimitMap = new Map();
+const RATE_LIMIT_WINDOW = 60000; // 1 minute
+const RATE_LIMIT_MAX_REQUESTS = 10; // 10 requests per minute per IP
+
+const rateLimit = (ip) => {
+  const now = Date.now();
+  const requests = rateLimitMap.get(ip) || [];
+  
+  // Remove old requests outside the window
+  const validRequests = requests.filter(time => now - time < RATE_LIMIT_WINDOW);
+  
+  if (validRequests.length >= RATE_LIMIT_MAX_REQUESTS) {
+    return false;
+  }
+  
+  validRequests.push(now);
+  rateLimitMap.set(ip, validRequests);
+  return true;
+};
 
 export default async function handler(req, res) {
   // Set CORS headers for Next.js 15
@@ -97,12 +118,39 @@ export default async function handler(req, res) {
     res.status(405).json({ error: 'Method not allowed' });
     return;
   }
+
+  // Rate limiting
+  const clientIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'unknown';
+  if (!rateLimit(clientIP)) {
+    res.status(429).json({ error: 'Too many requests. Please try again later.' });
+    return;
+  }
   const { url } = req.query;
   if (!url) return res.status(400).json({ error: "URL required" });
 
-  // Validate URL format
+  // Validate URL format and security
   try {
-    new URL(url);
+    const urlObj = new URL(url);
+    
+    // Block private/internal IPs for security
+    const privateIPs = [
+      '127.0.0.1', 'localhost', '0.0.0.0',
+      '10.', '172.16.', '172.17.', '172.18.', '172.19.',
+      '172.20.', '172.21.', '172.22.', '172.23.',
+      '172.24.', '172.25.', '172.26.', '172.27.',
+      '172.28.', '172.29.', '172.30.', '172.31.',
+      '192.168.'
+    ];
+    
+    if (privateIPs.some(ip => urlObj.hostname.startsWith(ip))) {
+      return res.status(400).json({ error: "Private/internal URLs are not allowed" });
+    }
+    
+    // Only allow HTTP/HTTPS protocols
+    if (!['http:', 'https:'].includes(urlObj.protocol)) {
+      return res.status(400).json({ error: "Only HTTP and HTTPS URLs are allowed" });
+    }
+    
   } catch {
     return res.status(400).json({ error: "Invalid URL format" });
   }
@@ -112,28 +160,35 @@ export default async function handler(req, res) {
     // Direct simple scan without internal API call
     const response = await fetch(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; AccessibilityScanner/1.0)',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.5',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9,ru;q=0.8',
         'Accept-Encoding': 'gzip, deflate, br',
-        'DNT': '1',
-        'Connection': 'keep-alive',
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache',
+        'Sec-Fetch-Dest': 'document',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'none',
         'Upgrade-Insecure-Requests': '1'
       },
       redirect: 'follow',
-      timeout: 30000
+      timeout: 10000 // Reduced timeout for faster failure detection
     });
 
     if (!response.ok) {
       // Handle specific HTTP status codes
       if (response.status === 498) {
-        throw new Error('This website (Alibaba) has anti-bot protection. Try scanning a different website like example.com, github.com, or stackoverflow.com.');
+        throw new Error('This website has anti-bot protection. Try scanning a different website like example.com, github.com, or stackoverflow.com.');
       } else if (response.status === 403) {
-        throw new Error('Website blocked the request (HTTP 403). Try a different website.');
+        throw new Error('Website blocked the request (HTTP 403). This might be a private/restricted area. Try a public page instead.');
+      } else if (response.status === 401) {
+        throw new Error('Authentication required (HTTP 401). This page requires login. Try a public page instead.');
       } else if (response.status === 429) {
         throw new Error('Too many requests (HTTP 429). Please try again later.');
+      } else if (response.status === 404) {
+        throw new Error('Page not found (HTTP 404). Please check the URL and try again.');
       } else {
-        throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+        throw new Error(`HTTP ${response.status} - ${response.statusText}. This might be a restricted or private page.`);
       }
     }
 
@@ -238,10 +293,16 @@ export default async function handler(req, res) {
 
     await page.goto(url, { 
       waitUntil: "domcontentloaded",
-      timeout: 30000
+      timeout: 20000
     });
 
-    await page.waitForLoadState('networkidle', { timeout: 10000 });
+    // Wait for page to be ready, but don't wait too long
+    try {
+      await page.waitForLoadState('networkidle', { timeout: 5000 });
+    } catch (e) {
+      // If networkidle times out, continue anyway
+      console.log("Network idle timeout, continuing with scan");
+    }
 
     const results = await new AxeBuilder({ page }).analyze();
     res.status(200).json(results);

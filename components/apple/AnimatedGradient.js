@@ -54,7 +54,7 @@ const AnimatedGradient = ({ variant = 'default', intensity = 'medium' }) => {
   };
 
   const config = getGradientConfig();
-  const intensityMultiplier = intensity === 'high' ? 1.5 : intensity === 'low' ? 0.5 : 1;
+  const intensityMultiplier = intensity === 'high' ? 1.2 : intensity === 'low' ? 0.3 : 0.8;
 
   return (
     <>
@@ -66,7 +66,7 @@ const AnimatedGradient = ({ variant = 'default', intensity = 'medium' }) => {
         height: "200%",
         background: config.primary,
         animation: config.animation1,
-        filter: `blur(${2 * intensityMultiplier}px)`,
+        filter: `blur(${1 * intensityMultiplier}px)`,
         zIndex: 0
       }} />
       
@@ -78,7 +78,7 @@ const AnimatedGradient = ({ variant = 'default', intensity = 'medium' }) => {
         height: `${50 * intensityMultiplier}%`,
         background: config.secondary,
         animation: config.animation2,
-        filter: `blur(${3 * intensityMultiplier}px)`,
+        filter: `blur(${1.5 * intensityMultiplier}px)`,
         zIndex: 0
       }} />
       
@@ -90,7 +90,7 @@ const AnimatedGradient = ({ variant = 'default', intensity = 'medium' }) => {
         height: `${70 * intensityMultiplier}%`,
         background: config.tertiary,
         animation: config.animation3,
-        filter: `blur(${2 * intensityMultiplier}px)`,
+        filter: `blur(${1 * intensityMultiplier}px)`,
         zIndex: 0
       }} />
     </>

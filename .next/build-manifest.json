@@ -1,117 +1,37 @@
 {
   "polyfillFiles": [
-    "static/chunks/polyfills-42372ed130431b0a.js"
+    "static/chunks/polyfills.js"
   ],
-  "devFiles": [],
+  "devFiles": [
+    "static/chunks/react-refresh.js"
+  ],
   "ampDevFiles": [],
   "lowPriorityFiles": [
-    "static/CibEpjtYtY8mf1fJBGbva/_buildManifest.js",
-    "static/CibEpjtYtY8mf1fJBGbva/_ssgManifest.js"
+    "static/development/_buildManifest.js",
+    "static/development/_ssgManifest.js"
   ],
   "rootMainFiles": [],
   "rootMainFilesTree": {},
   "pages": {
     "/": [
-      "static/chunks/webpack-b853b9dae6afc149.js",
-      "static/chunks/framework-a6e0b7e30f98059a.js",
-      "static/chunks/main-29c3f94fd6cccdd7.js",
-      "static/chunks/pages/index-e9d85f1873e0b51e.js"
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/index.js"
     ],
     "/_app": [
-      "static/chunks/webpack-b853b9dae6afc149.js",
-      "static/chunks/framework-a6e0b7e30f98059a.js",
-      "static/chunks/main-29c3f94fd6cccdd7.js",
-      "static/css/60a2d52f2b576dd8.css",
-      "static/chunks/pages/_app-12e905db9755a21c.js"
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/_app.js"
     ],
     "/_error": [
-      "static/chunks/webpack-b853b9dae6afc149.js",
-      "static/chunks/framework-a6e0b7e30f98059a.js",
-      "static/chunks/main-29c3f94fd6cccdd7.js",
-      "static/chunks/pages/_error-cf5db1610f7a1281.js"
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/_error.js"
     ],
     "/about": [
-      "static/chunks/webpack-b853b9dae6afc149.js",
-      "static/chunks/framework-a6e0b7e30f98059a.js",
-      "static/chunks/main-29c3f94fd6cccdd7.js",
-      "static/chunks/pages/about-716f7be290590e5a.js"
-    ],
-    "/api-docs": [
-      "static/chunks/webpack-b853b9dae6afc149.js",
-      "static/chunks/framework-a6e0b7e30f98059a.js",
-      "static/chunks/main-29c3f94fd6cccdd7.js",
-      "static/chunks/pages/api-docs-2daeff56944fd45f.js"
-    ],
-    "/articles/10-common-accessibility-issues": [
-      "static/chunks/webpack-b853b9dae6afc149.js",
-      "static/chunks/framework-a6e0b7e30f98059a.js",
-      "static/chunks/main-29c3f94fd6cccdd7.js",
-      "static/chunks/517-b2d6c1f18958a37f.js",
-      "static/chunks/706-097cd6d181d83d2f.js",
-      "static/chunks/pages/articles/10-common-accessibility-issues-13bbebd91303ab3b.js"
-    ],
-    "/pricing": [
-      "static/chunks/webpack-b853b9dae6afc149.js",
-      "static/chunks/framework-a6e0b7e30f98059a.js",
-      "static/chunks/main-29c3f94fd6cccdd7.js",
-      "static/chunks/pages/pricing-9d8c2de07c3c3853.js"
-    ],
-    "/resources": [
-      "static/chunks/webpack-b853b9dae6afc149.js",
-      "static/chunks/framework-a6e0b7e30f98059a.js",
-      "static/chunks/main-29c3f94fd6cccdd7.js",
-      "static/chunks/pages/resources-80d16f0e567d2153.js"
-    ],
-    "/tools": [
-      "static/chunks/webpack-b853b9dae6afc149.js",
-      "static/chunks/framework-a6e0b7e30f98059a.js",
-      "static/chunks/main-29c3f94fd6cccdd7.js",
-      "static/chunks/pages/tools-8c217df9039079a2.js"
-    ],
-    "/tools/alt-text-analyzer": [
-      "static/chunks/webpack-b853b9dae6afc149.js",
-      "static/chunks/framework-a6e0b7e30f98059a.js",
-      "static/chunks/main-29c3f94fd6cccdd7.js",
-      "static/chunks/pages/tools/alt-text-analyzer-e0169c6a1eea9a58.js"
-    ],
-    "/tools/alt-text-analyzer-apple": [
-      "static/chunks/webpack-b853b9dae6afc149.js",
-      "static/chunks/framework-a6e0b7e30f98059a.js",
-      "static/chunks/main-29c3f94fd6cccdd7.js",
-      "static/chunks/pages/tools/alt-text-analyzer-apple-8c7f24d8eb4467f1.js"
-    ],
-    "/tools/color-contrast": [
-      "static/chunks/webpack-b853b9dae6afc149.js",
-      "static/chunks/framework-a6e0b7e30f98059a.js",
-      "static/chunks/main-29c3f94fd6cccdd7.js",
-      "static/chunks/pages/tools/color-contrast-b13276c0dee1294c.js"
-    ],
-    "/tools/color-contrast-apple": [
-      "static/chunks/webpack-b853b9dae6afc149.js",
-      "static/chunks/framework-a6e0b7e30f98059a.js",
-      "static/chunks/main-29c3f94fd6cccdd7.js",
-      "static/chunks/pages/tools/color-contrast-apple-006f4bad07fc6dfd.js"
-    ],
-    "/tools/keyboard-navigator": [
-      "static/chunks/webpack-b853b9dae6afc149.js",
-      "static/chunks/framework-a6e0b7e30f98059a.js",
-      "static/chunks/main-29c3f94fd6cccdd7.js",
-      "static/chunks/517-b2d6c1f18958a37f.js",
-      "static/chunks/pages/tools/keyboard-navigator-75edafac0afe1239.js"
-    ],
-    "/tools/performance-audit": [
-      "static/chunks/webpack-b853b9dae6afc149.js",
-      "static/chunks/framework-a6e0b7e30f98059a.js",
-      "static/chunks/main-29c3f94fd6cccdd7.js",
-      "static/chunks/517-b2d6c1f18958a37f.js",
-      "static/chunks/pages/tools/performance-audit-c5ba24c05eae5353.js"
-    ],
-    "/tools/screen-reader-simulator": [
-      "static/chunks/webpack-b853b9dae6afc149.js",
-      "static/chunks/framework-a6e0b7e30f98059a.js",
-      "static/chunks/main-29c3f94fd6cccdd7.js",
-      "static/chunks/517-b2d6c1f18958a37f.js",
-      "static/chunks/pages/tools/screen-reader-simulator-6a9ee34f88d64597.js"
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/about.js"
     ]
   },
   "ampFirstPages": []
