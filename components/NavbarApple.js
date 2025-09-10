@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Typography from "./apple/Typography";
 import Button from "./apple/Button";
 import { Box, Flex, HStack } from "./apple/Layout";
@@ -63,6 +63,7 @@ export default function NavbarApple() {
   const router = useRouter();
   const [toolsOpen, setToolsOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const navbarRef = useRef(null);
 
   const tools = [
     {
@@ -105,22 +106,26 @@ export default function NavbarApple() {
     { name: "API Docs", href: "/api-docs" }
   ];
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setToolsOpen(false);
-      }
-    };
+  // Close dropdown when clicking outside - simplified approach
+  const handleClickOutside = useCallback((event) => {
+    // Only close if click is outside the dropdown menu itself
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setToolsOpen(false);
+    }
+  }, []);
 
+  useEffect(() => {
     if (toolsOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      // Use capture phase for better event handling
+      document.addEventListener('click', handleClickOutside, true);
+      document.addEventListener('touchstart', handleClickOutside, true);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('click', handleClickOutside, true);
+      document.removeEventListener('touchstart', handleClickOutside, true);
     };
-  }, [toolsOpen]);
+  }, [toolsOpen, handleClickOutside]);
 
   // Close dropdown when route changes
   useEffect(() => {
@@ -129,6 +134,7 @@ export default function NavbarApple() {
 
   return (
     <Box
+      ref={navbarRef}
       style={{
         position: "sticky",
         top: 0,
@@ -232,77 +238,85 @@ export default function NavbarApple() {
                   <Box
                     style={{
                       padding: `${appleTheme.spacing[4]} ${appleTheme.spacing[4]} ${appleTheme.spacing[3]} ${appleTheme.spacing[4]}`,
-                      borderBottom: `1px solid ${isDarkMode ? appleTheme.colors.dark.gray[200] : appleTheme.colors.gray[100]}`
+                      borderBottom: `1px solid ${isDarkMode ? appleTheme.colors.dark.gray[200] : appleTheme.colors.gray[100]}`,
+                      cursor: "pointer",
+                      transition: `background-color ${appleTheme.transition.duration.base} ${appleTheme.transition.timing.ease}`
+                    }}
+                    onClick={() => {
+                      setToolsOpen(false);
+                      router.push("/tools");
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = isDarkMode ? appleTheme.colors.dark.gray[100] : appleTheme.colors.gray[50];
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "transparent";
                     }}
                   >
-                    <Link href="/tools" passHref legacyBehavior>
-                      <a style={{ textDecoration: "none" }}>
-                        <Flex align="center" gap={3}>
-                          <ContrastIcon />
-                          <Box>
-                            <Typography variant="callout" weight="semibold" style={{
-                              color: isDarkMode ? '#FFFFFF' : '#000000'
-                            }}>
-                              All Tools
-                            </Typography>
-                            <Typography variant="caption1" style={{
-                              color: isDarkMode ? '#AEAEB2' : '#6D6D70'
-                            }}>
-                              View all mini-tools
-                            </Typography>
-                          </Box>
-                        </Flex>
-                      </a>
-                    </Link>
+                    <Flex align="center" gap={3}>
+                      <ContrastIcon />
+                      <Box>
+                        <Typography variant="callout" weight="semibold" style={{
+                          color: isDarkMode ? '#FFFFFF' : '#000000'
+                        }}>
+                          All Tools
+                        </Typography>
+                        <Typography variant="caption1" style={{
+                          color: isDarkMode ? '#AEAEB2' : '#6D6D70'
+                        }}>
+                          View all mini-tools
+                        </Typography>
+                      </Box>
+                    </Flex>
                   </Box>
 
                   {/* Tools List */}
                   <Box>
                     {tools.map((tool, index) => (
-                      <Link key={tool.name} href={tool.href} passHref legacyBehavior>
-                        <a style={{ textDecoration: "none" }}>
-                          <Box
-                            style={{
-                              padding: `${appleTheme.spacing[3]} ${appleTheme.spacing[4]}`,
-                              borderBottom: index < tools.length - 1 ? `1px solid ${isDarkMode ? appleTheme.colors.dark.gray[200] : appleTheme.colors.gray[100]}` : "none",
-                              cursor: tool.available ? "pointer" : "not-allowed",
-                              opacity: tool.available ? 1 : 0.6,
-                              transition: `background-color ${appleTheme.transition.duration.base} ${appleTheme.transition.timing.ease}`,
-                              ":hover": {
-                                backgroundColor: isDarkMode ? appleTheme.colors.dark.gray[100] : appleTheme.colors.gray[50]
-                              }
-                            }}
-                            onMouseEnter={(e) => {
-                              if (tool.available) {
-                                e.currentTarget.style.backgroundColor = isDarkMode ? appleTheme.colors.dark.gray[100] : appleTheme.colors.gray[50];
-                              }
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.backgroundColor = "transparent";
-                            }}
-                          >
-                            <Flex align="center" gap={3}>
-                              {tool.icon}
-                              <Box>
-                                <Typography 
-                                  variant="footnote" 
-                                  weight={tool.available ? "medium" : "regular"}
-                                  style={{
-                                    color: isDarkMode ? (tool.available ? '#FFFFFF' : '#8E8E93') : '#000000'
-                                  }}
-                                >
-                                  {tool.name}
-                                </Typography>
-                                <Typography variant="caption2" style={{
-                                  color: isDarkMode ? '#AEAEB2' : '#6D6D70'
-                                }}>
-                                  {tool.available ? "Available" : "Coming Soon"}
-                                </Typography>
-                              </Box>
-                            </Flex>
+                      <Box
+                        key={tool.name}
+                        style={{
+                          padding: `${appleTheme.spacing[3]} ${appleTheme.spacing[4]}`,
+                          borderBottom: index < tools.length - 1 ? `1px solid ${isDarkMode ? appleTheme.colors.dark.gray[200] : appleTheme.colors.gray[100]}` : "none",
+                          cursor: tool.available ? "pointer" : "not-allowed",
+                          opacity: tool.available ? 1 : 0.6,
+                          transition: `background-color ${appleTheme.transition.duration.base} ${appleTheme.transition.timing.ease}`
+                        }}
+                        onClick={() => {
+                          if (tool.available) {
+                            setToolsOpen(false);
+                            router.push(tool.href);
+                          }
+                        }}
+                        onMouseEnter={(e) => {
+                          if (tool.available) {
+                            e.currentTarget.style.backgroundColor = isDarkMode ? appleTheme.colors.dark.gray[100] : appleTheme.colors.gray[50];
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = "transparent";
+                        }}
+                      >
+                        <Flex align="center" gap={3}>
+                          {tool.icon}
+                          <Box>
+                            <Typography 
+                              variant="footnote" 
+                              weight={tool.available ? "medium" : "regular"}
+                              style={{
+                                color: isDarkMode ? (tool.available ? '#FFFFFF' : '#8E8E93') : '#000000'
+                              }}
+                            >
+                              {tool.name}
+                            </Typography>
+                            <Typography variant="caption2" style={{
+                              color: isDarkMode ? '#AEAEB2' : '#6D6D70'
+                            }}>
+                              {tool.available ? "Available" : "Coming Soon"}
+                            </Typography>
                           </Box>
-                        </a>
-                      </Link>
+                        </Flex>
+                      </Box>
                     ))}
                   </Box>
                 </Box>
@@ -316,16 +330,18 @@ export default function NavbarApple() {
         </Flex>
       </Box>
 
-      {/* Click outside to close dropdown */}
+      {/* Backdrop for click outside - covers entire viewport */}
       {toolsOpen && (
-        <Box
+        <div
           style={{
             position: "fixed",
             top: 0,
             left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 999
+            width: "100vw",
+            height: "100vh",
+            zIndex: 998,
+            backgroundColor: "transparent",
+            cursor: "default"
           }}
           onClick={() => setToolsOpen(false)}
         />

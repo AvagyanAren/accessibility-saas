@@ -15,10 +15,13 @@ import {
   Memory,
   NetworkCheck,
   Timer,
+  Lightbulb,
+  Rocket
 } from "@mui/icons-material";
 import Link from "next/link";
 
 import { Container, Section } from "../../components/apple/Layout";
+import AnimatedGradient from "../../components/apple/AnimatedGradient";
 
 export default function PerformanceAudit() {
   const [url, setUrl] = useState("");
@@ -139,13 +142,21 @@ export default function PerformanceAudit() {
   };
 
   return (
-    <div style={{ backgroundColor: appleTheme.colors.background.secondary, minHeight: "100vh" }}>
+    <div style={{ 
+      backgroundColor: appleTheme.colors.background.secondary, 
+      minHeight: "100vh",
+      position: "relative",
+      overflow: "hidden"
+    }}>
+      {/* Animated Background Elements */}
+      <AnimatedGradient variant="subtle" intensity="medium" />
+      
       {/* Hero Section */}
       <Section background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
         <Container size="lg">
           <Box style={{ textAlign: "center" }}>
             <Typography variant="display" style={{ 
-              marginBottom: appleTheme.spacing[4],
+              marginBottom: appleTheme.spacing[6],
               color: "#1C1C1E",
               fontWeight: appleTheme.typography.fontWeight.bold
             }}>
@@ -153,11 +164,14 @@ export default function PerformanceAudit() {
             </Typography>
             <Typography variant="headline" weight="regular" style={{ 
               color: "#2C2C2E",
-              maxWidth: "600px",
+              marginBottom: appleTheme.spacing[8],
+              maxWidth: "800px",
               margin: `0 auto ${appleTheme.spacing[8]} auto`,
+              lineHeight: appleTheme.typography.lineHeight.relaxed,
               fontWeight: appleTheme.typography.fontWeight.medium
             }}>
-              Analyze your website's performance and get actionable insights to improve loading speed and user experience.
+              Analyze your website's performance and get actionable insights to improve loading speed and user experience. 
+              Create lightning-fast websites that users love.
             </Typography>
           </Box>
         </Container>
@@ -358,7 +372,7 @@ export default function PerformanceAudit() {
                           marginBottom: appleTheme.spacing[2]
                         }}>
                           <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
-                            <strong>💡 Suggestion:</strong> {issue.suggestion}
+                            <strong><Lightbulb style={{ fontSize: "16px", marginRight: "4px", verticalAlign: "middle" }} /> Suggestion:</strong> {issue.suggestion}
                           </Typography>
                         </Card>
                         <Card variant="outlined" padding="md" style={{ backgroundColor: appleTheme.colors.gray[50] }}>
@@ -422,17 +436,23 @@ export default function PerformanceAudit() {
               <Typography variant="title2" style={{ 
                 marginBottom: appleTheme.spacing[3],
                 color: appleTheme.colors.success,
-                fontWeight: appleTheme.typography.fontWeight.semibold
+                fontWeight: appleTheme.typography.fontWeight.semibold,
+                display: "flex",
+                alignItems: "center",
+                gap: "8px"
               }}>
-                ✅ Core Optimizations
+                <CheckCircle style={{ fontSize: "24px" }} />
+                Core Optimizations
               </Typography>
               <VStack spacing={2}>
                 {[
-                  "Optimize images (WebP, compression, lazy loading)",
-                  "Minimize and compress CSS/JavaScript",
-                  "Enable gzip/brotli compression",
-                  "Use a Content Delivery Network (CDN)",
-                  "Implement proper caching strategies"
+                  "Test page load speed and Core Web Vitals",
+                  "Analyze image optimization and format usage",
+                  "Check JavaScript bundle size and loading performance",
+                  "Verify CSS optimization and critical path",
+                  "Test mobile performance and responsive loading",
+                  "Check server response times and caching headers",
+                  "Analyze third-party script impact on performance"
                 ].map((item, index) => (
                   <HStack key={index} spacing={2} align="center">
                     <CheckCircle style={{ color: appleTheme.colors.success, fontSize: "20px" }} />
@@ -448,17 +468,23 @@ export default function PerformanceAudit() {
               <Typography variant="title2" style={{ 
                 marginBottom: appleTheme.spacing[3],
                 color: appleTheme.colors.info,
-                fontWeight: appleTheme.typography.fontWeight.semibold
+                fontWeight: appleTheme.typography.fontWeight.semibold,
+                display: "flex",
+                alignItems: "center",
+                gap: "8px"
               }}>
-                🚀 Advanced Techniques
+                <Rocket style={{ fontSize: "24px" }} />
+                Advanced Techniques
               </Typography>
               <VStack spacing={2}>
                 {[
-                  "Code splitting and lazy loading",
-                  "Service workers for offline caching",
-                  "Critical CSS inlining",
-                  "Resource hints (preload, prefetch)",
-                  "HTTP/2 and HTTP/3 optimization"
+                  "Test code splitting and dynamic imports",
+                  "Analyze service worker implementation and caching",
+                  "Check critical CSS extraction and inlining",
+                  "Test resource hints (preload, prefetch, preconnect)",
+                  "Verify HTTP/2 and HTTP/3 optimization",
+                  "Test progressive web app performance features",
+                  "Analyze performance budgets and monitoring"
                 ].map((item, index) => (
                   <HStack key={index} spacing={2} align="center">
                     <Info style={{ color: appleTheme.colors.info, fontSize: "20px" }} />

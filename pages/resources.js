@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, memo } from "react";
 import Typography from "../components/apple/Typography";
 import Button from "../components/apple/Button";
 import Card from "../components/apple/Card";
@@ -7,6 +7,71 @@ import { Container, Box, Flex, Stack, Section, HStack } from "../components/appl
 import { appleTheme } from "../styles/apple-theme";
 import { useTheme } from "../contexts/ThemeContext";
 import Link from "next/link";
+
+// Tooltip Component
+const Tooltip = memo(({ children, text, position = "top" }) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  const tooltipStyles = {
+    position: "relative",
+    display: "inline-block"
+  };
+
+  const tooltipContentStyles = {
+    visibility: isVisible ? "visible" : "hidden",
+    opacity: isVisible ? 1 : 0,
+    position: "absolute",
+    zIndex: 1000,
+    backgroundColor: "#1C1C1E",
+    color: "#FFFFFF",
+    textAlign: "center",
+    borderRadius: "8px",
+    padding: "8px 12px",
+    fontSize: "12px",
+    fontWeight: "500",
+    lineHeight: 1.4,
+    whiteSpace: "nowrap",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+    transition: "all 0.2s ease-in-out",
+    ...(position === "top" && {
+      bottom: "125%",
+      left: "50%",
+      transform: "translateX(-50%)",
+      marginBottom: "8px"
+    }),
+    ...(position === "bottom" && {
+      top: "125%",
+      left: "50%",
+      transform: "translateX(-50%)",
+      marginTop: "8px"
+    }),
+    ...(position === "left" && {
+      right: "125%",
+      top: "50%",
+      transform: "translateY(-50%)",
+      marginRight: "8px"
+    }),
+    ...(position === "right" && {
+      left: "125%",
+      top: "50%",
+      transform: "translateY(-50%)",
+      marginLeft: "8px"
+    })
+  };
+
+  return (
+    <div
+      style={tooltipStyles}
+      onMouseEnter={() => setIsVisible(true)}
+      onMouseLeave={() => setIsVisible(false)}
+    >
+      {children}
+      <div style={tooltipContentStyles}>
+        {text}
+      </div>
+    </div>
+  );
+});
 
 // Icons
 const ArticleIcon = () => (
@@ -212,7 +277,7 @@ export default function Resources() {
         <Section padding="lg">
           <Typography variant="title2" style={{ 
             marginBottom: appleTheme.spacing[8],
-            color: isDarkMode ? '#FFFFFF' : '#000000'
+            color: isDarkMode ? "#FFFFFF" : "#000000"
           }}>
             Articles & Guides
           </Typography>
@@ -226,14 +291,40 @@ export default function Resources() {
             {articles.map((article, index) => (
               <Link key={index} href={article.href} passHref legacyBehavior>
                 <a style={{ textDecoration: "none" }}>
-                  <Card 
-                    variant="elevated" 
-                    padding="large" 
-                    hover
+                  <div 
                     style={{
+                      backgroundColor: "#FFFFFF",
+                      border: "1px solid #E5E5EA",
+                      borderRadius: "16px",
+                      padding: "24px",
+                      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                      boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+                      overflow: "hidden",
+                      minHeight: "120px",
+                      display: "flex",
+                      flexDirection: "column",
+                      position: "relative",
+                      zIndex: 1,
                       height: "100%",
+                      contain: "layout style",
                       cursor: article.available ? "pointer" : "not-allowed",
                       opacity: article.available ? 1 : 0.6
+                    }}
+                    onMouseEnter={(e) => {
+                      if (article.available) {
+                        e.currentTarget.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.15)";
+                        e.currentTarget.style.transform = "translateY(-3px)";
+                        e.currentTarget.style.borderColor = "#007AFF";
+                        e.currentTarget.style.backgroundColor = "#F8F9FA";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (article.available) {
+                        e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
+                        e.currentTarget.style.transform = "translateY(0)";
+                        e.currentTarget.style.borderColor = "#E5E5EA";
+                        e.currentTarget.style.backgroundColor = "#FFFFFF";
+                      }
                     }}
                   >
                     <Stack spacing={4}>
@@ -257,12 +348,12 @@ export default function Resources() {
                       <Box>
                         <Typography variant="callout" weight="semibold" style={{ 
                           marginBottom: appleTheme.spacing[2],
-                          color: isDarkMode ? '#FFFFFF' : '#000000'
+                          color: isDarkMode ? "#FFFFFF" : "#000000"
                         }}>
                           {article.title}
                         </Typography>
                         <Typography variant="footnote" style={{
-                          color: isDarkMode ? '#E5E5EA' : '#1C1C1E'
+                          color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
                         }}>
                           {article.description}
                         </Typography>
@@ -270,9 +361,9 @@ export default function Resources() {
                       
                       <HStack justify="space-between" align="center">
                         <HStack spacing={2} align="center">
-                          <ClockIcon style={{ color: isDarkMode ? '#AEAEB2' : '#6D6D70' }} />
+                          <ClockIcon style={{ color: isDarkMode ? "#AEAEB2" : "#6D6D70" }} />
                           <Typography variant="caption1" style={{
-                            color: isDarkMode ? '#AEAEB2' : '#6D6D70'
+                            color: isDarkMode ? "#AEAEB2" : "#6D6D70"
                           }}>
                             {article.readTime}
                           </Typography>
@@ -280,20 +371,20 @@ export default function Resources() {
                         
                         {article.available ? (
                           <Typography variant="caption1" weight="medium" style={{
-                            color: isDarkMode ? '#007AFF' : appleTheme.colors.primary[500]
+                            color: isDarkMode ? "#007AFF" : appleTheme.colors.primary[500]
                           }}>
                             Read Article →
                           </Typography>
                         ) : (
                           <Typography variant="caption1" style={{
-                            color: isDarkMode ? '#AEAEB2' : '#6D6D70'
+                            color: isDarkMode ? "#AEAEB2" : "#6D6D70"
                           }}>
                             Coming Soon
                           </Typography>
                         )}
                       </HStack>
                     </Stack>
-                  </Card>
+                  </div>
                 </a>
               </Link>
             ))}
@@ -313,7 +404,34 @@ export default function Resources() {
             marginBottom: appleTheme.spacing[12]
           }}>
             {tools.map((tool, index) => (
-              <Card key={index} variant="outlined" padding="large" hover>
+              <div key={index} style={{
+                backgroundColor: "#FFFFFF",
+                border: "1px solid #E5E5EA",
+                borderRadius: "16px",
+                padding: "24px",
+                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+                overflow: "hidden",
+                minHeight: "120px",
+                display: "flex",
+                flexDirection: "column",
+                position: "relative",
+                zIndex: 1,
+                height: "auto",
+                contain: "layout style"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.15)";
+                e.currentTarget.style.transform = "translateY(-3px)";
+                e.currentTarget.style.borderColor = "#007AFF";
+                e.currentTarget.style.backgroundColor = "#F8F9FA";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.borderColor = "#E5E5EA";
+                e.currentTarget.style.backgroundColor = "#FFFFFF";
+              }}>
                 <Stack spacing={3}>
                   <Flex align="flex-start" justify="space-between" gap={3}>
                     <Box>
@@ -351,7 +469,7 @@ export default function Resources() {
                     </a>
                   </HStack>
                 </Stack>
-              </Card>
+              </div>
             ))}
           </div>
         </Section>

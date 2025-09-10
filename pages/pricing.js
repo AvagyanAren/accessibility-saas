@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 import Typography from "../components/apple/Typography";
 import Button from "../components/apple/Button";
 import Card from "../components/apple/Card";
@@ -6,6 +6,71 @@ import AnimatedGradient from "../components/apple/AnimatedGradient";
 import { Container, Box, Flex, Stack, Section } from "../components/apple/Layout";
 import { appleTheme } from "../styles/apple-theme";
 import { useTheme } from "../contexts/ThemeContext";
+
+// Tooltip Component
+const Tooltip = memo(({ children, text, position = "top" }) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  const tooltipStyles = {
+    position: "relative",
+    display: "inline-block"
+  };
+
+  const tooltipContentStyles = {
+    visibility: isVisible ? "visible" : "hidden",
+    opacity: isVisible ? 1 : 0,
+    position: "absolute",
+    zIndex: 1000,
+    backgroundColor: "#1C1C1E",
+    color: "#FFFFFF",
+    textAlign: "center",
+    borderRadius: "8px",
+    padding: "8px 12px",
+    fontSize: "12px",
+    fontWeight: "500",
+    lineHeight: 1.4,
+    whiteSpace: "nowrap",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+    transition: "all 0.2s ease-in-out",
+    ...(position === "top" && {
+      bottom: "125%",
+      left: "50%",
+      transform: "translateX(-50%)",
+      marginBottom: "8px"
+    }),
+    ...(position === "bottom" && {
+      top: "125%",
+      left: "50%",
+      transform: "translateX(-50%)",
+      marginTop: "8px"
+    }),
+    ...(position === "left" && {
+      right: "125%",
+      top: "50%",
+      transform: "translateY(-50%)",
+      marginRight: "8px"
+    }),
+    ...(position === "right" && {
+      left: "125%",
+      top: "50%",
+      transform: "translateY(-50%)",
+      marginLeft: "8px"
+    })
+  };
+
+  return (
+    <div
+      style={tooltipStyles}
+      onMouseEnter={() => setIsVisible(true)}
+      onMouseLeave={() => setIsVisible(false)}
+    >
+      {children}
+      <div style={tooltipContentStyles}>
+        {text}
+      </div>
+    </div>
+  );
+});
 
 // Icons
 const CheckIcon = () => (
@@ -181,13 +246,36 @@ export default function Pricing() {
             marginBottom: appleTheme.spacing[12]
           }}>
             {plans.map((plan, index) => (
-              <Card 
+              <div 
                 key={index} 
-                variant={plan.popular ? "elevated" : "outlined"} 
-                padding="large"
                 style={{
+                  backgroundColor: "#FFFFFF",
+                  border: plan.popular ? "2px solid #007AFF" : "1px solid #E5E5EA",
+                  borderRadius: "16px",
+                  padding: "24px",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                  boxShadow: plan.popular ? "0 8px 25px rgba(0, 122, 255, 0.15)" : "0 1px 3px rgba(0, 0, 0, 0.1)",
+                  overflow: "hidden",
+                  minHeight: "120px",
+                  display: "flex",
+                  flexDirection: "column",
                   position: "relative",
-                  border: plan.popular ? `2px solid ${appleTheme.colors.primary[500]}` : "1px solid transparent"
+                  zIndex: plan.popular ? 2 : 1,
+                  height: "auto",
+                  contain: "layout style",
+                  transform: plan.popular ? "scale(1.05)" : "scale(1)"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.15)";
+                  e.currentTarget.style.transform = plan.popular ? "scale(1.05) translateY(-3px)" : "translateY(-3px)";
+                  e.currentTarget.style.borderColor = "#007AFF";
+                  e.currentTarget.style.backgroundColor = "#F8F9FA";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = plan.popular ? "0 8px 25px rgba(0, 122, 255, 0.15)" : "0 1px 3px rgba(0, 0, 0, 0.1)";
+                  e.currentTarget.style.transform = plan.popular ? "scale(1.05)" : "translateY(0)";
+                  e.currentTarget.style.borderColor = plan.popular ? "#007AFF" : "#E5E5EA";
+                  e.currentTarget.style.backgroundColor = "#FFFFFF";
                 }}
               >
                 {plan.popular && (
@@ -211,25 +299,25 @@ export default function Pricing() {
                   <Box style={{ textAlign: "center" }}>
                     <Typography variant="title3" style={{ 
                       marginBottom: appleTheme.spacing[2],
-                      color: isDarkMode ? '#FFFFFF' : '#000000'
+                      color: isDarkMode ? "#FFFFFF" : "#000000"
                     }}>
                 {plan.name}
               </Typography>
                     <Flex align="baseline" justify="center" gap={1}>
                       <Typography variant="display" weight="bold" style={{
-                        color: isDarkMode ? '#FFFFFF' : appleTheme.colors.primary[500]
+                        color: isDarkMode ? "#FFFFFF" : appleTheme.colors.primary[500]
                       }}>
                 {plan.price}
               </Typography>
                       <Typography variant="footnote" style={{
-                        color: isDarkMode ? '#AEAEB2' : '#6D6D70'
+                        color: isDarkMode ? "#AEAEB2" : "#6D6D70"
                       }}>
                         {plan.period}
                       </Typography>
                     </Flex>
                     <Typography variant="footnote" style={{ 
                       marginTop: appleTheme.spacing[2],
-                      color: isDarkMode ? '#E5E5EA' : '#1C1C1E'
+                      color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
                     }}>
                       {plan.description}
                     </Typography>
@@ -240,11 +328,11 @@ export default function Pricing() {
                       {plan.features.map((feature, featureIndex) => (
                         <Flex key={featureIndex} align="center" gap={2}>
                           <CheckIcon style={{ 
-                            color: isDarkMode ? '#30D158' : '#30D158', 
+                            color: isDarkMode ? "#30D158" : "#30D158", 
                             flexShrink: 0 
                           }} />
                           <Typography variant="footnote" style={{
-                            color: isDarkMode ? '#E5E5EA' : '#1C1C1E'
+                            color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
                           }}>
                             {feature}
                           </Typography>
@@ -259,13 +347,13 @@ export default function Pricing() {
                     size="large"
                     style={{
                       marginTop: appleTheme.spacing[4],
-                      color: isDarkMode ? '#FFFFFF' : '#000000'
+                      color: isDarkMode ? "#FFFFFF" : "#000000"
                     }}
                   >
                     {plan.buttonText}
                   </Button>
                 </Stack>
-              </Card>
+              </div>
             ))}
           </div>
 
@@ -273,7 +361,7 @@ export default function Pricing() {
           <Box style={{ marginBottom: appleTheme.spacing[12] }}>
             <Typography variant="title2" align="center" style={{ 
               marginBottom: appleTheme.spacing[8],
-              color: isDarkMode ? '#FFFFFF' : '#000000'
+              color: isDarkMode ? "#FFFFFF" : "#000000"
             }}>
               Why Choose ScanWeb?
             </Typography>
@@ -284,32 +372,75 @@ export default function Pricing() {
               gap: appleTheme.spacing[6]
             }}>
               {features.map((feature, index) => (
-                <Card key={index} variant="outlined" padding="large" hover>
+                <div key={index} style={{
+                  backgroundColor: "#FFFFFF",
+                  border: "1px solid #E5E5EA",
+                  borderRadius: "16px",
+                  padding: "24px",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+                  overflow: "hidden",
+                  minHeight: "120px",
+                  display: "flex",
+                  flexDirection: "column",
+                  position: "relative",
+                  zIndex: 1,
+                  height: "auto",
+                  contain: "layout style",
+                  textAlign: "center"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.15)";
+                  e.currentTarget.style.transform = "translateY(-3px)";
+                  e.currentTarget.style.borderColor = "#007AFF";
+                  e.currentTarget.style.backgroundColor = "#F8F9FA";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.borderColor = "#E5E5EA";
+                  e.currentTarget.style.backgroundColor = "#FFFFFF";
+                }}>
                   <Stack spacing={3} align="center">
-                    <Box style={{ color: isDarkMode ? '#007AFF' : appleTheme.colors.primary[500] }}>
+                    <Box style={{ color: isDarkMode ? "#007AFF" : appleTheme.colors.primary[500] }}>
                       {feature.icon}
                     </Box>
                     <Typography variant="callout" weight="bold" align="center" style={{
-                      color: isDarkMode ? '#FFFFFF' : '#000000'
+                      color: isDarkMode ? "#FFFFFF" : "#000000"
                     }}>
                       {feature.title}
                     </Typography>
                     <Typography variant="footnote" weight="regular" align="center" style={{
-                      color: isDarkMode ? '#E5E5EA' : '#1C1C1E'
+                      color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
                     }}>
                       {feature.description}
                     </Typography>
                   </Stack>
-                </Card>
+                </div>
               ))}
             </div>
           </Box>
 
           {/* FAQ Section */}
-          <Card variant="elevated" padding="xl">
+          <div style={{
+            backgroundColor: "#FFFFFF",
+            border: "1px solid #E5E5EA",
+            borderRadius: "16px",
+            padding: "32px",
+            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+            overflow: "hidden",
+            minHeight: "120px",
+            display: "flex",
+            flexDirection: "column",
+            position: "relative",
+            zIndex: 1,
+            height: "auto",
+            contain: "layout style"
+          }}>
             <Stack spacing={6}>
               <Typography variant="title2" align="center" style={{
-                color: isDarkMode ? '#FFFFFF' : '#000000'
+                color: isDarkMode ? "#FFFFFF" : "#000000"
               }}>
                 Frequently Asked Questions
               </Typography>
@@ -335,7 +466,34 @@ export default function Pricing() {
                 ].map((faq, index) => {
                   const isExpanded = expandedFAQ === index;
                   return (
-                    <Card key={index} variant="outlined" padding="large" hover>
+                    <div key={index} style={{
+                      backgroundColor: "#FFFFFF",
+                      border: "1px solid #E5E5EA",
+                      borderRadius: "16px",
+                      padding: "24px",
+                      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                      boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+                      overflow: "hidden",
+                      minHeight: "120px",
+                      display: "flex",
+                      flexDirection: "column",
+                      position: "relative",
+                      zIndex: 1,
+                      height: "auto",
+                      contain: "layout style"
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.15)";
+                      e.currentTarget.style.transform = "translateY(-3px)";
+                      e.currentTarget.style.borderColor = "#007AFF";
+                      e.currentTarget.style.backgroundColor = "#F8F9FA";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
+                      e.currentTarget.style.transform = "translateY(0)";
+                      e.currentTarget.style.borderColor = "#E5E5EA";
+                      e.currentTarget.style.backgroundColor = "#FFFFFF";
+                    }}>
                       <Box>
                         <div style={{
                           display: "flex",
@@ -344,7 +502,7 @@ export default function Pricing() {
                           width: "100%"
                         }}>
                           <Typography variant="callout" weight="semibold" style={{ 
-                            color: isDarkMode ? '#FFFFFF' : '#000000',
+                            color: isDarkMode ? "#FFFFFF" : "#000000",
                             flex: 1,
                             margin: 0
                           }}>
@@ -366,7 +524,7 @@ export default function Pricing() {
                             <Box style={{
                               transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
                               transition: "transform 0.2s ease",
-                              color: isDarkMode ? '#FFFFFF' : '#000000',
+                              color: isDarkMode ? "#FFFFFF" : "#000000",
                               display: "flex",
                               alignItems: "center"
                             }}>
@@ -382,19 +540,19 @@ export default function Pricing() {
                             borderTop: `1px solid ${isDarkMode ? appleTheme.colors.dark.gray[300] : appleTheme.colors.gray[200]}`
                           }}>
                             <Typography variant="footnote" style={{
-                              color: isDarkMode ? '#E5E5EA' : '#1C1C1E'
+                              color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
                             }}>
                               {faq.answer}
                             </Typography>
                           </Box>
                         )}
                       </Box>
-                    </Card>
+                    </div>
                   );
                 })}
               </Stack>
             </Stack>
-          </Card>
+          </div>
         </Section>
       </Container>
     </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 import Typography from "../components/apple/Typography";
 import Button from "../components/apple/Button";
 import Card from "../components/apple/Card";
@@ -7,6 +7,71 @@ import AnimatedGradient from "../components/apple/AnimatedGradient";
 import { Container, Box, Flex, Stack, Section, HStack } from "../components/apple/Layout";
 import { appleTheme } from "../styles/apple-theme";
 import { useTheme } from "../contexts/ThemeContext";
+
+// Tooltip Component
+const Tooltip = memo(({ children, text, position = "top" }) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  const tooltipStyles = {
+    position: "relative",
+    display: "inline-block"
+  };
+
+  const tooltipContentStyles = {
+    visibility: isVisible ? "visible" : "hidden",
+    opacity: isVisible ? 1 : 0,
+    position: "absolute",
+    zIndex: 1000,
+    backgroundColor: "#1C1C1E",
+    color: "#FFFFFF",
+    textAlign: "center",
+    borderRadius: "8px",
+    padding: "8px 12px",
+    fontSize: "12px",
+    fontWeight: "500",
+    lineHeight: 1.4,
+    whiteSpace: "nowrap",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+    transition: "all 0.2s ease-in-out",
+    ...(position === "top" && {
+      bottom: "125%",
+      left: "50%",
+      transform: "translateX(-50%)",
+      marginBottom: "8px"
+    }),
+    ...(position === "bottom" && {
+      top: "125%",
+      left: "50%",
+      transform: "translateX(-50%)",
+      marginTop: "8px"
+    }),
+    ...(position === "left" && {
+      right: "125%",
+      top: "50%",
+      transform: "translateY(-50%)",
+      marginRight: "8px"
+    }),
+    ...(position === "right" && {
+      left: "125%",
+      top: "50%",
+      transform: "translateY(-50%)",
+      marginLeft: "8px"
+    })
+  };
+
+  return (
+    <div
+      style={tooltipStyles}
+      onMouseEnter={() => setIsVisible(true)}
+      onMouseLeave={() => setIsVisible(false)}
+    >
+      {children}
+      <div style={tooltipContentStyles}>
+        {text}
+      </div>
+    </div>
+  );
+});
 
 // Icons
 const CodeIcon = () => (
@@ -197,7 +262,7 @@ print(data)`
           <Card variant="elevated" padding="large" style={{ marginBottom: appleTheme.spacing[8] }}>
             <Stack spacing={4}>
               <Typography variant="title2" style={{
-                color: isDarkMode ? '#FFFFFF' : '#000000'
+                color: isDarkMode ? "#FFFFFF" : "#000000"
               }}>
                 Quick Start
               </Typography>
@@ -241,7 +306,7 @@ print(data)`
           <Card variant="outlined" padding="large" style={{ marginBottom: appleTheme.spacing[8] }}>
             <Stack spacing={4}>
               <Typography variant="title2" style={{
-                color: isDarkMode ? '#FFFFFF' : '#000000'
+                color: isDarkMode ? "#FFFFFF" : "#000000"
               }}>
                 Test the API
               </Typography>
@@ -278,7 +343,7 @@ print(data)`
                   padding: appleTheme.spacing[4]
                 }}>
                   <Flex align="center" gap={2} style={{ marginBottom: appleTheme.spacing[3] }}>
-                    {testResult.success ? <CheckIcon style={{ color: isDarkMode ? '#30D158' : appleTheme.colors.success }} /> : <ErrorIcon style={{ color: isDarkMode ? '#FF453A' : appleTheme.colors.error }} />}
+                    {testResult.success ? <CheckIcon style={{ color: isDarkMode ? "#30D158" : appleTheme.colors.success }} /> : <ErrorIcon style={{ color: isDarkMode ? "#FF453A" : appleTheme.colors.error }} />}
                     <Typography variant="callout" weight="semibold" color={testResult.success ? "success" : "error"}>
                       {testResult.success ? "Success!" : "Error"}
                     </Typography>
@@ -307,14 +372,41 @@ print(data)`
         <Section padding="lg">
           <Typography variant="title2" style={{ 
             marginBottom: appleTheme.spacing[6],
-            color: isDarkMode ? '#FFFFFF' : '#000000'
+            color: isDarkMode ? "#FFFFFF" : "#000000"
           }}>
             API Endpoints
           </Typography>
           
           <Stack spacing={4}>
             {endpoints.map((endpoint, index) => (
-              <Card key={index} variant="outlined" padding="large">
+              <div key={index} style={{
+                backgroundColor: "#FFFFFF",
+                border: "1px solid #E5E5EA",
+                borderRadius: "16px",
+                padding: "24px",
+                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+                overflow: "hidden",
+                minHeight: "120px",
+                display: "flex",
+                flexDirection: "column",
+                position: "relative",
+                zIndex: 1,
+                height: "auto",
+                contain: "layout style"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.15)";
+                e.currentTarget.style.transform = "translateY(-3px)";
+                e.currentTarget.style.borderColor = "#007AFF";
+                e.currentTarget.style.backgroundColor = "#F8F9FA";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.borderColor = "#E5E5EA";
+                e.currentTarget.style.backgroundColor = "#FFFFFF";
+              }}>
                 <Stack spacing={4}>
                   <Flex align="center" justify="space-between">
                     <HStack spacing={3} align="center">
@@ -330,7 +422,7 @@ print(data)`
                       </Box>
                       <Typography variant="callout" weight="semibold" style={{ 
                         fontFamily: appleTheme.typography.fontFamily.mono,
-                        color: isDarkMode ? '#FFFFFF' : '#000000'
+                        color: isDarkMode ? "#FFFFFF" : "#000000"
                       }}>
                         {endpoint.path}
                       </Typography>
@@ -346,7 +438,7 @@ print(data)`
                   </Flex>
                   
                   <Typography variant="body" style={{
-                    color: isDarkMode ? '#E5E5EA' : '#1C1C1E'
+                    color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
                   }}>
                     {endpoint.description}
                   </Typography>
@@ -355,7 +447,7 @@ print(data)`
                     <Box>
                       <Typography variant="footnote" weight="semibold" style={{ 
                         marginBottom: appleTheme.spacing[3],
-                        color: isDarkMode ? '#FFFFFF' : '#000000'
+                        color: isDarkMode ? "#FFFFFF" : "#000000"
                       }}>
                         Parameters
                       </Typography>
@@ -370,7 +462,7 @@ print(data)`
                               <HStack spacing={2} align="center">
                                 <Typography variant="footnote" weight="semibold" style={{ 
                                   fontFamily: appleTheme.typography.fontFamily.mono,
-                                  color: isDarkMode ? '#FFFFFF' : '#000000'
+                                  color: isDarkMode ? "#FFFFFF" : "#000000"
                                 }}>
                                   {param.name}
                                 </Typography>
@@ -406,7 +498,7 @@ print(data)`
                     </Box>
                   )}
                 </Stack>
-              </Card>
+              </div>
             ))}
           </Stack>
         </Section>
@@ -415,7 +507,7 @@ print(data)`
         <Section padding="lg">
           <Typography variant="title2" style={{ 
             marginBottom: appleTheme.spacing[6],
-            color: isDarkMode ? '#FFFFFF' : '#000000'
+            color: isDarkMode ? "#FFFFFF" : "#000000"
           }}>
             Code Examples
           </Typography>
@@ -426,14 +518,41 @@ print(data)`
             gap: appleTheme.spacing[6]
           }}>
             {Object.entries(codeExamples).map(([language, code]) => (
-              <Card key={language} variant="outlined" padding="large">
+              <div key={language} style={{
+                backgroundColor: "#FFFFFF",
+                border: "1px solid #E5E5EA",
+                borderRadius: "16px",
+                padding: "24px",
+                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+                overflow: "hidden",
+                minHeight: "120px",
+                display: "flex",
+                flexDirection: "column",
+                position: "relative",
+                zIndex: 1,
+                height: "auto",
+                contain: "layout style"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.15)";
+                e.currentTarget.style.transform = "translateY(-3px)";
+                e.currentTarget.style.borderColor = "#007AFF";
+                e.currentTarget.style.backgroundColor = "#F8F9FA";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.borderColor = "#E5E5EA";
+                e.currentTarget.style.backgroundColor = "#FFFFFF";
+              }}>
                 <Stack spacing={3}>
                   <Flex align="center" justify="space-between">
                     <HStack spacing={2} align="center">
                       <CodeIcon style={{ color: appleTheme.colors.primary[500] }} />
                       <Typography variant="callout" weight="semibold" style={{ 
                         textTransform: "capitalize",
-                        color: isDarkMode ? '#FFFFFF' : '#000000'
+                        color: isDarkMode ? "#FFFFFF" : "#000000"
                       }}>
                         {language}
                       </Typography>
@@ -462,7 +581,7 @@ print(data)`
                     </pre>
                   </Box>
                 </Stack>
-              </Card>
+              </div>
             ))}
           </div>
         </Section>
@@ -474,7 +593,7 @@ print(data)`
               <HStack spacing={3} align="center">
                 <KeyIcon style={{ color: appleTheme.colors.primary[500] }} />
                 <Typography variant="title2" style={{
-                  color: isDarkMode ? '#FFFFFF' : '#000000'
+                  color: isDarkMode ? "#FFFFFF" : "#000000"
                 }}>
                   Authentication
                 </Typography>

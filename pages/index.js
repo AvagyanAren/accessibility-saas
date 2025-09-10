@@ -115,28 +115,160 @@ const ClearIcon = memo(({ color = "currentColor" }) => (
   </svg>
 ));
 
+// Tooltip Component with delay
+const Tooltip = memo(({ children, text, position = "top", delay = 3000 }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [timeoutId, setTimeoutId] = useState(null);
+
+  const tooltipStyles = {
+    position: "relative",
+    display: "inline-block"
+  };
+
+  const tooltipContentStyles = {
+    visibility: isVisible ? "visible" : "hidden",
+    opacity: isVisible ? 1 : 0,
+    position: "absolute",
+    zIndex: 1000,
+    backgroundColor: "#1C1C1E",
+    color: "#FFFFFF",
+    textAlign: "center",
+    borderRadius: "8px",
+    padding: "8px 12px",
+    fontSize: "12px",
+    fontWeight: "500",
+    lineHeight: 1.4,
+    whiteSpace: "nowrap",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+    transition: "all 0.2s ease-in-out",
+    ...(position === "top" && {
+      bottom: "125%",
+      left: "50%",
+      transform: "translateX(-50%)",
+      marginBottom: "8px"
+    }),
+    ...(position === "bottom" && {
+      top: "125%",
+      left: "50%",
+      transform: "translateX(-50%)",
+      marginTop: "8px"
+    }),
+    ...(position === "left" && {
+      right: "125%",
+      top: "50%",
+      transform: "translateY(-50%)",
+      marginRight: "8px"
+    }),
+    ...(position === "right" && {
+      left: "125%",
+      top: "50%",
+      transform: "translateY(-50%)",
+      marginLeft: "8px"
+    })
+  };
+
+  const handleMouseEnter = () => {
+    const id = setTimeout(() => {
+      setIsVisible(true);
+    }, delay);
+    setTimeoutId(id);
+  };
+
+  const handleMouseLeave = () => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      setTimeoutId(null);
+    }
+    setIsVisible(false);
+  };
+
+  return (
+    <div
+      style={tooltipStyles}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      {children}
+      <div style={tooltipContentStyles}>
+        {text}
+      </div>
+    </div>
+  );
+});
+
 // Violation Card Component with Apple-style Accordion functionality
 const ViolationCard = ({ violation, isDarkMode, getStatusColor }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
+  // Style constants for better performance and maintainability
+  const cardStyles = {
+    backgroundColor: "#FFFFFF",
+    border: "1px solid #E5E5EA",
+    borderRadius: "16px",
+    cursor: "pointer",
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+    overflow: "hidden",
+    minHeight: "120px",
+    display: "flex",
+    flexDirection: "column",
+    position: "relative",
+    zIndex: 1,
+    height: "auto",
+    contain: "layout style"
+  };
+
+  const headerStyles = {
+    padding: "16px 20px",
+    display: "flex",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    gap: "12px",
+    flex: "0 0 auto",
+    minHeight: "auto"
+  };
+
+  const expandableContentStyles = {
+    borderTop: "1px solid #F2F2F7",
+    backgroundColor: "#FAFAFA",
+    animation: "fadeIn 0.3s ease-in-out",
+    flex: "0 0 auto",
+    overflow: "visible",
+    display: "block"
+  };
+
+  const descriptionStyles = {
+    color: "#8E8E93",
+    fontSize: "14px",
+    lineHeight: 1.5,
+    textAlign: "left",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    display: "-webkit-box",
+    WebkitLineClamp: 3,
+    WebkitBoxOrient: "vertical",
+    maxHeight: "4.2em"
+  };
+
+  const statusContainerStyles = {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    flexShrink: 0
+  };
+
+  const codeTitleStyles = {
+    marginBottom: "8px",
+    color: "#000000",
+    fontSize: "13px",
+    textTransform: "uppercase",
+    letterSpacing: "0.5px",
+    textAlign: "left"
+  };
+
   return (
     <div 
-      style={{
-        backgroundColor: "#FFFFFF",
-        border: "1px solid #E5E5EA",
-        borderRadius: "16px",
-        cursor: "pointer",
-        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-        boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-        overflow: "hidden",
-        minHeight: "120px",
-        display: "flex",
-        flexDirection: "column",
-        position: "relative",
-        zIndex: 1,
-        height: "auto",
-        contain: "layout style"
-      }}
+      style={cardStyles}
       onMouseEnter={(e) => {
         e.currentTarget.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.15)";
         e.currentTarget.style.transform = "translateY(-3px)";
@@ -149,21 +281,10 @@ const ViolationCard = ({ violation, isDarkMode, getStatusColor }) => {
         e.currentTarget.style.borderColor = "#E5E5EA";
         e.currentTarget.style.backgroundColor = "#FFFFFF";
       }}
-      onClick={() => {
-        console.log(`Card ${violation.id || 'unknown'} clicked, current state:`, isExpanded);
-        setIsExpanded(!isExpanded);
-      }}
+      onClick={() => setIsExpanded(!isExpanded)}
     >
       {/* Header - Always Visible */}
-      <div style={{
-        padding: "16px 20px",
-        display: "flex",
-        alignItems: "flex-start",
-        justifyContent: "space-between",
-        gap: "12px",
-        flex: "0 0 auto",
-        minHeight: "auto"
-      }}>
+      <div style={headerStyles}>
         {/* Left side - Icon and Title */}
         <div style={{ 
           display: "flex", 
@@ -196,7 +317,7 @@ const ViolationCard = ({ violation, isDarkMode, getStatusColor }) => {
               variant="callout" 
               weight="semibold" 
               style={{
-                color: '#000000',
+                color: "#000000",
                 fontSize: "16px",
                 lineHeight: 1.4,
                 marginBottom: "6px",
@@ -205,30 +326,14 @@ const ViolationCard = ({ violation, isDarkMode, getStatusColor }) => {
             >
               {violation.help}
             </Typography>
-            <Typography variant="footnote" style={{ 
-              color: '#8E8E93',
-              fontSize: "14px",
-              lineHeight: 1.5,
-              textAlign: "left",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              display: "-webkit-box",
-              WebkitLineClamp: 3,
-              WebkitBoxOrient: "vertical",
-              maxHeight: "4.2em"
-            }}>
+            <Typography variant="footnote" style={descriptionStyles}>
               {violation.description}
             </Typography>
           </div>
         </div>
         
         {/* Right side - Status and Chevron */}
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "8px",
-          flexShrink: 0
-        }}>
+        <div style={statusContainerStyles}>
           {/* Status Badge - Top Right */}
           <div style={{ 
             padding: "4px 8px",
@@ -269,27 +374,13 @@ const ViolationCard = ({ violation, isDarkMode, getStatusColor }) => {
       
       {/* Expandable Content */}
       {isExpanded ? (
-        <div style={{
-          borderTop: "1px solid #F2F2F7",
-          backgroundColor: "#FAFAFA",
-          animation: "fadeIn 0.3s ease-in-out",
-          flex: "0 0 auto",
-          overflow: "visible",
-          display: "block"
-        }}>
+        <div style={expandableContentStyles}>
           <div style={{ padding: "20px" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               {/* Code Snippet */}
               {violation.nodes && violation.nodes.length > 0 && (
                 <div>
-                  <Typography variant="footnote" weight="semibold" style={{ 
-                    marginBottom: "8px",
-                    color: "#000000",
-                    fontSize: "13px",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.5px",
-                    textAlign: "left"
-                  }}>
+                  <Typography variant="footnote" weight="semibold" style={codeTitleStyles}>
                     Code
                   </Typography>
                   <div 
@@ -350,14 +441,7 @@ const ViolationCard = ({ violation, isDarkMode, getStatusColor }) => {
                     <CheckIcon style={{ color: "white", width: "16px", height: "16px" }} />
                   </div>
                   <div style={{ flex: 1 }}>
-                    <Typography variant="footnote" weight="semibold" style={{ 
-                      marginBottom: "6px",
-                      color: "#000000",
-                      fontSize: "13px",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.5px",
-                      textAlign: "left"
-                    }}>
+                    <Typography variant="footnote" weight="semibold" style={codeTitleStyles}>
                       How to fix
                     </Typography>
                     <Typography variant="footnote" style={{
@@ -394,27 +478,25 @@ export default function Home() {
   // Load saved scan results on component mount with timeout check
   useEffect(() => {
     try {
-      const savedUrl = localStorage.getItem('scanUrl');
-      const savedViolations = localStorage.getItem('scanViolations');
-      const savedTimestamp = localStorage.getItem('scanTimestamp');
+      const savedUrl = localStorage.getItem("scanUrl");
+      const savedViolations = localStorage.getItem("scanViolations");
+      const savedTimestamp = localStorage.getItem("scanTimestamp");
       
       // Check if data is older than 30 minutes (1800000 ms)
-      // const TIMEOUT_DURATION = 30 * 60 * 1000; // 30 minutes
-      // For testing: 10 seconds timeout
-      const TIMEOUT_DURATION = 10 * 1000; // 10 seconds for testing
+      const TIMEOUT_DURATION = 30 * 60 * 1000; // 30 minutes
       const now = Date.now();
       const isDataExpired = savedTimestamp && (now - parseInt(savedTimestamp)) > TIMEOUT_DURATION;
       
       
       if (isDataExpired) {
         // Clear expired data
-        localStorage.removeItem('scanUrl');
-        localStorage.removeItem('scanViolations');
-        localStorage.removeItem('scanTimestamp');
+        localStorage.removeItem("scanUrl");
+        localStorage.removeItem("scanViolations");
+        localStorage.removeItem("scanTimestamp");
         return;
       }
       
-      if (savedUrl && typeof savedUrl === 'string') {
+      if (savedUrl && typeof savedUrl === "string") {
         setUrl(savedUrl);
         setDataFromCache(true);
       }
@@ -685,13 +767,13 @@ export default function Home() {
                   </div>
                 </div>
     <Button
-                  variant="primary"
-                  size="large"
-                  onClick={() => {
-                    handleScan();
-                  }}
-                  disabled={scanning || !url.trim()}
-                  loading={scanning}
+                    variant="primary"
+                    size="large"
+                    onClick={() => {
+                      handleScan();
+                    }}
+                    disabled={scanning || !url.trim()}
+                    loading={scanning}
                   style={{
                     minWidth: "160px",
                     height: "60px",
@@ -797,7 +879,7 @@ export default function Home() {
                   }}>
                     <Typography variant="title2" style={{ 
                       marginBottom: appleTheme.spacing[3],
-                      color: '#000000',
+                      color: "#000000",
                       fontSize: isMobile ? "20px" : "24px",
                       fontWeight: "700",
                       letterSpacing: "-0.5px"
@@ -874,8 +956,8 @@ export default function Home() {
                         fontSize: "13px",
                         fontWeight: "500",
                         padding: "6px 12px",
-      display: "flex",
-      alignItems: "center",
+        display: "flex",
+        alignItems: "center",
                         justifyContent: "center",
                         gap: "4px",
                         cursor: "pointer",
@@ -936,44 +1018,46 @@ export default function Home() {
                       Email Report
                     </button>
                     </div>
-                    <button 
-                      onClick={clearResults}
-                      style={{
-                        height: "32px",
-                        backgroundColor: "transparent",
-                        color: "#1C1C1E",
-                        border: "none",
-                        borderRadius: "6px",
-                        fontSize: "13px",
-                        fontWeight: "500",
-                        padding: "6px 12px",
+                    <Tooltip text="Clear all scan results and start over" delay={4000}>
+                      <button 
+                        onClick={clearResults}
+                        style={{
+                          height: "32px",
+                          backgroundColor: "transparent",
+                          color: "#1C1C1E",
+                          border: "none",
+                          borderRadius: "6px",
+                          fontSize: "13px",
+                          fontWeight: "500",
+                          padding: "6px 12px",
                   display: "flex",
                   alignItems: "center",
-                        justifyContent: "center",
-                        gap: "4px",
-                        cursor: "pointer",
-                        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                        fontFamily: "inherit"
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.backgroundColor = "#F0F8FF";
-                        e.target.style.transform = "translateY(-1px)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.backgroundColor = "transparent";
-                        e.target.style.transform = "translateY(0)";
-                      }}
-                    >
-                      <ClearIcon color="#FF3B30" style={{ width: "14px", height: "14px" }} />
-                      Clear Results
-                    </button>
+                          justifyContent: "center",
+                          gap: "4px",
+                          cursor: "pointer",
+                          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                          fontFamily: "inherit"
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.backgroundColor = "#F0F8FF";
+                          e.target.style.transform = "translateY(-1px)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.backgroundColor = "transparent";
+                          e.target.style.transform = "translateY(0)";
+                        }}
+                      >
+                        <ClearIcon color="#FF3B30" style={{ width: "14px", height: "14px" }} />
+                        Clear Results
+                      </button>
+                    </Tooltip>
                   </div>
                 </div>
 
                 {/* Accessibility Issues Title */}
                 <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "20px" }}>
                   <Typography variant="title3" style={{
-                    color: '#000000',
+                    color: "#000000",
                     fontSize: "18px",
                     fontWeight: "600",
                     textAlign: "left"
@@ -1002,7 +1086,7 @@ export default function Home() {
                     />
                   ))}
                 </div>
-        </Box>
+                </Box>
       )}
 
             {/* Stats Section */}
@@ -1040,8 +1124,8 @@ export default function Home() {
           </Typography>
         </Box>
               ))}
-            </Box>
-            
+              </Box>
+
             {/* Key Features */}
             <Box style={{ 
               marginTop: isMobile ? appleTheme.spacing[12] : appleTheme.spacing[16],
@@ -1136,8 +1220,8 @@ export default function Home() {
                         margin: 0
                       }}>
                         {feature.title}
-                      </Typography>
-                    </Box>
+                </Typography>
+                </Box>
                     
                     <Typography variant="body" style={{
                       color: isDarkMode ? '#E5E5EA' : '#1C1C1E',
@@ -1269,10 +1353,10 @@ export default function Home() {
                         </Box>
                       ))}
                     </div>
-                  </Box>
+        </Box>
                 ))}
               </div>
-        </Box>
+    </Box>
 
     </Box>
         </Container>

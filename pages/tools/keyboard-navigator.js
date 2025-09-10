@@ -15,10 +15,13 @@ import {
   Stop,
   Refresh,
   NavigateNext,
+  Lightbulb,
+  Rocket
 } from "@mui/icons-material";
 import Link from "next/link";
 
 import { Container, Section } from "../../components/apple/Layout";
+import AnimatedGradient from "../../components/apple/AnimatedGradient";
 
 export default function KeyboardNavigator() {
   const [url, setUrl] = useState("");
@@ -145,13 +148,21 @@ export default function KeyboardNavigator() {
   ];
 
   return (
-    <div style={{ backgroundColor: appleTheme.colors.background.secondary, minHeight: "100vh" }}>
+    <div style={{ 
+      backgroundColor: appleTheme.colors.background.secondary, 
+      minHeight: "100vh",
+      position: "relative",
+      overflow: "hidden"
+    }}>
+      {/* Animated Background Elements */}
+      <AnimatedGradient variant="subtle" intensity="medium" />
+      
       {/* Hero Section */}
       <Section background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
         <Container size="lg">
           <Box style={{ textAlign: "center" }}>
             <Typography variant="display" style={{ 
-              marginBottom: appleTheme.spacing[4],
+              marginBottom: appleTheme.spacing[6],
               color: "#1C1C1E",
               fontWeight: appleTheme.typography.fontWeight.bold
             }}>
@@ -159,11 +170,14 @@ export default function KeyboardNavigator() {
             </Typography>
             <Typography variant="headline" weight="regular" style={{ 
               color: "#2C2C2E",
-              maxWidth: "600px",
+              marginBottom: appleTheme.spacing[8],
+              maxWidth: "800px",
               margin: `0 auto ${appleTheme.spacing[8]} auto`,
+              lineHeight: appleTheme.typography.lineHeight.relaxed,
               fontWeight: appleTheme.typography.fontWeight.medium
             }}>
-              Test and improve keyboard navigation on your website. Ensure all interactive elements are accessible via keyboard.
+              Test and improve keyboard navigation on your website. Ensure all interactive elements are accessible via keyboard, 
+              making your site usable for everyone regardless of their input method.
             </Typography>
           </Box>
         </Container>
@@ -372,7 +386,7 @@ export default function KeyboardNavigator() {
                             marginBottom: appleTheme.spacing[2]
                           }}>
                             <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
-                              <strong>💡 Suggestion:</strong> {problem.suggestion}
+                              <strong><Lightbulb style={{ fontSize: "16px", marginRight: "4px", verticalAlign: "middle" }} /> Suggestion:</strong> {problem.suggestion}
                             </Typography>
                           </Card>
                           <Card variant="outlined" padding="md" style={{ backgroundColor: appleTheme.colors.gray[50] }}>
@@ -416,17 +430,23 @@ export default function KeyboardNavigator() {
               <Typography variant="title2" style={{ 
                 marginBottom: appleTheme.spacing[3],
                 color: appleTheme.colors.success,
-                fontWeight: appleTheme.typography.fontWeight.semibold
+                fontWeight: appleTheme.typography.fontWeight.semibold,
+                display: "flex",
+                alignItems: "center",
+                gap: "8px"
               }}>
-                ✅ Essential Requirements
+                <CheckCircle style={{ fontSize: "24px" }} />
+                Essential Requirements
               </Typography>
               <VStack spacing={2}>
                 {[
-                  "All interactive elements must be focusable",
-                  "Logical tab order throughout the page",
-                  "Visible focus indicators",
-                  "Escape key closes modals and dropdowns",
-                  "Skip links for main content"
+                  "Test Tab key navigation through all interactive elements",
+                  "Verify logical tab order matches visual layout",
+                  "Ensure focus indicators are clearly visible",
+                  "Check that Escape key closes all modals and dropdowns",
+                  "Test skip links bypass repetitive navigation",
+                  "Verify arrow keys work in custom components",
+                  "Test keyboard shortcuts don't conflict with browser defaults"
                 ].map((item, index) => (
                   <HStack key={index} spacing={2} align="center">
                     <CheckCircle style={{ color: appleTheme.colors.success, fontSize: "20px" }} />
@@ -442,17 +462,23 @@ export default function KeyboardNavigator() {
               <Typography variant="title2" style={{ 
                 marginBottom: appleTheme.spacing[3],
                 color: appleTheme.colors.info,
-                fontWeight: appleTheme.typography.fontWeight.semibold
+                fontWeight: appleTheme.typography.fontWeight.semibold,
+                display: "flex",
+                alignItems: "center",
+                gap: "8px"
               }}>
-                🚀 Advanced Features
+                <Rocket style={{ fontSize: "24px" }} />
+                Advanced Features
               </Typography>
               <VStack spacing={2}>
                 {[
-                  "Keyboard shortcuts for common actions",
-                  "Arrow keys for menu navigation",
-                  "Focus management in single-page apps",
-                  "ARIA landmarks for page structure",
-                  "Live regions for dynamic content"
+                  "Test custom keyboard shortcuts (Ctrl+S, Alt+N, etc.)",
+                  "Verify arrow key navigation in dropdowns and menus",
+                  "Test focus trapping in modal dialogs",
+                  "Check focus restoration after closing modals",
+                  "Test keyboard navigation in single-page applications",
+                  "Verify focus management during dynamic content updates",
+                  "Test keyboard navigation with screen readers"
                 ].map((item, index) => (
                   <HStack key={index} spacing={2} align="center">
                     <Info style={{ color: appleTheme.colors.info, fontSize: "20px" }} />

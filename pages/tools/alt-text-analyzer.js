@@ -6,6 +6,8 @@ import Input from "../../components/apple/Input";
 import { Container, Box, Flex, Stack, Section, HStack } from "../../components/apple/Layout";
 import { appleTheme } from "../../styles/apple-theme";
 import { useTheme } from "../../contexts/ThemeContext";
+import { CheckCircle, Cancel } from "@mui/icons-material";
+import AnimatedGradient from "../../components/apple/AnimatedGradient";
 
 // Icons
 const ImageIcon = () => (
@@ -109,43 +111,43 @@ export default function AltTextAnalyzer() {
   const bestPractices = [
     {
       type: "do",
-      text: "Be descriptive and specific",
-      description: "Describe what's in the image, not just that it's an image"
+      text: "Test alt text with screen readers",
+      description: "Verify how alt text sounds when read aloud by assistive technology"
     },
     {
       type: "do",
-      text: "Keep it concise (under 125 characters)",
-      description: "Screen readers read alt text in full, so keep it brief"
+      text: "Check for missing alt attributes",
+      description: "Scan all images to ensure they have proper alt text or empty alt attributes"
     },
     {
       type: "do",
-      text: "Use alt='' for decorative images",
-      description: "Empty alt text tells screen readers to skip decorative images"
+      text: "Verify decorative images have alt=''",
+      description: "Decorative images should have empty alt text to be skipped by screen readers"
     },
     {
       type: "do",
-      text: "Include text that appears in the image",
-      description: "If the image contains text, include it in the alt text"
+      text: "Test alt text length and clarity",
+      description: "Ensure alt text is concise but descriptive enough to convey meaning"
     },
     {
       type: "dont",
-      text: "Use generic text like 'image' or 'photo'",
-      description: "This provides no useful information to screen reader users"
+      text: "Ignore images without alt attributes",
+      description: "Missing alt text makes images completely inaccessible to screen reader users"
     },
     {
       type: "dont",
-      text: "Start with 'Image of' or 'Picture of'",
-      description: "Screen readers already announce it's an image"
+      text: "Use placeholder or generic alt text",
+      description: "Text like 'image' or 'photo' provides no meaningful information"
     },
     {
       type: "dont",
-      text: "Repeat the filename",
-      description: "Filenames are usually not descriptive or meaningful"
+      text: "Skip testing with actual screen readers",
+      description: "Always test how alt text sounds when read by assistive technology"
     },
     {
       type: "dont",
-      text: "Leave alt text empty for meaningful images",
-      description: "This makes important content inaccessible"
+      text: "Forget to test different image types",
+      description: "Test decorative, informative, and functional images differently"
     }
   ];
 
@@ -162,13 +164,21 @@ export default function AltTextAnalyzer() {
   };
 
   return (
-    <div style={{ backgroundColor: appleTheme.colors.background.secondary, minHeight: "100vh" }}>
+    <div style={{ 
+      backgroundColor: appleTheme.colors.background.secondary, 
+      minHeight: "100vh",
+      position: "relative",
+      overflow: "hidden"
+    }}>
+      {/* Animated Background Elements */}
+      <AnimatedGradient variant="subtle" intensity="medium" />
+      
       {/* Hero Section */}
       <Section background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
         <Container size="lg">
           <Box style={{ textAlign: "center" }}>
             <Typography variant="display" style={{ 
-              marginBottom: appleTheme.spacing[4],
+              marginBottom: appleTheme.spacing[6],
               color: "#1C1C1E",
               fontWeight: appleTheme.typography.fontWeight.bold
             }}>
@@ -176,11 +186,14 @@ export default function AltTextAnalyzer() {
             </Typography>
             <Typography variant="headline" weight="regular" style={{ 
               color: "#2C2C2E",
-              maxWidth: "600px",
+              marginBottom: appleTheme.spacing[8],
+              maxWidth: "800px",
               margin: `0 auto ${appleTheme.spacing[8]} auto`,
+              lineHeight: appleTheme.typography.lineHeight.relaxed,
               fontWeight: appleTheme.typography.fontWeight.medium
             }}>
-              Analyze and improve alt text for images on your website to ensure accessibility for screen readers.
+              Analyze and improve alt text for images on your website to ensure accessibility for screen readers. 
+              Make your visual content accessible to everyone.
             </Typography>
           </Box>
         </Container>
@@ -342,8 +355,14 @@ export default function AltTextAnalyzer() {
                 gap: appleTheme.spacing[4]
               }}>
                 <Box>
-                  <Typography variant="callout" weight="semibold" color="success" style={{ marginBottom: appleTheme.spacing[3] }}>
-                    ✅ Do's
+                  <Typography variant="callout" weight="semibold" color="success" style={{ 
+                    marginBottom: appleTheme.spacing[3],
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px"
+                  }}>
+                    <CheckCircle style={{ fontSize: "20px" }} />
+                    Do's
                   </Typography>
                   <Stack spacing={2}>
                     {bestPractices.filter(p => p.type === "do").map((practice, index) => (
@@ -363,8 +382,14 @@ export default function AltTextAnalyzer() {
                 </Box>
                 
                 <Box>
-                  <Typography variant="callout" weight="semibold" color="error" style={{ marginBottom: appleTheme.spacing[3] }}>
-                    ❌ Don'ts
+                  <Typography variant="callout" weight="semibold" color="error" style={{ 
+                    marginBottom: appleTheme.spacing[3],
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px"
+                  }}>
+                    <Cancel style={{ fontSize: "20px" }} />
+                    Don'ts
                   </Typography>
                   <Stack spacing={2}>
                     {bestPractices.filter(p => p.type === "dont").map((practice, index) => (

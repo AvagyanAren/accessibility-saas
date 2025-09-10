@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, memo } from "react";
 import Typography from "../components/apple/Typography";
 import Button from "../components/apple/Button";
 import Card from "../components/apple/Card";
@@ -7,6 +7,72 @@ import { Container, Box, Flex, Stack, Section } from "../components/apple/Layout
 import { appleTheme } from "../styles/apple-theme";
 import { useTheme } from "../contexts/ThemeContext";
 import Link from "next/link";
+import { useRouter } from "next/router";
+
+// Tooltip Component
+const Tooltip = memo(({ children, text, position = "top" }) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  const tooltipStyles = {
+    position: "relative",
+    display: "inline-block"
+  };
+
+  const tooltipContentStyles = {
+    visibility: isVisible ? "visible" : "hidden",
+    opacity: isVisible ? 1 : 0,
+    position: "absolute",
+    zIndex: 1000,
+    backgroundColor: "#1C1C1E",
+    color: "#FFFFFF",
+    textAlign: "center",
+    borderRadius: "8px",
+    padding: "8px 12px",
+    fontSize: "12px",
+    fontWeight: "500",
+    lineHeight: 1.4,
+    whiteSpace: "nowrap",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+    transition: "all 0.2s ease-in-out",
+    ...(position === "top" && {
+      bottom: "125%",
+      left: "50%",
+      transform: "translateX(-50%)",
+      marginBottom: "8px"
+    }),
+    ...(position === "bottom" && {
+      top: "125%",
+      left: "50%",
+      transform: "translateX(-50%)",
+      marginTop: "8px"
+    }),
+    ...(position === "left" && {
+      right: "125%",
+      top: "50%",
+      transform: "translateY(-50%)",
+      marginRight: "8px"
+    }),
+    ...(position === "right" && {
+      left: "125%",
+      top: "50%",
+      transform: "translateY(-50%)",
+      marginLeft: "8px"
+    })
+  };
+
+  return (
+    <div
+      style={tooltipStyles}
+      onMouseEnter={() => setIsVisible(true)}
+      onMouseLeave={() => setIsVisible(false)}
+    >
+      {children}
+      <div style={tooltipContentStyles}>
+        {text}
+      </div>
+    </div>
+  );
+});
 
 // Icons (simplified SVG components)
 const AccessibilityIcon = () => (
@@ -97,6 +163,7 @@ const CheckIcon = () => (
 
 export default function About() {
   const { isDarkMode } = useTheme();
+  const router = useRouter();
   const stats = [
     { number: "1B+", label: "People with disabilities worldwide", icon: <PeopleIcon /> },
     { number: "71%", label: "Of users with disabilities leave sites due to poor accessibility", icon: <TrendingUpIcon /> },
@@ -148,7 +215,7 @@ export default function About() {
   return (
     <div style={{ 
       backgroundColor: appleTheme.colors.background.secondary, 
-      minHeight: "100vh",
+        minHeight: "100vh",
       position: "relative",
       overflow: "hidden"
     }}>
@@ -177,23 +244,43 @@ export default function About() {
               We're on a mission to make digital accessibility testing as simple as checking your email. 
               Because everyone deserves to access the web, regardless of their abilities.
             </Typography>
-            <Link href="/" passHref legacyBehavior>
-              <a style={{ textDecoration: "none" }}>
-                <Button
-                  variant="secondary"
-                  size="large"
-                  style={{
-                    backgroundColor: "white",
-                    color: appleTheme.colors.primary[500],
-                    fontWeight: appleTheme.typography.fontWeight.semibold,
-                    padding: `${appleTheme.spacing[3]} ${appleTheme.spacing[6]}`,
-                    fontSize: appleTheme.typography.fontSize.lg
-                  }}
-                >
-                  Start Your First Scan
-                </Button>
-              </a>
-            </Link>
+            <button
+              style={{
+                backgroundColor: "white",
+                color: "#007AFF",
+                fontWeight: "600",
+                padding: "16px 32px",
+                fontSize: "18px",
+                borderRadius: "12px",
+                border: "1px solid #007AFF",
+                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                boxShadow: "0 4px 12px rgba(0, 122, 255, 0.15)",
+                cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                userSelect: "none"
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                router.push("/");
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = "#007AFF";
+                e.target.style.color = "#FFFFFF";
+                e.target.style.transform = "translateY(-2px)";
+                e.target.style.boxShadow = "0 8px 20px rgba(0, 122, 255, 0.25)";
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = "white";
+                e.target.style.color = "#007AFF";
+                e.target.style.transform = "translateY(0)";
+                e.target.style.boxShadow = "0 4px 12px rgba(0, 122, 255, 0.15)";
+              }}
+            >
+              Start Your First Scan
+            </button>
           </Box>
         </Container>
       </Section>
@@ -204,7 +291,7 @@ export default function About() {
           <Card variant="elevated" padding="xl" style={{ marginBottom: appleTheme.spacing[12] }}>
             <Stack spacing={6} align="center">
               <Typography variant="title1" align="center" style={{
-                color: isDarkMode ? '#FFFFFF' : '#000000'
+                color: isDarkMode ? "#FFFFFF" : "#000000"
               }}>
                 Our Story
               </Typography>
@@ -213,7 +300,7 @@ export default function About() {
                 fontSize: appleTheme.typography.fontSize.lg,
                 lineHeight: appleTheme.typography.lineHeight.relaxed,
                 maxWidth: "800px",
-                color: isDarkMode ? '#E5E5EA' : '#1C1C1E'
+                color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
               }}>
                 It started with a simple observation: while working on web projects, we noticed that accessibility testing was always an afterthought—if it happened at all.
               </Typography>
@@ -222,7 +309,7 @@ export default function About() {
                 fontSize: appleTheme.typography.fontSize.lg,
                 lineHeight: appleTheme.typography.lineHeight.relaxed,
                 maxWidth: "800px",
-                color: isDarkMode ? '#E5E5EA' : '#1C1C1E'
+                color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
               }}>
                 We saw developers struggling with complex, expensive tools that took forever to run. We saw designers creating beautiful interfaces that worked great for some users but completely failed others. And most importantly, we saw millions of people being excluded from the digital world simply because their needs weren't considered.
               </Typography>
@@ -231,7 +318,7 @@ export default function About() {
                 fontSize: appleTheme.typography.fontSize.lg,
                 lineHeight: appleTheme.typography.lineHeight.relaxed,
                 maxWidth: "800px",
-                color: isDarkMode ? '#E5E5EA' : '#1C1C1E'
+                color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
               }}>
                 So we built ScanWeb—a tool that makes accessibility testing as simple as checking your email. No complex setup, no expensive licenses, no waiting around for results. Just enter a URL, click scan, and get actionable insights in seconds.
               </Typography>
@@ -242,37 +329,73 @@ export default function About() {
           <Box style={{ marginBottom: appleTheme.spacing[12] }}>
             <Typography variant="title2" align="center" style={{ 
               marginBottom: appleTheme.spacing[8],
-              color: isDarkMode ? '#FFFFFF' : '#000000'
+              color: isDarkMode ? "#FFFFFF" : "#000000"
             }}>
               The Numbers Don't Lie
             </Typography>
             
             <div style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-              gap: appleTheme.spacing[6]
+              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+              gap: appleTheme.spacing[6],
+              width: "100%",
+              alignItems: "start"
             }}>
               {stats.map((stat, index) => (
-                <Card key={index} variant="elevated" padding="large" hover>
-                  <Stack spacing={3} align="center">
-                    <Box style={{ 
-                      color: appleTheme.colors.primary[500],
-                      marginBottom: appleTheme.spacing[2]
-                    }}>
-                      {stat.icon}
-                    </Box>
-                    <Typography variant="title1" weight="bold" style={{
-                      color: isDarkMode ? '#FFFFFF' : appleTheme.colors.primary[500]
-                    }}>
-                      {stat.number}
-                    </Typography>
-                    <Typography variant="footnote" align="center" style={{
-                      color: isDarkMode ? '#AEAEB2' : '#1C1C1E'
-                    }}>
-                      {stat.label}
-                    </Typography>
-                  </Stack>
-                </Card>
+                <div key={index} style={{
+                  backgroundColor: "#FFFFFF",
+                  border: "1px solid #E5E5EA",
+                  borderRadius: "16px",
+                  padding: "24px",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+                  overflow: "hidden",
+                  minHeight: "120px",
+                  display: "flex",
+                  flexDirection: "column",
+                  position: "relative",
+                  zIndex: 1,
+                  height: "auto",
+                  contain: "layout style",
+                  textAlign: "center"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.15)";
+                  e.currentTarget.style.transform = "translateY(-3px)";
+                  e.currentTarget.style.borderColor = "#007AFF";
+                  e.currentTarget.style.backgroundColor = "#F8F9FA";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.borderColor = "#E5E5EA";
+                  e.currentTarget.style.backgroundColor = "#FFFFFF";
+                }}>
+                  <Box style={{ 
+                    color: appleTheme.colors.primary[500],
+                    marginBottom: appleTheme.spacing[2],
+                    display: "flex",
+                    justifyContent: "center"
+                  }}>
+                    {stat.icon}
+                  </Box>
+                  <Typography variant="title1" weight="bold" style={{
+                    color: isDarkMode ? "#FFFFFF" : appleTheme.colors.primary[500],
+                    fontSize: "32px",
+                    fontWeight: "700",
+                    marginBottom: "8px"
+                  }}>
+                    {stat.number}
+                  </Typography>
+                  <Typography variant="footnote" align="center" style={{
+                    color: isDarkMode ? "#AEAEB2" : "#1C1C1E",
+                    fontSize: "14px",
+                    lineHeight: 1.5,
+                    fontWeight: "500"
+                  }}>
+                    {stat.label}
+                  </Typography>
+                </div>
               ))}
             </div>
           </Box>
@@ -281,7 +404,7 @@ export default function About() {
           <Box style={{ marginBottom: appleTheme.spacing[12] }}>
             <Typography variant="title2" align="center" style={{ 
               marginBottom: appleTheme.spacing[8],
-              color: isDarkMode ? '#FFFFFF' : '#000000'
+              color: isDarkMode ? "#FFFFFF" : "#000000"
             }}>
               Why Choose ScanWeb?
             </Typography>
@@ -289,26 +412,63 @@ export default function About() {
             <div style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-              gap: appleTheme.spacing[6]
+              gap: appleTheme.spacing[6],
+              width: "100%",
+              alignItems: "start"
             }}>
               {features.map((feature, index) => (
-                <Card key={index} variant="outlined" padding="large" hover>
-                  <Stack spacing={4}>
-                    <Box style={{ color: appleTheme.colors.primary[500] }}>
-                      {feature.icon}
-                    </Box>
-                    <Typography variant="callout" weight="semibold" style={{
-                      color: isDarkMode ? '#FFFFFF' : '#000000'
-                    }}>
-                      {feature.title}
-                    </Typography>
-                    <Typography variant="footnote" style={{
-                      color: isDarkMode ? '#E5E5EA' : '#1C1C1E'
-                    }}>
-                      {feature.description}
-                    </Typography>
-                  </Stack>
-                </Card>
+                <div key={index} style={{
+                  backgroundColor: "#FFFFFF",
+                  border: "1px solid #E5E5EA",
+                  borderRadius: "16px",
+                  padding: "24px",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+                  overflow: "hidden",
+                  minHeight: "120px",
+                  display: "flex",
+                  flexDirection: "column",
+                  position: "relative",
+                  zIndex: 1,
+                  height: "auto",
+                  contain: "layout style"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.15)";
+                  e.currentTarget.style.transform = "translateY(-3px)";
+                  e.currentTarget.style.borderColor = "#007AFF";
+                  e.currentTarget.style.backgroundColor = "#F8F9FA";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.borderColor = "#E5E5EA";
+                  e.currentTarget.style.backgroundColor = "#FFFFFF";
+                }}>
+                  <Box style={{ 
+                    color: appleTheme.colors.primary[500],
+                    marginBottom: "16px"
+                  }}>
+                    {feature.icon}
+                  </Box>
+                  <Typography variant="callout" weight="semibold" style={{
+                    color: isDarkMode ? "#FFFFFF" : "#000000",
+                    fontSize: "18px",
+                    fontWeight: "600",
+                    marginBottom: "12px",
+                    lineHeight: 1.3
+                  }}>
+                    {feature.title}
+                  </Typography>
+                  <Typography variant="footnote" style={{
+                    color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
+                    fontSize: "14px",
+                    lineHeight: 1.5,
+                    fontWeight: "400"
+                  }}>
+                    {feature.description}
+                  </Typography>
+                </div>
               ))}
             </div>
           </Box>
@@ -317,7 +477,7 @@ export default function About() {
           <Box style={{ marginBottom: appleTheme.spacing[12] }}>
             <Typography variant="title2" align="center" style={{ 
               marginBottom: appleTheme.spacing[8],
-              color: isDarkMode ? '#FFFFFF' : '#000000'
+              color: isDarkMode ? "#FFFFFF" : "#000000"
             }}>
               Our Values
             </Typography>
@@ -325,35 +485,72 @@ export default function About() {
             <div style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
-              gap: appleTheme.spacing[6]
+              gap: appleTheme.spacing[6],
+              width: "100%",
+              alignItems: "start"
             }}>
               {values.map((value, index) => (
-                <Card key={index} variant="filled" padding="large">
-                  <Stack spacing={4}>
-                    <Flex align="flex-start" gap={3}>
-                      <Box style={{ 
-                        color: appleTheme.colors.primary[500],
-                        flexShrink: 0,
-                        marginTop: appleTheme.spacing[1]
+                <div key={index} style={{
+                  backgroundColor: "#FFFFFF",
+                  border: "1px solid #E5E5EA",
+                  borderRadius: "16px",
+                  padding: "24px",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+                  overflow: "hidden",
+                  minHeight: "120px",
+                  display: "flex",
+                  flexDirection: "column",
+                  position: "relative",
+                  zIndex: 1,
+                  height: "auto",
+                  contain: "layout style"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.15)";
+                  e.currentTarget.style.transform = "translateY(-3px)";
+                  e.currentTarget.style.borderColor = "#007AFF";
+                  e.currentTarget.style.backgroundColor = "#F8F9FA";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.borderColor = "#E5E5EA";
+                  e.currentTarget.style.backgroundColor = "#FFFFFF";
+                }}>
+                  <div style={{ 
+                    display: "flex", 
+                    alignItems: "flex-start", 
+                    gap: "16px" 
+                  }}>
+                    <Box style={{ 
+                      color: appleTheme.colors.primary[500],
+                      flexShrink: 0,
+                      marginTop: "4px"
+                    }}>
+                      {value.icon}
+                    </Box>
+                    <Box style={{ flex: 1 }}>
+                      <Typography variant="callout" weight="semibold" style={{ 
+                        marginBottom: "12px",
+                        color: isDarkMode ? "#FFFFFF" : "#000000",
+                        fontSize: "18px",
+                        fontWeight: "600",
+                        lineHeight: 1.3
                       }}>
-                        {value.icon}
-                      </Box>
-                      <Box>
-                        <Typography variant="callout" weight="semibold" style={{ 
-                          marginBottom: appleTheme.spacing[2],
-                          color: isDarkMode ? '#FFFFFF' : '#000000'
-                        }}>
-                          {value.title}
-                        </Typography>
-                        <Typography variant="footnote" style={{
-                          color: isDarkMode ? '#E5E5EA' : '#1C1C1E'
-                        }}>
-                          {value.description}
+                        {value.title}
+                      </Typography>
+                      <Typography variant="footnote" style={{
+                        color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
+                        fontSize: "14px",
+                        lineHeight: 1.5,
+                        fontWeight: "400"
+                      }}>
+                        {value.description}
         </Typography>
-                      </Box>
-                    </Flex>
-                  </Stack>
-                </Card>
+                    </Box>
+                  </div>
+                </div>
               ))}
             </div>
           </Box>
@@ -385,25 +582,43 @@ export default function About() {
                 Join thousands of developers and designers who are already using ScanWeb to create more inclusive digital experiences.
         </Typography>
               <Box style={{ marginTop: appleTheme.spacing[4] }}>
-                <Link href="/" passHref legacyBehavior>
-                  <a style={{ textDecoration: "none" }}>
-                    <Button
-                      variant="secondary"
-                      size="large"
-                      style={{
-                        backgroundColor: "white",
-                        color: "#007AFF",
-                        fontWeight: appleTheme.typography.fontWeight.semibold,
-                        padding: `${appleTheme.spacing[4]} ${appleTheme.spacing[8]}`,
-                        borderRadius: appleTheme.borderRadius.lg,
-                        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-                        transition: "all 0.3s ease"
-                      }}
-                    >
-                      Start Scanning Now
-                    </Button>
-                  </a>
-                </Link>
+                <button
+                  style={{
+                    backgroundColor: "white",
+                    color: "#007AFF",
+                    fontWeight: "600",
+                    padding: "16px 32px",
+                    fontSize: "18px",
+                    borderRadius: "12px",
+                    border: "1px solid #007AFF",
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                    boxShadow: "0 4px 12px rgba(0, 122, 255, 0.15)",
+                    cursor: "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textAlign: "center",
+                    userSelect: "none"
+                  }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    router.push("/");
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = "#007AFF";
+                    e.target.style.color = "#FFFFFF";
+                    e.target.style.transform = "translateY(-2px)";
+                    e.target.style.boxShadow = "0 8px 20px rgba(0, 122, 255, 0.25)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = "white";
+                    e.target.style.color = "#007AFF";
+                    e.target.style.transform = "translateY(0)";
+                    e.target.style.boxShadow = "0 4px 12px rgba(0, 122, 255, 0.15)";
+                  }}
+                >
+                  Start Scanning Now
+                </button>
               </Box>
             </Stack>
           </Card>
