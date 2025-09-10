@@ -352,21 +352,39 @@ export default function Home() {
   const [error, setError] = useState("");
   const [isMobile, setIsMobile] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
+  const [dataFromCache, setDataFromCache] = useState(false);
 
-  // Load saved scan results on component mount
+  // Load saved scan results on component mount with timeout check
   useEffect(() => {
     try {
       const savedUrl = localStorage.getItem('scanUrl');
       const savedViolations = localStorage.getItem('scanViolations');
+      const savedTimestamp = localStorage.getItem('scanTimestamp');
+      
+      // Check if data is older than 30 minutes (1800000 ms)
+      const TIMEOUT_DURATION = 30 * 60 * 1000; // 30 minutes
+      const now = Date.now();
+      const isDataExpired = savedTimestamp && (now - parseInt(savedTimestamp)) > TIMEOUT_DURATION;
+      
+      if (isDataExpired) {
+        // Clear expired data
+        localStorage.removeItem('scanUrl');
+        localStorage.removeItem('scanViolations');
+        localStorage.removeItem('scanTimestamp');
+        console.log('Previous scan data expired and cleared');
+        return;
+      }
       
       if (savedUrl && typeof savedUrl === 'string') {
         setUrl(savedUrl);
+        setDataFromCache(true);
       }
       
       if (savedViolations) {
         const parsed = JSON.parse(savedViolations);
         if (Array.isArray(parsed)) {
           setViolations(parsed);
+          setDataFromCache(true);
         }
       }
     } catch (error) {
@@ -374,6 +392,7 @@ export default function Home() {
       // Clear corrupted data
       localStorage.removeItem('scanUrl');
       localStorage.removeItem('scanViolations');
+      localStorage.removeItem('scanTimestamp');
     }
   }, []);
 
@@ -407,6 +426,7 @@ export default function Home() {
     setViolations([]);
     setError("");
     setInputFocused(false);
+    setDataFromCache(false);
 
     try {
       // Add protocol if missing
@@ -424,9 +444,10 @@ export default function Home() {
       
       const newViolations = data.violations || [];
       
-      // Save results to localStorage
+      // Save results to localStorage with timestamp
       localStorage.setItem('scanUrl', url.trim());
       localStorage.setItem('scanViolations', JSON.stringify(newViolations));
+      localStorage.setItem('scanTimestamp', Date.now().toString());
       
       setViolations(newViolations);
       
@@ -446,8 +467,10 @@ export default function Home() {
     setUrl("");
     setViolations([]);
     setError("");
+    setDataFromCache(false);
     localStorage.removeItem('scanUrl');
     localStorage.removeItem('scanViolations');
+    localStorage.removeItem('scanTimestamp');
   }, []);
 
   const calculateAccessibilityScore = useCallback((violations) => {
@@ -904,15 +927,30 @@ export default function Home() {
                 </div>
 
                 {/* Accessibility Issues Title */}
-                <Typography variant="title3" style={{
-                  color: '#000000',
-                  fontSize: "18px",
-                  fontWeight: "600",
-                  marginBottom: "20px",
-                  textAlign: "left"
-                }}>
-                  Accessibility Issues ({violations.length})
-                </Typography>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "20px" }}>
+                  <Typography variant="title3" style={{
+                    color: '#000000',
+                    fontSize: "18px",
+                    fontWeight: "600",
+                    textAlign: "left"
+                  }}>
+                    Accessibility Issues ({violations.length})
+                  </Typography>
+                  {dataFromCache && (
+                    <div style={{
+                      padding: "2px 6px",
+                      backgroundColor: "#E3F2FD",
+                      color: "#1976D2",
+                      borderRadius: "4px",
+                      fontSize: "11px",
+                      fontWeight: "500",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px"
+                    }}>
+                      Cached
+                    </div>
+                  )}
+                </div>
 
                 {/* Violations Grid */}
                 <div style={{
