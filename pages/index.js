@@ -120,7 +120,7 @@ const ViolationCard = ({ violation, isDarkMode, getStatusColor }) => {
         transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
         overflow: "hidden",
-        height: "120px",
+        minHeight: "120px",
         display: "flex",
         flexDirection: "column"
       }}
@@ -141,8 +141,8 @@ const ViolationCard = ({ violation, isDarkMode, getStatusColor }) => {
         alignItems: "flex-start",
         justifyContent: "space-between",
         gap: "12px",
-        flex: 1,
-        minHeight: 0
+        flex: "0 0 auto",
+        minHeight: "auto"
       }}>
         {/* Left side - Icon and Title */}
         <div style={{ 
@@ -193,9 +193,9 @@ const ViolationCard = ({ violation, isDarkMode, getStatusColor }) => {
               overflow: "hidden",
               textOverflow: "ellipsis",
               display: "-webkit-box",
-              WebkitLineClamp: 2,
+              WebkitLineClamp: 3,
               WebkitBoxOrient: "vertical",
-              maxHeight: "2.8em"
+              maxHeight: "4.2em"
             }}>
               {violation.description}
             </Typography>
@@ -253,8 +253,8 @@ const ViolationCard = ({ violation, isDarkMode, getStatusColor }) => {
           borderTop: "1px solid #F2F2F7",
           backgroundColor: "#FAFAFA",
           animation: "fadeIn 0.3s ease-in-out",
-          flex: 1,
-          overflow: "auto"
+          flex: "0 0 auto",
+          overflow: "visible"
         }}>
           <div style={{ padding: "20px" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -273,15 +273,19 @@ const ViolationCard = ({ violation, isDarkMode, getStatusColor }) => {
                   </Typography>
                   <div style={{
                     backgroundColor: "#FFFFFF",
-                    padding: "12px 16px",
+                    padding: "16px",
                     borderRadius: "8px",
                     fontFamily: "'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace",
-                    fontSize: "13px",
+                    fontSize: "12px",
                     color: "#1C1C1E",
                     overflowX: "auto",
                     border: "1px solid #E5E5EA",
-                    lineHeight: 1.5,
-                    textAlign: "left"
+                    lineHeight: 1.6,
+                    textAlign: "left",
+                    whiteSpace: "pre-wrap",
+                    wordBreak: "break-word",
+                    maxHeight: "200px",
+                    overflowY: "auto"
                   }}>
                     {violation.nodes[0].html}
                   </div>
@@ -714,13 +718,14 @@ export default function Home() {
             {violations.length > 0 && (
               <Box style={{ 
                 marginTop: isMobile ? appleTheme.spacing[8] : appleTheme.spacing[12],
-                maxWidth: "900px",
+                maxWidth: "1200px",
                 margin: `${isMobile ? appleTheme.spacing[8] : appleTheme.spacing[12]} auto 0 auto`,
                 backgroundColor: "#FFFFFF",
                 borderRadius: "16px",
-                padding: "24px",
+                padding: isMobile ? "16px" : "24px",
                 boxShadow: "0 8px 32px rgba(0, 0, 0, 0.12)",
-                border: "1px solid rgba(0, 0, 0, 0.08)"
+                border: "1px solid rgba(0, 0, 0, 0.08)",
+                width: "100%"
               }}>
                 {/* Score Summary */}
                 <div style={{
@@ -912,9 +917,12 @@ export default function Home() {
                 {/* Violations Grid */}
                 <div style={{
                   display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-                  gap: "16px",
-                  maxWidth: "100%"
+                  gridTemplateColumns: isMobile 
+                    ? "1fr" 
+                    : "repeat(auto-fit, minmax(350px, 1fr))",
+                  gap: isMobile ? "12px" : "20px",
+                  maxWidth: "100%",
+                  width: "100%"
                 }}>
                   {violations.map((violation, index) => (
                     <ViolationCard 
