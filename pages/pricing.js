@@ -345,6 +345,18 @@ export default function Pricing() {
                     variant={plan.buttonVariant}
                     fullWidth
                     size="large"
+                    onClick={(e) => {
+                      console.log("Pricing button clicked:", plan.buttonText);
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (plan.buttonText === "Get Started Free") {
+                        window.location.href = "/";
+                      } else if (plan.buttonText === "Start Pro Trial") {
+                        window.location.href = "/";
+                      } else if (plan.buttonText === "Contact Sales") {
+                        window.location.href = "mailto:sales@accessibility-saas.com";
+                      }
+                    }}
                     style={{
                       marginTop: appleTheme.spacing[4],
                       color: isDarkMode ? "#FFFFFF" : "#000000"

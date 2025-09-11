@@ -7,6 +7,16 @@ import { Container, Box, Flex, Stack, Section, HStack } from "../components/appl
 import { appleTheme } from "../styles/apple-theme";
 import { useTheme } from "../contexts/ThemeContext";
 import Link from "next/link";
+import {
+  Article as ArticleIcon,
+  School as SchoolIcon,
+  Code as CodeIcon,
+  Palette as DesignIcon,
+  RecordVoiceOver as RecordVoiceOverIcon,
+  Keyboard as KeyboardIcon,
+  PhoneAndroid as PhoneAndroidIcon,
+  AccessTime as AccessTimeIcon
+} from "@mui/icons-material";
 
 // Tooltip Component
 const Tooltip = memo(({ children, text, position = "top" }) => {
@@ -144,59 +154,76 @@ export default function Resources() {
       description: "Learn about the most frequent accessibility problems found on websites and practical solutions to resolve them.",
       category: "Beginner",
       readTime: "5 min read",
+      publishDate: "December 15, 2024",
       icon: <ArticleIcon />,
       color: appleTheme.colors.primary[500],
       href: "/articles/10-common-accessibility-issues",
       available: true
     },
     {
-      title: "Complete Guide to WCAG 2.1 Guidelines",
-      description: "Comprehensive overview of Web Content Accessibility Guidelines with real-world examples and implementation tips.",
+      title: "WCAG 2.1 Compliance Guide: Complete Web Accessibility Standards",
+      description: "Master the Web Content Accessibility Guidelines (WCAG) 2.1 to create inclusive, accessible websites that comply with international standards.",
       category: "Advanced",
-      readTime: "15 min read",
+      readTime: "8 min read",
+      publishDate: "December 15, 2024",
       icon: <SchoolIcon />,
       color: appleTheme.colors.success,
-      href: "/articles/wcag-2.1-guide",
-      available: false
+      href: "/articles/wcag-2-1-compliance-guide",
+      available: true
+    },
+    {
+      title: "Color Contrast Accessibility: Complete Guide for Web Designers",
+      description: "Master color contrast requirements to create accessible, inclusive designs that meet WCAG standards and provide excellent user experience.",
+      category: "Design",
+      readTime: "6 min read",
+      publishDate: "December 15, 2024",
+      icon: <DesignIcon />,
+      color: "#FF6B35",
+      href: "/articles/color-contrast-accessibility-guide",
+      available: true
+    },
+    {
+      title: "Screen Reader Optimization: Complete Accessibility Guide",
+      description: "Learn how to optimize your website for screen readers and assistive technologies. Create inclusive experiences that work seamlessly with NVDA, JAWS, VoiceOver.",
+      category: "Testing",
+      readTime: "7 min read",
+      publishDate: "December 15, 2024",
+      icon: <RecordVoiceOverIcon />,
+      color: appleTheme.colors.primary[600],
+      href: "/articles/screen-reader-optimization-guide",
+      available: true
+    },
+    {
+      title: "Keyboard Navigation Accessibility: Complete Implementation Guide",
+      description: "Master keyboard navigation patterns and focus management to create truly accessible web experiences for users who rely on keyboard-only interaction.",
+      category: "Advanced",
+      readTime: "9 min read",
+      publishDate: "December 15, 2024",
+      icon: <KeyboardIcon />,
+      color: appleTheme.colors.warning,
+      href: "/articles/keyboard-navigation-accessibility",
+      available: true
+    },
+    {
+      title: "Mobile Accessibility: Complete Best Practices Guide",
+      description: "Master mobile accessibility to create inclusive experiences on smartphones and tablets. Learn essential techniques for touch interfaces and responsive design.",
+      category: "Advanced",
+      readTime: "8 min read",
+      publishDate: "December 15, 2024",
+      icon: <PhoneAndroidIcon />,
+      color: appleTheme.colors.success,
+      href: "/articles/mobile-accessibility-best-practices",
+      available: true
     },
     {
       title: "Building Accessible React Components",
       description: "Best practices for creating accessible React components that work with screen readers and keyboard navigation.",
       category: "Development",
       readTime: "8 min read",
+      publishDate: "Coming Soon",
       icon: <CodeIcon />,
       color: appleTheme.colors.warning,
       href: "/articles/accessible-react-components",
-      available: false
-    },
-    {
-      title: "Designing for Color Blindness",
-      description: "How to create designs that are accessible to users with color vision deficiencies.",
-      category: "Design",
-      readTime: "6 min read",
-      icon: <DesignIcon />,
-      color: "#FF6B35",
-      href: "/articles/designing-for-color-blindness",
-      available: false
-    },
-    {
-      title: "Accessibility Testing Checklist",
-      description: "A comprehensive checklist to ensure your website meets accessibility standards before launch.",
-      category: "Testing",
-      readTime: "4 min read",
-      icon: <ArticleIcon />,
-      color: appleTheme.colors.primary[600],
-      href: "/articles/accessibility-testing-checklist",
-      available: false
-    },
-    {
-      title: "Screen Reader Testing Guide",
-      description: "Learn how to test your website with screen readers and ensure proper navigation.",
-      category: "Testing",
-      readTime: "10 min read",
-      icon: <SchoolIcon />,
-      color: appleTheme.colors.success,
-      href: "/articles/screen-reader-testing",
       available: false
     }
   ];
@@ -368,6 +395,17 @@ export default function Resources() {
                             {article.readTime}
                           </Typography>
                         </HStack>
+                        <HStack spacing={1} align="center">
+                          <AccessTimeIcon style={{ 
+                            color: isDarkMode ? "#AEAEB2" : "#6D6D70",
+                            fontSize: "14px"
+                          }} />
+                          <Typography variant="caption1" style={{
+                            color: isDarkMode ? "#AEAEB2" : "#6D6D70"
+                          }}>
+                            {article.publishDate}
+                          </Typography>
+                        </HStack>
                         
                         {article.available ? (
                           <Typography variant="caption1" weight="medium" style={{
@@ -504,6 +542,13 @@ export default function Resources() {
               <Button
                 variant="secondary"
                 size="large"
+                onClick={(e) => {
+                  console.log("Newsletter button clicked");
+                  e.preventDefault();
+                  e.stopPropagation();
+                  // In a real app, this would open a newsletter signup modal or redirect to a signup page
+                  alert("Newsletter signup coming soon! For now, you can contact us at hello@accessibility-saas.com");
+                }}
                 style={{
                   backgroundColor: "white",
                   color: "#007AFF",
@@ -519,6 +564,12 @@ export default function Resources() {
               <Button
                 variant="outline"
                 size="large"
+                onClick={(e) => {
+                  console.log("Twitter button clicked");
+                  e.preventDefault();
+                  e.stopPropagation();
+                  window.open("https://twitter.com/accessibility_saas", "_blank");
+                }}
                 style={{
                   borderColor: "rgba(255, 255, 255, 0.3)",
                   color: "white",

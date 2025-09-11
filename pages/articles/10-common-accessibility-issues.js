@@ -1,19 +1,11 @@
 import React from "react";
-import {
-  Box,
-  Typography,
-  Paper,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Chip,
-  Divider,
-  Card,
-  CardContent,
-  Alert,
-  Button,
-} from "@mui/material";
+import Typography from "../../components/apple/Typography";
+import Button from "../../components/apple/Button";
+import Card from "../../components/apple/Card";
+import { Container, Box, Flex, Stack, Section } from "../../components/apple/Layout";
+import { appleTheme } from "../../styles/apple-theme";
+import { useTheme } from "../../contexts/ThemeContext";
+import AnimatedGradient from "../../components/apple/AnimatedGradient";
 import {
   CheckCircle,
   Error,
@@ -25,6 +17,8 @@ import {
 import Link from "next/link";
 
 export default function CommonAccessibilityIssues() {
+  const { isDarkMode } = useTheme();
+  
   const issues = [
     {
       title: "Missing Alt Text for Images",
@@ -131,209 +125,343 @@ export default function CommonAccessibilityIssues() {
   const getSeverityIcon = (severity) => {
     switch (severity) {
       case "Critical":
-        return <Error sx={{ color: "#dc3545" }} />;
+        return <Error style={{ color: "#dc3545" }} />;
       case "Serious":
-        return <Warning sx={{ color: "#ff9f43" }} />;
+        return <Warning style={{ color: "#ff9f43" }} />;
       case "Moderate":
-        return <Info sx={{ color: "#ffc107" }} />;
+        return <Info style={{ color: "#ffc107" }} />;
       default:
-        return <CheckCircle sx={{ color: "#28a745" }} />;
+        return <CheckCircle style={{ color: "#28a745" }} />;
     }
   };
 
   return (
-    <Box sx={{ minHeight: "100vh", backgroundColor: "#e3f2fd" }}>
-      {/* Header */}
-      <Box sx={{ 
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-        color: "white",
-        py: { xs: 4, sm: 6 },
-        textAlign: "center"
-      }}>
-        <Box sx={{ maxWidth: "800px", mx: "auto", px: 2 }}>
-          <Button
-            component={Link}
-            href="/resources"
-            startIcon={<ArrowBack />}
-            sx={{ 
-              color: "white", 
-              mb: 2,
-              "&:hover": { backgroundColor: "rgba(255,255,255,0.1)" }
-            }}
-          >
-            Back to Resources
-          </Button>
-          
-          <Typography variant="h3" sx={{ 
-            fontWeight: 700, 
-            mb: 2,
-            fontSize: { xs: "24px", sm: "32px" }
-          }}>
-            10 Common Accessibility Issues and How to Fix Them
-          </Typography>
-          
-          <Typography variant="h6" sx={{ 
-            opacity: 0.9,
-            mb: 2
-          }}>
-            Learn about the most frequent accessibility problems found on websites and practical solutions to resolve them.
-          </Typography>
-          
-          <Box sx={{ display: "flex", justifyContent: "center", gap: 2, flexWrap: "wrap" }}>
-            <Chip label="5 min read" sx={{ backgroundColor: "rgba(255,255,255,0.2)", color: "white" }} />
-            <Chip label="Beginner" sx={{ backgroundColor: "rgba(255,255,255,0.2)", color: "white" }} />
-            <Chip label="WCAG 2.1" sx={{ backgroundColor: "rgba(255,255,255,0.2)", color: "white" }} />
+    <div style={{ 
+      backgroundColor: appleTheme.colors.background.secondary, 
+      minHeight: "100vh",
+      position: "relative",
+      overflow: "hidden"
+    }}>
+      {/* Animated Background Elements */}
+      <AnimatedGradient variant="subtle" intensity="medium" />
+      
+      {/* Hero Section */}
+      <Section background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
+        <Container size="lg">
+          <Box style={{ textAlign: "center" }}>
+            <Link href="/resources" passHref legacyBehavior>
+              <a style={{ textDecoration: "none", display: "inline-block", marginBottom: appleTheme.spacing[4] }}>
+                <Button
+                  variant="ghost"
+                  size="medium"
+                  startIcon={<ArrowBack />}
+                  style={{
+                    color: "#007AFF",
+                    backgroundColor: "rgba(0, 122, 255, 0.1)",
+                    border: "1px solid rgba(0, 122, 255, 0.2)"
+                  }}
+                >
+                  Back to Resources
+                </Button>
+              </a>
+            </Link>
+            
+            <Typography variant="display" style={{ 
+              marginBottom: appleTheme.spacing[6],
+              color: "#1C1C1E",
+              fontWeight: appleTheme.typography.fontWeight.bold
+            }}>
+              10 Common Accessibility Issues and How to Fix Them
+            </Typography>
+            
+            <Typography variant="headline" weight="regular" style={{ 
+              color: "#2C2C2E",
+              marginBottom: appleTheme.spacing[8],
+              maxWidth: "800px",
+              margin: `0 auto ${appleTheme.spacing[8]} auto`,
+              lineHeight: appleTheme.typography.lineHeight.relaxed,
+              fontWeight: appleTheme.typography.fontWeight.medium
+            }}>
+              Learn about the most frequent accessibility problems found on websites and practical solutions to resolve them.
+            </Typography>
+            
+            <Flex gap={2} wrap="wrap" justify="center">
+              <Box style={{
+                backgroundColor: "rgba(0, 122, 255, 0.1)",
+                color: "#007AFF",
+                padding: `${appleTheme.spacing[1]} ${appleTheme.spacing[3]}`,
+                borderRadius: "20px",
+                fontSize: "14px",
+                fontWeight: appleTheme.typography.fontWeight.medium
+              }}>
+                5 min read
+              </Box>
+              <Box style={{
+                backgroundColor: "rgba(0, 122, 255, 0.1)",
+                color: "#007AFF",
+                padding: `${appleTheme.spacing[1]} ${appleTheme.spacing[3]}`,
+                borderRadius: "20px",
+                fontSize: "14px",
+                fontWeight: appleTheme.typography.fontWeight.medium
+              }}>
+                Beginner
+              </Box>
+              <Box style={{
+                backgroundColor: "rgba(0, 122, 255, 0.1)",
+                color: "#007AFF",
+                padding: `${appleTheme.spacing[1]} ${appleTheme.spacing[3]}`,
+                borderRadius: "20px",
+                fontSize: "14px",
+                fontWeight: appleTheme.typography.fontWeight.medium
+              }}>
+                WCAG 2.1
+              </Box>
+            </Flex>
           </Box>
-        </Box>
-      </Box>
+        </Container>
+      </Section>
 
-      <Box sx={{ maxWidth: "1000px", mx: "auto", p: { xs: 2, sm: 3 } }}>
+      <Container size="lg" style={{ padding: appleTheme.spacing[6] }}>
         {/* Introduction */}
-        <Paper sx={{ p: 4, mb: 4 }}>
-          <Typography variant="h5" sx={{ fontWeight: 600, mb: 2, color: "#333" }}>
+        <Card variant="elevated" padding="xl" style={{ marginBottom: appleTheme.spacing[6] }}>
+          <Typography variant="title1" style={{ 
+            marginBottom: appleTheme.spacing[4],
+            color: isDarkMode ? "#FFFFFF" : "#000000",
+            fontWeight: appleTheme.typography.fontWeight.semibold
+          }}>
             Why Accessibility Matters
           </Typography>
-          <Typography variant="body1" sx={{ mb: 3, lineHeight: 1.6 }}>
+          <Typography variant="body" style={{ 
+            marginBottom: appleTheme.spacing[4],
+            lineHeight: appleTheme.typography.lineHeight.relaxed,
+            color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
+          }}>
             Web accessibility ensures that people with disabilities can perceive, understand, navigate, and interact with websites. 
             According to the World Health Organization, over 1 billion people worldwide have some form of disability. 
             Making your website accessible isn't just the right thing to do—it's also good for business, SEO, and user experience.
           </Typography>
-          <Alert severity="info" sx={{ mb: 3 }}>
-            <Typography variant="body2">
+          <Box style={{
+            backgroundColor: isDarkMode ? "rgba(0, 122, 255, 0.1)" : "rgba(0, 122, 255, 0.05)",
+            border: `1px solid ${isDarkMode ? "rgba(0, 122, 255, 0.3)" : "rgba(0, 122, 255, 0.2)"}`,
+            borderRadius: appleTheme.borderRadius.md,
+            padding: appleTheme.spacing[4],
+            marginBottom: appleTheme.spacing[4]
+          }}>
+            <Typography variant="body" style={{ 
+              color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
+              fontWeight: appleTheme.typography.fontWeight.medium
+            }}>
               <strong>Quick Tip:</strong> Many accessibility improvements benefit all users, not just those with disabilities. 
               Better contrast, clearer navigation, and descriptive text make your site more usable for everyone.
             </Typography>
-          </Alert>
-        </Paper>
+          </Box>
+        </Card>
 
         {/* Issues List */}
-        <Box sx={{ mb: 4 }}>
-          <Typography variant="h4" sx={{ fontWeight: 600, mb: 3, color: "#333", textAlign: "center" }}>
+        <Box style={{ marginBottom: appleTheme.spacing[6] }}>
+          <Typography variant="title1" style={{ 
+            marginBottom: appleTheme.spacing[6],
+            color: isDarkMode ? "#FFFFFF" : "#000000",
+            fontWeight: appleTheme.typography.fontWeight.semibold,
+            textAlign: "center"
+          }}>
             The 10 Most Common Issues
           </Typography>
           
           {issues.map((issue, index) => (
-            <Card key={index} sx={{ mb: 3, border: `1px solid ${issue.color}20` }}>
-              <CardContent sx={{ p: 3 }}>
-                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                  {getSeverityIcon(issue.severity)}
-                  <Typography variant="h6" sx={{ ml: 1, fontWeight: 600, color: "#333" }}>
-                    {index + 1}. {issue.title}
-                  </Typography>
-                  <Chip 
-                    label={issue.severity} 
-                    size="small" 
-                    sx={{ 
-                      ml: 2, 
-                      backgroundColor: issue.color,
-                      color: "white",
-                      fontWeight: 500
-                    }} 
-                  />
+            <Card key={index} variant="elevated" padding="xl" style={{ 
+              marginBottom: appleTheme.spacing[4],
+              border: `1px solid ${issue.color}20`,
+              backgroundColor: isDarkMode ? "rgba(28, 28, 30, 0.8)" : "#FFFFFF"
+            }}>
+              <Flex align="center" gap={3} style={{ marginBottom: appleTheme.spacing[4] }}>
+                {getSeverityIcon(issue.severity)}
+                <Typography variant="title2" style={{ 
+                  fontWeight: appleTheme.typography.fontWeight.semibold,
+                  color: isDarkMode ? "#FFFFFF" : "#000000"
+                }}>
+                  {index + 1}. {issue.title}
+                </Typography>
+                <Box style={{
+                  backgroundColor: issue.color,
+                  color: "white",
+                  padding: `${appleTheme.spacing[1]} ${appleTheme.spacing[3]}`,
+                  borderRadius: "20px",
+                  fontSize: "12px",
+                  fontWeight: appleTheme.typography.fontWeight.medium
+                }}>
+                  {issue.severity}
                 </Box>
+              </Flex>
                 
-                <Typography variant="body1" sx={{ mb: 2, color: "#555" }}>
+                <Typography variant="body" style={{ 
+                  marginBottom: appleTheme.spacing[4],
+                  color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
+                  lineHeight: appleTheme.typography.lineHeight.relaxed
+                }}>
                   {issue.description}
                 </Typography>
                 
-                <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1, color: "#333" }}>
-                  Impact:
-                </Typography>
-                <Typography variant="body2" sx={{ mb: 2, color: "#666" }}>
-                  {issue.impact}
-                </Typography>
-                
-                <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1, color: "#333" }}>
-                  Solution:
-                </Typography>
-                <Typography variant="body2" sx={{ mb: 2, color: "#666" }}>
-                  {issue.solution}
-                </Typography>
-                
-                <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1, color: "#333" }}>
-                  Example:
-                </Typography>
-                <Box sx={{ 
-                  backgroundColor: "#f8f9fa", 
-                  p: 2, 
-                  borderRadius: 1,
-                  fontFamily: "monospace",
-                  fontSize: "14px",
-                  mb: 2,
-                  border: "1px solid #e9ecef"
-                }}>
-                  {issue.example}
-                </Box>
-                
-                <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1, color: "#333" }}>
-                  WCAG Reference:
-                </Typography>
-                <Typography variant="body2" sx={{ color: "#666" }}>
-                  {issue.wcag}
-                </Typography>
-              </CardContent>
+                <Stack spacing={3}>
+                  <Box>
+                    <Typography variant="footnote" weight="semibold" style={{ 
+                      marginBottom: appleTheme.spacing[1],
+                      color: isDarkMode ? "#FFFFFF" : "#000000"
+                    }}>
+                      Impact:
+                    </Typography>
+                    <Typography variant="body" style={{ 
+                      color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
+                    }}>
+                      {issue.impact}
+                    </Typography>
+                  </Box>
+                  
+                  <Box>
+                    <Typography variant="footnote" weight="semibold" style={{ 
+                      marginBottom: appleTheme.spacing[1],
+                      color: isDarkMode ? "#FFFFFF" : "#000000"
+                    }}>
+                      Solution:
+                    </Typography>
+                    <Typography variant="body" style={{ 
+                      color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
+                    }}>
+                      {issue.solution}
+                    </Typography>
+                  </Box>
+                  
+                  <Box>
+                    <Typography variant="footnote" weight="semibold" style={{ 
+                      marginBottom: appleTheme.spacing[2],
+                      color: isDarkMode ? "#FFFFFF" : "#000000"
+                    }}>
+                      Example:
+                    </Typography>
+                    <Box style={{ 
+                      backgroundColor: isDarkMode ? "rgba(0, 0, 0, 0.3)" : "#F8F9FA",
+                      padding: appleTheme.spacing[3],
+                      borderRadius: appleTheme.borderRadius.md,
+                      fontFamily: "monospace",
+                      fontSize: "14px",
+                      border: `1px solid ${isDarkMode ? "rgba(255, 255, 255, 0.1)" : "#E9ECEF"}`,
+                      color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
+                    }}>
+                      {issue.example}
+                    </Box>
+                  </Box>
+                  
+                  <Box>
+                    <Typography variant="footnote" weight="semibold" style={{ 
+                      marginBottom: appleTheme.spacing[1],
+                      color: isDarkMode ? "#FFFFFF" : "#000000"
+                    }}>
+                      WCAG Reference:
+                    </Typography>
+                    <Typography variant="body" style={{ 
+                      color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
+                    }}>
+                      {issue.wcag}
+                    </Typography>
+                  </Box>
+                </Stack>
             </Card>
           ))}
         </Box>
 
         {/* Conclusion */}
-        <Paper sx={{ p: 4, mb: 4, backgroundColor: "#f8f9fa" }}>
-          <Typography variant="h5" sx={{ fontWeight: 600, mb: 2, color: "#333" }}>
+        <Card variant="elevated" padding="xl" style={{ 
+          marginBottom: appleTheme.spacing[6],
+          backgroundColor: isDarkMode ? "rgba(0, 122, 255, 0.05)" : "rgba(0, 122, 255, 0.02)",
+          border: `1px solid ${isDarkMode ? "rgba(0, 122, 255, 0.2)" : "rgba(0, 122, 255, 0.1)"}`
+        }}>
+          <Typography variant="title1" style={{ 
+            marginBottom: appleTheme.spacing[4],
+            color: isDarkMode ? "#FFFFFF" : "#000000",
+            fontWeight: appleTheme.typography.fontWeight.semibold
+          }}>
             Next Steps
           </Typography>
-          <Typography variant="body1" sx={{ mb: 3, lineHeight: 1.6 }}>
+          <Typography variant="body" style={{ 
+            marginBottom: appleTheme.spacing[6],
+            lineHeight: appleTheme.typography.lineHeight.relaxed,
+            color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
+          }}>
             Start by addressing the critical issues first—missing alt text, poor contrast, and form labels. 
             These have the biggest impact on accessibility. Then work through the serious and moderate issues.
           </Typography>
           
-          <List sx={{ mb: 3 }}>
-            <ListItem>
-              <ListItemIcon>
-                <CheckCircle sx={{ color: "#28a745" }} />
-              </ListItemIcon>
-              <ListItemText 
-                primary="Test your website with our free accessibility scanner"
-                secondary="Get a comprehensive report with specific issues and fix suggestions"
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <CheckCircle sx={{ color: "#28a745" }} />
-              </ListItemIcon>
-              <ListItemText 
-                primary="Use our Color Contrast Checker tool"
-                secondary="Test color combinations to ensure they meet WCAG standards"
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <CheckCircle sx={{ color: "#28a745" }} />
-              </ListItemIcon>
-              <ListItemText 
-                primary="Test with keyboard navigation"
-                secondary="Try navigating your site using only the Tab key"
-              />
-            </ListItem>
-          </List>
+          <Stack spacing={4} style={{ marginBottom: appleTheme.spacing[6] }}>
+            <Flex align="flex-start" gap={3}>
+              <CheckCircle style={{ color: appleTheme.colors.success, marginTop: appleTheme.spacing[0.5] }} />
+              <Box>
+                <Typography variant="body" weight="semibold" style={{ 
+                  marginBottom: appleTheme.spacing[1],
+                  color: isDarkMode ? "#FFFFFF" : "#000000"
+                }}>
+                  Test your website with our free accessibility scanner
+                </Typography>
+                <Typography variant="body" style={{ 
+                  color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
+                }}>
+                  Get a comprehensive report with specific issues and fix suggestions
+                </Typography>
+              </Box>
+            </Flex>
+            <Flex align="flex-start" gap={3}>
+              <CheckCircle style={{ color: appleTheme.colors.success, marginTop: appleTheme.spacing[0.5] }} />
+              <Box>
+                <Typography variant="body" weight="semibold" style={{ 
+                  marginBottom: appleTheme.spacing[1],
+                  color: isDarkMode ? "#FFFFFF" : "#000000"
+                }}>
+                  Use our Color Contrast Checker tool
+                </Typography>
+                <Typography variant="body" style={{ 
+                  color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
+                }}>
+                  Test color combinations to ensure they meet WCAG standards
+                </Typography>
+              </Box>
+            </Flex>
+            <Flex align="flex-start" gap={3}>
+              <CheckCircle style={{ color: appleTheme.colors.success, marginTop: appleTheme.spacing[0.5] }} />
+              <Box>
+                <Typography variant="body" weight="semibold" style={{ 
+                  marginBottom: appleTheme.spacing[1],
+                  color: isDarkMode ? "#FFFFFF" : "#000000"
+                }}>
+                  Test with keyboard navigation
+                </Typography>
+                <Typography variant="body" style={{ 
+                  color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
+                }}>
+                  Try navigating your site using only the Tab key
+                </Typography>
+              </Box>
+            </Flex>
+          </Stack>
           
-          <Box sx={{ textAlign: "center" }}>
-            <Button
-              component={Link}
-              href="/"
-              variant="contained"
-              size="large"
-              sx={{
-                backgroundColor: "#0077b6",
-                px: 4,
-                py: 1.5,
-                "&:hover": { backgroundColor: "#005a8b" }
-              }}
-            >
-              Test Your Website Now
-            </Button>
+          <Box style={{ textAlign: "center" }}>
+            <Link href="/" passHref legacyBehavior>
+              <a style={{ textDecoration: "none" }}>
+                <Button
+                  variant="primary"
+                  size="large"
+                  style={{
+                    backgroundColor: "#007AFF",
+                    padding: `${appleTheme.spacing[4]} ${appleTheme.spacing[8]}`,
+                    fontSize: "18px",
+                    fontWeight: appleTheme.typography.fontWeight.semibold
+                  }}
+                >
+                  Test Your Website Now
+                </Button>
+              </a>
+            </Link>
           </Box>
-        </Paper>
-      </Box>
-    </Box>
+        </Card>
+      </Container>
+    </div>
   );
 }
