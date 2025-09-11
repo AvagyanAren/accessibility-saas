@@ -74,25 +74,25 @@ export default function ScreenReaderOptimizationGuide() {
       issue: "Missing or generic alt text",
       problem: "Screen readers announce 'image' without context",
       solution: "Write descriptive alt text that conveys the image's purpose and content",
-      example: "❌ alt='image' → ✅ alt='Chart showing 2023 sales growth of 15%'"
+      example: "✗ alt='image' → ✓ alt='Chart showing 2023 sales growth of 15%'"
     },
     {
       issue: "Poor heading structure",
       problem: "Screen readers can't navigate content hierarchy effectively",
       solution: "Use proper heading levels in logical order (h1 → h2 → h3)",
-      example: "❌ h1, h4, h2, h3 → ✅ h1, h2, h3, h3"
+      example: "✗ h1, h4, h2, h3 → ✓ h1, h2, h3, h3"
     },
     {
       issue: "Unlabeled form controls",
       problem: "Screen readers can't identify form field purposes",
       solution: "Associate labels with form controls using for/id attributes",
-      example: "❌ <input type='text'> → ✅ <label for='email'>Email</label><input id='email' type='text'>"
+      example: "✗ <input type='text'> → ✓ <label for='email'>Email</label><input id='email' type='text'>"
     },
     {
       issue: "Missing skip links",
       problem: "Screen reader users must tab through navigation repeatedly",
       solution: "Provide skip links to main content and important sections",
-      example: "✅ <a href='#main' class='skip-link'>Skip to main content</a>"
+      example: "✓ <a href='#main' class='skip-link'>Skip to main content</a>"
     }
   ];
 
@@ -146,21 +146,19 @@ export default function ScreenReaderOptimizationGuide() {
       <Section background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
         <Container size="lg">
           <Box style={{ textAlign: "center" }}>
-            <Link href="/resources" passHref legacyBehavior>
-              <a style={{ textDecoration: "none", display: "inline-block", marginBottom: appleTheme.spacing[4] }}>
-                <Button
-                  variant="ghost"
-                  size="medium"
-                  startIcon={<ArrowBack />}
-                  style={{
-                    color: "#007AFF",
-                    backgroundColor: "rgba(0, 122, 255, 0.1)",
-                    border: "1px solid rgba(0, 122, 255, 0.2)"
-                  }}
-                >
-                  Back to Resources
-                </Button>
-              </a>
+            <Link href="/resources" style={{ textDecoration: "none", display: "inline-block", marginBottom: appleTheme.spacing[4] }}>
+              <Button
+                variant="ghost"
+                size="medium"
+                startIcon={<ArrowBack />}
+                style={{
+                  color: "#007AFF",
+                  backgroundColor: "rgba(0, 122, 255, 0.1)",
+                  border: "1px solid rgba(0, 122, 255, 0.2)"
+                }}
+              >
+                Back to Resources
+              </Button>
             </Link>
             
             <Typography variant="display" style={{ 
@@ -337,7 +335,7 @@ export default function ScreenReaderOptimizationGuide() {
                     color: isDarkMode ? "#FFFFFF" : "#000000",
                     marginBottom: appleTheme.spacing[2]
                   }}>
-                    ❌ {item.issue}
+                    {item.issue}
                   </Typography>
                   <Typography variant="body" style={{ 
                     color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
@@ -434,21 +432,19 @@ export default function ScreenReaderOptimizationGuide() {
           </Stack>
           
           <Box style={{ textAlign: "center" }}>
-            <Link href="/tools/screen-reader-simulator" passHref legacyBehavior>
-              <a style={{ textDecoration: "none" }}>
-                <Button
-                  variant="primary"
-                  size="large"
-                  style={{
-                    backgroundColor: "#007AFF",
-                    padding: `${appleTheme.spacing[4]} ${appleTheme.spacing[8]}`,
-                    fontSize: "18px",
-                    fontWeight: appleTheme.typography.fontWeight.semibold
-                  }}
-                >
-                  Test Screen Reader Compatibility
-                </Button>
-              </a>
+            <Link href="/tools/screen-reader-simulator" style={{ textDecoration: "none" }}>
+              <Button
+                variant="primary"
+                size="large"
+                style={{
+                  backgroundColor: "#007AFF",
+                  padding: `${appleTheme.spacing[4]} ${appleTheme.spacing[8]}`,
+                  fontSize: "18px",
+                  fontWeight: appleTheme.typography.fontWeight.semibold
+                }}
+              >
+                Test Screen Reader Compatibility
+              </Button>
             </Link>
           </Box>
         </Card>

@@ -65,25 +65,25 @@ export default function ColorContrastAccessibilityGuide() {
       mistake: "Using light gray text on white backgrounds",
       impact: "Text becomes unreadable for users with low vision",
       solution: "Use darker colors or increase font weight",
-      example: "❌ #CCCCCC on white (2.3:1) → ✅ #666666 on white (4.5:1)"
+      example: "✗ #CCCCCC on white (2.3:1) → ✓ #666666 on white (4.5:1)"
     },
     {
       mistake: "Relying solely on color to convey information",
       impact: "Colorblind users cannot distinguish between different states",
       solution: "Add icons, patterns, or text labels alongside color",
-      example: "❌ Red text for errors only → ✅ Red text + error icon + 'Error:' label"
+      example: "✗ Red text for errors only → ✓ Red text + error icon + 'Error:' label"
     },
     {
       mistake: "Insufficient contrast on hover states",
       impact: "Interactive elements become hard to identify",
       solution: "Ensure hover states maintain or improve contrast",
-      example: "❌ Light blue on hover (3.2:1) → ✅ Darker blue on hover (4.8:1)"
+      example: "✗ Light blue on hover (3.2:1) → ✓ Darker blue on hover (4.8:1)"
     },
     {
       mistake: "Poor contrast in form validation messages",
       impact: "Users cannot read error or success messages",
       solution: "Use high contrast colors for all validation states",
-      example: "❌ Light red for errors → ✅ Dark red with sufficient contrast"
+      example: "✗ Light red for errors → ✓ Dark red with sufficient contrast"
     }
   ];
 
@@ -122,21 +122,19 @@ export default function ColorContrastAccessibilityGuide() {
       <Section background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
         <Container size="lg">
           <Box style={{ textAlign: "center" }}>
-            <Link href="/resources" passHref legacyBehavior>
-              <a style={{ textDecoration: "none", display: "inline-block", marginBottom: appleTheme.spacing[4] }}>
-                <Button
-                  variant="ghost"
-                  size="medium"
-                  startIcon={<ArrowBack />}
-                  style={{
-                    color: "#007AFF",
-                    backgroundColor: "rgba(0, 122, 255, 0.1)",
-                    border: "1px solid rgba(0, 122, 255, 0.2)"
-                  }}
-                >
-                  Back to Resources
-                </Button>
-              </a>
+            <Link href="/resources" style={{ textDecoration: "none", display: "inline-block", marginBottom: appleTheme.spacing[4] }}>
+              <Button
+                variant="ghost"
+                size="medium"
+                startIcon={<ArrowBack />}
+                style={{
+                  color: "#007AFF",
+                  backgroundColor: "rgba(0, 122, 255, 0.1)",
+                  border: "1px solid rgba(0, 122, 255, 0.2)"
+                }}
+              >
+                Back to Resources
+              </Button>
             </Link>
             
             <Typography variant="display" style={{ 
@@ -334,38 +332,103 @@ export default function ColorContrastAccessibilityGuide() {
           
           {commonMistakes.map((mistake, index) => (
             <Card key={index} variant="elevated" padding="xl" style={{ 
-              marginBottom: appleTheme.spacing[4],
-              backgroundColor: isDarkMode ? "rgba(28, 28, 30, 0.8)" : "#FFFFFF"
+              marginBottom: appleTheme.spacing[6],
+              backgroundColor: isDarkMode ? "rgba(28, 28, 30, 0.8)" : "#FFFFFF",
+              border: `1px solid ${isDarkMode ? "rgba(255, 255, 255, 0.1)" : "#E5E5EA"}`,
+              boxShadow: isDarkMode ? "0 4px 12px rgba(0, 0, 0, 0.3)" : "0 2px 8px rgba(0, 0, 0, 0.1)"
             }}>
-              <Stack spacing={3}>
+              <Stack spacing={4}>
+                {/* Header with icon and title */}
+                <Flex align="flex-start" gap={3}>
+                  <Box style={{
+                    padding: appleTheme.spacing[2],
+                    backgroundColor: "rgba(220, 53, 69, 0.1)",
+                    borderRadius: "12px",
+                    color: "#dc3545",
+                    flexShrink: 0
+                  }}>
+                    <Error style={{ fontSize: "24px" }} />
+                  </Box>
+                  <Box style={{ flex: 1 }}>
+                    <Typography variant="title2" style={{ 
+                      fontWeight: appleTheme.typography.fontWeight.semibold,
+                      color: isDarkMode ? "#FFFFFF" : "#000000",
+                      marginBottom: appleTheme.spacing[3],
+                      fontSize: "20px",
+                      lineHeight: appleTheme.typography.lineHeight.tight
+                    }}>
+                      {mistake.mistake}
+                    </Typography>
+                  </Box>
+                </Flex>
+
+                {/* Impact and Solution sections */}
+                <Stack spacing={3}>
+                  <Box style={{
+                    backgroundColor: isDarkMode ? "rgba(255, 193, 7, 0.1)" : "rgba(255, 193, 7, 0.05)",
+                    border: `1px solid ${isDarkMode ? "rgba(255, 193, 7, 0.3)" : "rgba(255, 193, 7, 0.2)"}`,
+                    borderRadius: appleTheme.borderRadius.md,
+                    padding: appleTheme.spacing[4]
+                  }}>
+                    <Flex align="flex-start" gap={2} style={{ marginBottom: appleTheme.spacing[2] }}>
+                      <Warning style={{ color: "#ffc107", fontSize: "20px", marginTop: "2px" }} />
+                      <Typography variant="body" weight="semibold" style={{ 
+                        color: isDarkMode ? "#FFFFFF" : "#000000",
+                        fontSize: "16px"
+                      }}>
+                        Impact
+                      </Typography>
+                    </Flex>
+                    <Typography variant="body" style={{ 
+                      color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
+                      lineHeight: appleTheme.typography.lineHeight.relaxed
+                    }}>
+                      {mistake.impact}
+                    </Typography>
+                  </Box>
+
+                  <Box style={{
+                    backgroundColor: isDarkMode ? "rgba(40, 167, 69, 0.1)" : "rgba(40, 167, 69, 0.05)",
+                    border: `1px solid ${isDarkMode ? "rgba(40, 167, 69, 0.3)" : "rgba(40, 167, 69, 0.2)"}`,
+                    borderRadius: appleTheme.borderRadius.md,
+                    padding: appleTheme.spacing[4]
+                  }}>
+                    <Flex align="flex-start" gap={2} style={{ marginBottom: appleTheme.spacing[2] }}>
+                      <CheckCircle style={{ color: "#28a745", fontSize: "20px", marginTop: "2px" }} />
+                      <Typography variant="body" weight="semibold" style={{ 
+                        color: isDarkMode ? "#FFFFFF" : "#000000",
+                        fontSize: "16px"
+                      }}>
+                        Solution
+                      </Typography>
+                    </Flex>
+                    <Typography variant="body" style={{ 
+                      color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
+                      lineHeight: appleTheme.typography.lineHeight.relaxed
+                    }}>
+                      {mistake.solution}
+                    </Typography>
+                  </Box>
+                </Stack>
+
+                {/* Example section */}
                 <Box>
-                  <Typography variant="title2" style={{ 
-                    fontWeight: appleTheme.typography.fontWeight.semibold,
+                  <Typography variant="body" weight="semibold" style={{ 
                     color: isDarkMode ? "#FFFFFF" : "#000000",
-                    marginBottom: appleTheme.spacing[2]
+                    marginBottom: appleTheme.spacing[3],
+                    fontSize: "16px"
                   }}>
-                    ❌ {mistake.mistake}
-                  </Typography>
-                  <Typography variant="body" style={{ 
-                    color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
-                    marginBottom: appleTheme.spacing[2]
-                  }}>
-                    <strong>Impact:</strong> {mistake.impact}
-                  </Typography>
-                  <Typography variant="body" style={{ 
-                    color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
-                    marginBottom: appleTheme.spacing[2]
-                  }}>
-                    <strong>Solution:</strong> {mistake.solution}
+                    Example
                   </Typography>
                   <Box style={{
                     backgroundColor: isDarkMode ? "rgba(0, 0, 0, 0.3)" : "#F8F9FA",
-                    padding: appleTheme.spacing[3],
+                    padding: appleTheme.spacing[4],
                     borderRadius: appleTheme.borderRadius.md,
                     fontFamily: "monospace",
                     fontSize: "14px",
                     border: `1px solid ${isDarkMode ? "rgba(255, 255, 255, 0.1)" : "#E9ECEF"}`,
-                    color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
+                    color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
+                    lineHeight: appleTheme.typography.lineHeight.relaxed
                   }}>
                     {mistake.example}
                   </Box>
@@ -435,21 +498,19 @@ export default function ColorContrastAccessibilityGuide() {
           </Stack>
           
           <Box style={{ textAlign: "center" }}>
-            <Link href="/tools/color-contrast" passHref legacyBehavior>
-              <a style={{ textDecoration: "none" }}>
-                <Button
-                  variant="primary"
-                  size="large"
-                  style={{
-                    backgroundColor: "#007AFF",
-                    padding: `${appleTheme.spacing[4]} ${appleTheme.spacing[8]}`,
-                    fontSize: "18px",
-                    fontWeight: appleTheme.typography.fontWeight.semibold
-                  }}
-                >
-                  Test Your Color Contrast Now
-                </Button>
-              </a>
+            <Link href="/tools/color-contrast" style={{ textDecoration: "none" }}>
+              <Button
+                variant="primary"
+                size="large"
+                style={{
+                  backgroundColor: "#007AFF",
+                  padding: `${appleTheme.spacing[4]} ${appleTheme.spacing[8]}`,
+                  fontSize: "18px",
+                  fontWeight: appleTheme.typography.fontWeight.semibold
+                }}
+              >
+                Test Your Color Contrast Now
+              </Button>
             </Link>
           </Box>
         </Card>

@@ -116,25 +116,25 @@ export default function KeyboardNavigationAccessibility() {
       mistake: "Missing focus indicators",
       impact: "Users can't see which element is focused",
       solution: "Add visible focus styles to all interactive elements",
-      code: "❌ No focus styles → ✅ button:focus { outline: 2px solid #007AFF; }"
+      code: "✗ No focus styles → ✓ button:focus { outline: 2px solid #007AFF; }"
     },
     {
       mistake: "Poor tab order",
       impact: "Navigation feels illogical and confusing",
       solution: "Follow visual reading order and logical flow",
-      code: "❌ Random tabindex values → ✅ Natural DOM order"
+      code: "✗ Random tabindex values → ✓ Natural DOM order"
     },
     {
       mistake: "Keyboard traps",
       impact: "Users get stuck and can't navigate away",
       solution: "Ensure all areas are reachable and escapable",
-      code: "❌ Focus stuck in modal → ✅ Escape key closes modal"
+      code: "✗ Focus stuck in modal → ✓ Escape key closes modal"
     },
     {
       mistake: "Non-keyboard accessible custom elements",
       impact: "Custom components can't be used with keyboard",
       solution: "Add proper ARIA roles and keyboard event handlers",
-      code: "❌ <div onclick='...'> → ✅ <button> or <div tabindex='0' role='button'>"
+      code: "✗ <div onclick='...'> → ✓ <button> or <div tabindex='0' role='button'>"
     }
   ];
 
@@ -191,21 +191,19 @@ export default function KeyboardNavigationAccessibility() {
       <Section background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
         <Container size="lg">
           <Box style={{ textAlign: "center" }}>
-            <Link href="/resources" passHref legacyBehavior>
-              <a style={{ textDecoration: "none", display: "inline-block", marginBottom: appleTheme.spacing[4] }}>
-                <Button
-                  variant="ghost"
-                  size="medium"
-                  startIcon={<ArrowBack />}
-                  style={{
-                    color: "#007AFF",
-                    backgroundColor: "rgba(0, 122, 255, 0.1)",
-                    border: "1px solid rgba(0, 122, 255, 0.2)"
-                  }}
-                >
-                  Back to Resources
-                </Button>
-              </a>
+            <Link href="/resources" style={{ textDecoration: "none", display: "inline-block", marginBottom: appleTheme.spacing[4] }}>
+              <Button
+                variant="ghost"
+                size="medium"
+                startIcon={<ArrowBack />}
+                style={{
+                  color: "#007AFF",
+                  backgroundColor: "rgba(0, 122, 255, 0.1)",
+                  border: "1px solid rgba(0, 122, 255, 0.2)"
+                }}
+              >
+                Back to Resources
+              </Button>
             </Link>
             
             <Typography variant="display" style={{ 
@@ -488,7 +486,7 @@ export default function KeyboardNavigationAccessibility() {
                   fontWeight: appleTheme.typography.fontWeight.semibold,
                   color: isDarkMode ? "#FFFFFF" : "#000000"
                 }}>
-                  ❌ {mistake.mistake}
+                  {mistake.mistake}
                 </Typography>
                 
                 <Typography variant="body" style={{ 
@@ -560,21 +558,19 @@ export default function KeyboardNavigationAccessibility() {
           </Stack>
           
           <Box style={{ textAlign: "center" }}>
-            <Link href="/tools/keyboard-navigator" passHref legacyBehavior>
-              <a style={{ textDecoration: "none" }}>
-                <Button
-                  variant="primary"
-                  size="large"
-                  style={{
-                    backgroundColor: "#007AFF",
-                    padding: `${appleTheme.spacing[4]} ${appleTheme.spacing[8]}`,
-                    fontSize: "18px",
-                    fontWeight: appleTheme.typography.fontWeight.semibold
-                  }}
-                >
-                  Test Keyboard Navigation
-                </Button>
-              </a>
+            <Link href="/tools/keyboard-navigator" style={{ textDecoration: "none" }}>
+              <Button
+                variant="primary"
+                size="large"
+                style={{
+                  backgroundColor: "#007AFF",
+                  padding: `${appleTheme.spacing[4]} ${appleTheme.spacing[8]}`,
+                  fontSize: "18px",
+                  fontWeight: appleTheme.typography.fontWeight.semibold
+                }}
+              >
+                Test Keyboard Navigation
+              </Button>
             </Link>
           </Box>
         </Card>

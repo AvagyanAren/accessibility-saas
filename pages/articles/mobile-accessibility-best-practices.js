@@ -147,21 +147,19 @@ export default function MobileAccessibilityBestPractices() {
       <Section background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
         <Container size="lg">
           <Box style={{ textAlign: "center" }}>
-            <Link href="/resources" passHref legacyBehavior>
-              <a style={{ textDecoration: "none", display: "inline-block", marginBottom: appleTheme.spacing[4] }}>
-                <Button
-                  variant="ghost"
-                  size="medium"
-                  startIcon={<ArrowBack />}
-                  style={{
-                    color: "#007AFF",
-                    backgroundColor: "rgba(0, 122, 255, 0.1)",
-                    border: "1px solid rgba(0, 122, 255, 0.2)"
-                  }}
-                >
-                  Back to Resources
-                </Button>
-              </a>
+            <Link href="/resources" style={{ textDecoration: "none", display: "inline-block", marginBottom: appleTheme.spacing[4] }}>
+              <Button
+                variant="ghost"
+                size="medium"
+                startIcon={<ArrowBack />}
+                style={{
+                  color: "#007AFF",
+                  backgroundColor: "rgba(0, 122, 255, 0.1)",
+                  border: "1px solid rgba(0, 122, 255, 0.2)"
+                }}
+              >
+                Back to Resources
+              </Button>
             </Link>
             
             <Typography variant="display" style={{ 
@@ -471,7 +469,7 @@ export default function MobileAccessibilityBestPractices() {
                     color: isDarkMode ? "#FFFFFF" : "#000000",
                     marginBottom: appleTheme.spacing[2]
                   }}>
-                    ❌ {issue.issue}
+                    {issue.issue}
                   </Typography>
                   <Typography variant="body" style={{ 
                     color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
@@ -586,21 +584,19 @@ export default function MobileAccessibilityBestPractices() {
           </Stack>
           
           <Box style={{ textAlign: "center" }}>
-            <Link href="/tools/mobile-accessibility" passHref legacyBehavior>
-              <a style={{ textDecoration: "none" }}>
-                <Button
-                  variant="primary"
-                  size="large"
-                  style={{
-                    backgroundColor: "#007AFF",
-                    padding: `${appleTheme.spacing[4]} ${appleTheme.spacing[8]}`,
-                    fontSize: "18px",
-                    fontWeight: appleTheme.typography.fontWeight.semibold
-                  }}
-                >
-                  Test Mobile Accessibility
-                </Button>
-              </a>
+            <Link href="/tools/mobile-accessibility" style={{ textDecoration: "none" }}>
+              <Button
+                variant="primary"
+                size="large"
+                style={{
+                  backgroundColor: "#007AFF",
+                  padding: `${appleTheme.spacing[4]} ${appleTheme.spacing[8]}`,
+                  fontSize: "18px",
+                  fontWeight: appleTheme.typography.fontWeight.semibold
+                }}
+              >
+                Test Mobile Accessibility
+              </Button>
             </Link>
           </Box>
         </Card>

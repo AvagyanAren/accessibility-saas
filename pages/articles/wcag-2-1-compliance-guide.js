@@ -118,21 +118,19 @@ export default function WCAG21ComplianceGuide() {
       <Section background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
         <Container size="lg">
           <Box style={{ textAlign: "center" }}>
-            <Link href="/resources" passHref legacyBehavior>
-              <a style={{ textDecoration: "none", display: "inline-block", marginBottom: appleTheme.spacing[4] }}>
-                <Button
-                  variant="ghost"
-                  size="medium"
-                  startIcon={<ArrowBack />}
-                  style={{
-                    color: "#007AFF",
-                    backgroundColor: "rgba(0, 122, 255, 0.1)",
-                    border: "1px solid rgba(0, 122, 255, 0.2)"
-                  }}
-                >
-                  Back to Resources
-                </Button>
-              </a>
+            <Link href="/resources" style={{ textDecoration: "none", display: "inline-block", marginBottom: appleTheme.spacing[4] }}>
+              <Button
+                variant="ghost"
+                size="medium"
+                startIcon={<ArrowBack />}
+                style={{
+                  color: "#007AFF",
+                  backgroundColor: "rgba(0, 122, 255, 0.1)",
+                  border: "1px solid rgba(0, 122, 255, 0.2)"
+                }}
+              >
+                Back to Resources
+              </Button>
             </Link>
             
             <Typography variant="display" style={{ 
@@ -242,43 +240,53 @@ export default function WCAG21ComplianceGuide() {
           
           {principles.map((principle, index) => (
             <Card key={index} variant="elevated" padding="xl" style={{ 
-              marginBottom: appleTheme.spacing[4],
-              backgroundColor: isDarkMode ? "rgba(28, 28, 30, 0.8)" : "#FFFFFF"
+              marginBottom: appleTheme.spacing[6],
+              backgroundColor: isDarkMode ? "rgba(28, 28, 30, 0.8)" : "#FFFFFF",
+              border: `1px solid ${isDarkMode ? "rgba(255, 255, 255, 0.1)" : "#E5E5EA"}`,
+              boxShadow: isDarkMode ? "0 4px 12px rgba(0, 0, 0, 0.3)" : "0 2px 8px rgba(0, 0, 0, 0.1)"
             }}>
-              <Flex align="center" gap={3} style={{ marginBottom: appleTheme.spacing[4] }}>
-                <Box style={{
-                  padding: appleTheme.spacing[3],
-                  backgroundColor: "rgba(0, 122, 255, 0.1)",
-                  borderRadius: "12px",
-                  color: "#007AFF"
-                }}>
-                  {principle.icon}
-                </Box>
-                <Box style={{ flex: 1 }}>
-                  <Typography variant="title2" style={{ 
-                    fontWeight: appleTheme.typography.fontWeight.semibold,
-                    color: isDarkMode ? "#FFFFFF" : "#000000",
-                    marginBottom: appleTheme.spacing[1]
+              <Stack spacing={4}>
+                {/* Header with icon, title, and level badge */}
+                <Flex align="flex-start" gap={3}>
+                  <Box style={{
+                    padding: appleTheme.spacing[3],
+                    backgroundColor: "rgba(0, 122, 255, 0.1)",
+                    borderRadius: "12px",
+                    color: "#007AFF",
+                    flexShrink: 0
                   }}>
-                    {principle.title}
-                  </Typography>
-                  <Typography variant="body" style={{ 
-                    color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
-                  }}>
-                    {principle.description}
-                  </Typography>
-                </Box>
-                <Box style={{
-                  backgroundColor: "#007AFF",
-                  color: "white",
-                  padding: `${appleTheme.spacing[1]} ${appleTheme.spacing[3]}`,
-                  borderRadius: "20px",
-                  fontSize: "12px",
-                  fontWeight: appleTheme.typography.fontWeight.medium
-                }}>
-                  {principle.level}
-                </Box>
-              </Flex>
+                    {principle.icon}
+                  </Box>
+                  <Box style={{ flex: 1 }}>
+                    <Flex align="center" justify="space-between" style={{ marginBottom: appleTheme.spacing[2] }}>
+                      <Typography variant="title2" style={{ 
+                        fontWeight: appleTheme.typography.fontWeight.semibold,
+                        color: isDarkMode ? "#FFFFFF" : "#000000",
+                        fontSize: "20px",
+                        lineHeight: appleTheme.typography.lineHeight.tight
+                      }}>
+                        {principle.title}
+                      </Typography>
+                      <Box style={{
+                        backgroundColor: "#007AFF",
+                        color: "white",
+                        padding: `${appleTheme.spacing[1]} ${appleTheme.spacing[3]}`,
+                        borderRadius: "20px",
+                        fontSize: "12px",
+                        fontWeight: appleTheme.typography.fontWeight.medium
+                      }}>
+                        {principle.level}
+                      </Box>
+                    </Flex>
+                    <Typography variant="body" style={{ 
+                      color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
+                      lineHeight: appleTheme.typography.lineHeight.relaxed,
+                      fontSize: "16px"
+                    }}>
+                      {principle.description}
+                    </Typography>
+                  </Box>
+                </Flex>
               
               <Stack spacing={2}>
                 {principle.guidelines.map((guideline, gIndex) => (
@@ -291,6 +299,7 @@ export default function WCAG21ComplianceGuide() {
                     </Typography>
                   </Flex>
                 ))}
+              </Stack>
               </Stack>
             </Card>
           ))}
@@ -452,21 +461,19 @@ export default function WCAG21ComplianceGuide() {
           </Stack>
           
           <Box style={{ textAlign: "center" }}>
-            <Link href="/" passHref legacyBehavior>
-              <a style={{ textDecoration: "none" }}>
-                <Button
-                  variant="primary"
-                  size="large"
-                  style={{
-                    backgroundColor: "#007AFF",
-                    padding: `${appleTheme.spacing[4]} ${appleTheme.spacing[8]}`,
-                    fontSize: "18px",
-                    fontWeight: appleTheme.typography.fontWeight.semibold
-                  }}
-                >
-                  Start Your WCAG Compliance Audit
-                </Button>
-              </a>
+            <Link href="/" style={{ textDecoration: "none" }}>
+              <Button
+                variant="primary"
+                size="large"
+                style={{
+                  backgroundColor: "#007AFF",
+                  padding: `${appleTheme.spacing[4]} ${appleTheme.spacing[8]}`,
+                  fontSize: "18px",
+                  fontWeight: appleTheme.typography.fontWeight.semibold
+                }}
+              >
+                Start Your WCAG Compliance Audit
+              </Button>
             </Link>
           </Box>
         </Card>

@@ -149,21 +149,19 @@ export default function CommonAccessibilityIssues() {
       <Section background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
         <Container size="lg">
           <Box style={{ textAlign: "center" }}>
-            <Link href="/resources" passHref legacyBehavior>
-              <a style={{ textDecoration: "none", display: "inline-block", marginBottom: appleTheme.spacing[4] }}>
-                <Button
-                  variant="ghost"
-                  size="medium"
-                  startIcon={<ArrowBack />}
-                  style={{
-                    color: "#007AFF",
-                    backgroundColor: "rgba(0, 122, 255, 0.1)",
-                    border: "1px solid rgba(0, 122, 255, 0.2)"
-                  }}
-                >
-                  Back to Resources
-                </Button>
-              </a>
+            <Link href="/resources" style={{ textDecoration: "none", display: "inline-block", marginBottom: appleTheme.spacing[4] }}>
+              <Button
+                variant="ghost"
+                size="medium"
+                startIcon={<ArrowBack />}
+                style={{
+                  color: "#007AFF",
+                  backgroundColor: "rgba(0, 122, 255, 0.1)",
+                  border: "1px solid rgba(0, 122, 255, 0.2)"
+                }}
+              >
+                Back to Resources
+              </Button>
             </Link>
             
             <Typography variant="display" style={{ 
@@ -270,101 +268,150 @@ export default function CommonAccessibilityIssues() {
           
           {issues.map((issue, index) => (
             <Card key={index} variant="elevated" padding="xl" style={{ 
-              marginBottom: appleTheme.spacing[4],
-              border: `1px solid ${issue.color}20`,
-              backgroundColor: isDarkMode ? "rgba(28, 28, 30, 0.8)" : "#FFFFFF"
+              marginBottom: appleTheme.spacing[6],
+              border: `1px solid ${isDarkMode ? "rgba(255, 255, 255, 0.1)" : "#E5E5EA"}`,
+              backgroundColor: isDarkMode ? "rgba(28, 28, 30, 0.8)" : "#FFFFFF",
+              boxShadow: isDarkMode ? "0 4px 12px rgba(0, 0, 0, 0.3)" : "0 2px 8px rgba(0, 0, 0, 0.1)"
             }}>
-              <Flex align="center" gap={3} style={{ marginBottom: appleTheme.spacing[4] }}>
-                {getSeverityIcon(issue.severity)}
-                <Typography variant="title2" style={{ 
-                  fontWeight: appleTheme.typography.fontWeight.semibold,
-                  color: isDarkMode ? "#FFFFFF" : "#000000"
-                }}>
-                  {index + 1}. {issue.title}
-                </Typography>
-                <Box style={{
-                  backgroundColor: issue.color,
-                  color: "white",
-                  padding: `${appleTheme.spacing[1]} ${appleTheme.spacing[3]}`,
-                  borderRadius: "20px",
-                  fontSize: "12px",
-                  fontWeight: appleTheme.typography.fontWeight.medium
-                }}>
-                  {issue.severity}
-                </Box>
-              </Flex>
-                
-                <Typography variant="body" style={{ 
-                  marginBottom: appleTheme.spacing[4],
-                  color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
-                  lineHeight: appleTheme.typography.lineHeight.relaxed
-                }}>
-                  {issue.description}
-                </Typography>
-                
-                <Stack spacing={3}>
-                  <Box>
-                    <Typography variant="footnote" weight="semibold" style={{ 
-                      marginBottom: appleTheme.spacing[1],
-                      color: isDarkMode ? "#FFFFFF" : "#000000"
-                    }}>
-                      Impact:
-                    </Typography>
+              <Stack spacing={4}>
+                {/* Header with icon, title, and severity badge */}
+                <Flex align="flex-start" gap={3}>
+                  <Box style={{
+                    padding: appleTheme.spacing[2],
+                    backgroundColor: `${issue.color}20`,
+                    borderRadius: "12px",
+                    color: issue.color,
+                    flexShrink: 0
+                  }}>
+                    {getSeverityIcon(issue.severity)}
+                  </Box>
+                  <Box style={{ flex: 1 }}>
+                    <Flex align="center" justify="space-between" style={{ marginBottom: appleTheme.spacing[2] }}>
+                      <Typography variant="title2" style={{ 
+                        fontWeight: appleTheme.typography.fontWeight.semibold,
+                        color: isDarkMode ? "#FFFFFF" : "#000000",
+                        fontSize: "20px",
+                        lineHeight: appleTheme.typography.lineHeight.tight
+                      }}>
+                        {index + 1}. {issue.title}
+                      </Typography>
+                      <Box style={{
+                        backgroundColor: issue.color,
+                        color: "white",
+                        padding: `${appleTheme.spacing[1]} ${appleTheme.spacing[3]}`,
+                        borderRadius: "20px",
+                        fontSize: "12px",
+                        fontWeight: appleTheme.typography.fontWeight.medium
+                      }}>
+                        {issue.severity}
+                      </Box>
+                    </Flex>
                     <Typography variant="body" style={{ 
-                      color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
+                      color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
+                      lineHeight: appleTheme.typography.lineHeight.relaxed,
+                      fontSize: "16px"
+                    }}>
+                      {issue.description}
+                    </Typography>
+                  </Box>
+                </Flex>
+
+                {/* Impact and Solution sections */}
+                <Stack spacing={3}>
+                  <Box style={{
+                    backgroundColor: isDarkMode ? "rgba(255, 193, 7, 0.1)" : "rgba(255, 193, 7, 0.05)",
+                    border: `1px solid ${isDarkMode ? "rgba(255, 193, 7, 0.3)" : "rgba(255, 193, 7, 0.2)"}`,
+                    borderRadius: appleTheme.borderRadius.md,
+                    padding: appleTheme.spacing[4]
+                  }}>
+                    <Flex align="flex-start" gap={2} style={{ marginBottom: appleTheme.spacing[2] }}>
+                      <Warning style={{ color: "#ffc107", fontSize: "20px", marginTop: "2px" }} />
+                      <Typography variant="body" weight="semibold" style={{ 
+                        color: isDarkMode ? "#FFFFFF" : "#000000",
+                        fontSize: "16px"
+                      }}>
+                        Impact
+                      </Typography>
+                    </Flex>
+                    <Typography variant="body" style={{ 
+                      color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
+                      lineHeight: appleTheme.typography.lineHeight.relaxed
                     }}>
                       {issue.impact}
                     </Typography>
                   </Box>
                   
-                  <Box>
-                    <Typography variant="footnote" weight="semibold" style={{ 
-                      marginBottom: appleTheme.spacing[1],
-                      color: isDarkMode ? "#FFFFFF" : "#000000"
-                    }}>
-                      Solution:
-                    </Typography>
+                  <Box style={{
+                    backgroundColor: isDarkMode ? "rgba(40, 167, 69, 0.1)" : "rgba(40, 167, 69, 0.05)",
+                    border: `1px solid ${isDarkMode ? "rgba(40, 167, 69, 0.3)" : "rgba(40, 167, 69, 0.2)"}`,
+                    borderRadius: appleTheme.borderRadius.md,
+                    padding: appleTheme.spacing[4]
+                  }}>
+                    <Flex align="flex-start" gap={2} style={{ marginBottom: appleTheme.spacing[2] }}>
+                      <CheckCircle style={{ color: "#28a745", fontSize: "20px", marginTop: "2px" }} />
+                      <Typography variant="body" weight="semibold" style={{ 
+                        color: isDarkMode ? "#FFFFFF" : "#000000",
+                        fontSize: "16px"
+                      }}>
+                        Solution
+                      </Typography>
+                    </Flex>
                     <Typography variant="body" style={{ 
-                      color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
+                      color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
+                      lineHeight: appleTheme.typography.lineHeight.relaxed
                     }}>
                       {issue.solution}
                     </Typography>
                   </Box>
-                  
-                  <Box>
-                    <Typography variant="footnote" weight="semibold" style={{ 
-                      marginBottom: appleTheme.spacing[2],
-                      color: isDarkMode ? "#FFFFFF" : "#000000"
-                    }}>
-                      Example:
-                    </Typography>
-                    <Box style={{ 
-                      backgroundColor: isDarkMode ? "rgba(0, 0, 0, 0.3)" : "#F8F9FA",
-                      padding: appleTheme.spacing[3],
-                      borderRadius: appleTheme.borderRadius.md,
-                      fontFamily: "monospace",
-                      fontSize: "14px",
-                      border: `1px solid ${isDarkMode ? "rgba(255, 255, 255, 0.1)" : "#E9ECEF"}`,
-                      color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
-                    }}>
-                      {issue.example}
-                    </Box>
-                  </Box>
-                  
-                  <Box>
-                    <Typography variant="footnote" weight="semibold" style={{ 
-                      marginBottom: appleTheme.spacing[1],
-                      color: isDarkMode ? "#FFFFFF" : "#000000"
-                    }}>
-                      WCAG Reference:
-                    </Typography>
-                    <Typography variant="body" style={{ 
-                      color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
-                    }}>
-                      {issue.wcag}
-                    </Typography>
-                  </Box>
                 </Stack>
+
+                {/* Example section */}
+                <Box>
+                  <Typography variant="body" weight="semibold" style={{ 
+                    color: isDarkMode ? "#FFFFFF" : "#000000",
+                    marginBottom: appleTheme.spacing[3],
+                    fontSize: "16px"
+                  }}>
+                    Example
+                  </Typography>
+                  <Box style={{ 
+                    backgroundColor: isDarkMode ? "rgba(0, 0, 0, 0.3)" : "#F8F9FA",
+                    padding: appleTheme.spacing[4],
+                    borderRadius: appleTheme.borderRadius.md,
+                    fontFamily: "monospace",
+                    fontSize: "14px",
+                    border: `1px solid ${isDarkMode ? "rgba(255, 255, 255, 0.1)" : "#E9ECEF"}`,
+                    color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
+                    lineHeight: appleTheme.typography.lineHeight.relaxed
+                  }}>
+                    {issue.example}
+                  </Box>
+                </Box>
+
+                {/* WCAG Reference section */}
+                <Box style={{
+                  backgroundColor: isDarkMode ? "rgba(0, 122, 255, 0.1)" : "rgba(0, 122, 255, 0.05)",
+                  border: `1px solid ${isDarkMode ? "rgba(0, 122, 255, 0.3)" : "rgba(0, 122, 255, 0.2)"}`,
+                  borderRadius: appleTheme.borderRadius.md,
+                  padding: appleTheme.spacing[4]
+                }}>
+                  <Flex align="flex-start" gap={2} style={{ marginBottom: appleTheme.spacing[2] }}>
+                    <Info style={{ color: "#007AFF", fontSize: "20px", marginTop: "2px" }} />
+                    <Typography variant="body" weight="semibold" style={{ 
+                      color: isDarkMode ? "#FFFFFF" : "#000000",
+                      fontSize: "16px"
+                    }}>
+                      WCAG Reference
+                    </Typography>
+                  </Flex>
+                  <Typography variant="body" style={{ 
+                    color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
+                    lineHeight: appleTheme.typography.lineHeight.relaxed
+                  }}>
+                    {issue.wcag}
+                  </Typography>
+                </Box>
+              </Stack>
             </Card>
           ))}
         </Box>
@@ -443,21 +490,19 @@ export default function CommonAccessibilityIssues() {
           </Stack>
           
           <Box style={{ textAlign: "center" }}>
-            <Link href="/" passHref legacyBehavior>
-              <a style={{ textDecoration: "none" }}>
-                <Button
-                  variant="primary"
-                  size="large"
-                  style={{
-                    backgroundColor: "#007AFF",
-                    padding: `${appleTheme.spacing[4]} ${appleTheme.spacing[8]}`,
-                    fontSize: "18px",
-                    fontWeight: appleTheme.typography.fontWeight.semibold
-                  }}
-                >
-                  Test Your Website Now
-                </Button>
-              </a>
+            <Link href="/" style={{ textDecoration: "none" }}>
+              <Button
+                variant="primary"
+                size="large"
+                style={{
+                  backgroundColor: "#007AFF",
+                  padding: `${appleTheme.spacing[4]} ${appleTheme.spacing[8]}`,
+                  fontSize: "18px",
+                  fontWeight: appleTheme.typography.fontWeight.semibold
+                }}
+              >
+                Test Your Website Now
+              </Button>
             </Link>
           </Box>
         </Card>
