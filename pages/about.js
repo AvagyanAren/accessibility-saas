@@ -260,11 +260,18 @@ export default function About() {
                 alignItems: "center",
                 justifyContent: "center",
                 textAlign: "center",
-                userSelect: "none"
+                userSelect: "none",
+                position: "relative",
+                zIndex: 10
               }}
               onClick={(e) => {
                 e.preventDefault();
-                router.push("/");
+                e.stopPropagation();
+                try {
+                  router.push("/");
+                } catch (error) {
+                  window.location.href = "/";
+                }
               }}
               onMouseEnter={(e) => {
                 e.target.style.backgroundColor = "#007AFF";
@@ -337,25 +344,27 @@ export default function About() {
             <div style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-              gap: appleTheme.spacing[6],
+              gap: appleTheme.spacing[8],
               width: "100%",
-              alignItems: "start"
+              alignItems: "center",
+              justifyItems: "center"
             }}>
               {stats.map((stat, index) => (
                 <div key={index} style={{
                   backgroundColor: "#FFFFFF",
                   border: "1px solid #E5E5EA",
                   borderRadius: "16px",
-                  padding: "24px",
+                  padding: "24px 20px",
                   transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                   boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
                   overflow: "hidden",
-                  minHeight: "120px",
+                  height: "200px",
+                  width: "100%",
+                  maxWidth: "320px",
                   display: "flex",
                   flexDirection: "column",
                   position: "relative",
                   zIndex: 1,
-                  height: "auto",
                   contain: "layout style",
                   textAlign: "center"
                 }}
@@ -383,7 +392,8 @@ export default function About() {
                     color: isDarkMode ? "#FFFFFF" : appleTheme.colors.primary[500],
                     fontSize: "32px",
                     fontWeight: "700",
-                    marginBottom: "8px"
+                    marginBottom: "8px",
+                    textAlign: "center"
                   }}>
                     {stat.number}
                   </Typography>
@@ -391,7 +401,8 @@ export default function About() {
                     color: isDarkMode ? "#AEAEB2" : "#1C1C1E",
                     fontSize: "14px",
                     lineHeight: 1.5,
-                    fontWeight: "500"
+                    fontWeight: "500",
+                    textAlign: "center"
                   }}>
                     {stat.label}
                   </Typography>
@@ -412,25 +423,27 @@ export default function About() {
             <div style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-              gap: appleTheme.spacing[6],
+              gap: appleTheme.spacing[8],
               width: "100%",
-              alignItems: "start"
+              alignItems: "center",
+              justifyItems: "center"
             }}>
               {features.map((feature, index) => (
                 <div key={index} style={{
                   backgroundColor: "#FFFFFF",
                   border: "1px solid #E5E5EA",
                   borderRadius: "16px",
-                  padding: "24px",
+                  padding: "24px 20px",
                   transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                   boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
                   overflow: "hidden",
-                  minHeight: "120px",
+                  height: "200px",
+                  width: "100%",
+                  maxWidth: "320px",
                   display: "flex",
                   flexDirection: "column",
                   position: "relative",
                   zIndex: 1,
-                  height: "auto",
                   contain: "layout style"
                 }}
                 onMouseEnter={(e) => {
@@ -447,7 +460,9 @@ export default function About() {
                 }}>
                   <Box style={{ 
                     color: appleTheme.colors.primary[500],
-                    marginBottom: "16px"
+                    marginBottom: "16px",
+                    display: "flex",
+                    justifyContent: "center"
                   }}>
                     {feature.icon}
                   </Box>
@@ -456,7 +471,8 @@ export default function About() {
                     fontSize: "18px",
                     fontWeight: "600",
                     marginBottom: "12px",
-                    lineHeight: 1.3
+                    lineHeight: 1.3,
+                    textAlign: "center"
                   }}>
                     {feature.title}
                   </Typography>
@@ -464,7 +480,8 @@ export default function About() {
                     color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
                     fontSize: "14px",
                     lineHeight: 1.5,
-                    fontWeight: "400"
+                    fontWeight: "400",
+                    textAlign: "center"
                   }}>
                     {feature.description}
                   </Typography>
@@ -485,25 +502,27 @@ export default function About() {
             <div style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
-              gap: appleTheme.spacing[6],
+              gap: appleTheme.spacing[8],
               width: "100%",
-              alignItems: "start"
+              alignItems: "center",
+              justifyItems: "center"
             }}>
               {values.map((value, index) => (
                 <div key={index} style={{
                   backgroundColor: "#FFFFFF",
                   border: "1px solid #E5E5EA",
                   borderRadius: "16px",
-                  padding: "24px",
+                  padding: "24px 20px",
                   transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                   boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
                   overflow: "hidden",
-                  minHeight: "120px",
+                  height: "200px",
+                  width: "100%",
+                  maxWidth: "320px",
                   display: "flex",
                   flexDirection: "column",
                   position: "relative",
                   zIndex: 1,
-                  height: "auto",
                   contain: "layout style"
                 }}
                 onMouseEnter={(e) => {
@@ -520,13 +539,15 @@ export default function About() {
                 }}>
                   <div style={{ 
                     display: "flex", 
-                    alignItems: "flex-start", 
-                    gap: "16px" 
+                    flexDirection: "column",
+                    alignItems: "center", 
+                    gap: "16px",
+                    textAlign: "center"
                   }}>
                     <Box style={{ 
                       color: appleTheme.colors.primary[500],
-                      flexShrink: 0,
-                      marginTop: "4px"
+                      display: "flex",
+                      justifyContent: "center"
                     }}>
                       {value.icon}
                     </Box>
@@ -536,7 +557,8 @@ export default function About() {
                         color: isDarkMode ? "#FFFFFF" : "#000000",
                         fontSize: "18px",
                         fontWeight: "600",
-                        lineHeight: 1.3
+                        lineHeight: 1.3,
+                        textAlign: "center"
                       }}>
                         {value.title}
                       </Typography>
@@ -544,10 +566,11 @@ export default function About() {
                         color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
                         fontSize: "14px",
                         lineHeight: 1.5,
-                        fontWeight: "400"
+                        fontWeight: "400",
+                        textAlign: "center"
                       }}>
                         {value.description}
-        </Typography>
+                      </Typography>
                     </Box>
                   </div>
                 </div>
@@ -598,11 +621,18 @@ export default function About() {
                     alignItems: "center",
                     justifyContent: "center",
                     textAlign: "center",
-                    userSelect: "none"
+                    userSelect: "none",
+                    position: "relative",
+                    zIndex: 10
                   }}
                   onClick={(e) => {
                     e.preventDefault();
-                    router.push("/");
+                    e.stopPropagation();
+                    try {
+                      router.push("/");
+                    } catch (error) {
+                      window.location.href = "/";
+                    }
                   }}
                   onMouseEnter={(e) => {
                     e.target.style.backgroundColor = "#007AFF";

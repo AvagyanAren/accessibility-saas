@@ -136,8 +136,8 @@ export default function Pricing() {
         "Email support",
         "Community resources"
       ],
-      buttonText: "Get Started Free",
-      buttonVariant: "outline",
+      buttonText: "Start Free Trial",
+      buttonVariant: "primary",
       popular: false
     },
     {
@@ -175,7 +175,7 @@ export default function Pricing() {
         "Custom training sessions"
       ],
       buttonText: "Contact Sales",
-      buttonVariant: "outline",
+      buttonVariant: "primary",
       popular: false
     }
   ];
@@ -206,7 +206,7 @@ export default function Pricing() {
   return (
     <div style={{ 
       backgroundColor: appleTheme.colors.background.secondary, 
-      minHeight: "100vh",
+        minHeight: "100vh",
       position: "relative",
       overflow: "hidden"
     }}>
@@ -241,9 +241,13 @@ export default function Pricing() {
         <Section padding="lg">
           <div style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-            gap: appleTheme.spacing[6],
-            marginBottom: appleTheme.spacing[12]
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: appleTheme.spacing[4],
+            marginBottom: appleTheme.spacing[16],
+            alignItems: "center",
+            justifyItems: "center",
+            maxWidth: "1200px",
+            margin: "0 auto"
           }}>
             {plans.map((plan, index) => (
               <div 
@@ -252,16 +256,17 @@ export default function Pricing() {
                   backgroundColor: "#FFFFFF",
                   border: plan.popular ? "2px solid #007AFF" : "1px solid #E5E5EA",
                   borderRadius: "16px",
-                  padding: "24px",
+                  padding: "24px 20px",
                   transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                   boxShadow: plan.popular ? "0 8px 25px rgba(0, 122, 255, 0.15)" : "0 1px 3px rgba(0, 0, 0, 0.1)",
                   overflow: "hidden",
-                  minHeight: "120px",
+                  height: "610px",
+                  width: "100%",
+                  maxWidth: "320px",
                   display: "flex",
                   flexDirection: "column",
                   position: "relative",
                   zIndex: plan.popular ? 2 : 1,
-                  height: "auto",
                   contain: "layout style",
                   transform: plan.popular ? "scale(1.05)" : "scale(1)"
                 }}
@@ -281,9 +286,8 @@ export default function Pricing() {
                 {plan.popular && (
                   <Box style={{
                     position: "absolute",
-                    top: -appleTheme.spacing[3],
-                    left: "50%",
-                    transform: "translateX(-50%)",
+                    top: appleTheme.spacing[3],
+                    right: appleTheme.spacing[3],
                     backgroundColor: appleTheme.colors.primary[500],
                     color: "white",
                     padding: `${appleTheme.spacing[1]} ${appleTheme.spacing[3]}`,
@@ -295,15 +299,15 @@ export default function Pricing() {
                   </Box>
                 )}
                 
-                <Stack spacing={4}>
-                  <Box style={{ textAlign: "center" }}>
+                <Stack spacing={4} style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+                  <Box style={{ textAlign: "left" }}>
                     <Typography variant="title3" style={{ 
                       marginBottom: appleTheme.spacing[2],
                       color: isDarkMode ? "#FFFFFF" : "#000000"
                     }}>
                 {plan.name}
               </Typography>
-                    <Flex align="baseline" justify="center" gap={1}>
+                    <Flex align="baseline" justify="flex-start" gap={1}>
                       <Typography variant="display" weight="bold" style={{
                         color: isDarkMode ? "#FFFFFF" : appleTheme.colors.primary[500]
                       }}>
@@ -317,16 +321,24 @@ export default function Pricing() {
                     </Flex>
                     <Typography variant="footnote" style={{ 
                       marginTop: appleTheme.spacing[2],
-                      color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
+                      marginBottom: appleTheme.spacing[4],
+                      color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      lineHeight: 1.5,
+                      padding: "12px 16px",
+                      backgroundColor: isDarkMode ? "#2C2C2E" : "#F8F9FA",
+                      borderRadius: "8px",
+                      border: `1px solid ${isDarkMode ? "#3A3A3C" : "#E5E5EA"}`
                     }}>
                       {plan.description}
                     </Typography>
                   </Box>
 
-                  <Box>
-                    <Stack spacing={2}>
+                  <Box style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+                    <Stack spacing={2} style={{ alignItems: "flex-start" }}>
                       {plan.features.map((feature, featureIndex) => (
-                        <Flex key={featureIndex} align="center" gap={2}>
+                        <Flex key={featureIndex} align="center" gap={2} style={{ width: "100%" }}>
                           <CheckIcon style={{ 
                             color: isDarkMode ? "#30D158" : "#30D158", 
                             flexShrink: 0 
@@ -342,14 +354,14 @@ export default function Pricing() {
                   </Box>
 
                   <Button
-                    variant={plan.buttonVariant}
+                    variant="primary"
                     fullWidth
                     size="large"
                     onClick={(e) => {
                       console.log("Pricing button clicked:", plan.buttonText);
                       e.preventDefault();
                       e.stopPropagation();
-                      if (plan.buttonText === "Get Started Free") {
+                      if (plan.buttonText === "Start Free Trial") {
                         window.location.href = "/";
                       } else if (plan.buttonText === "Start Pro Trial") {
                         window.location.href = "/";
@@ -358,8 +370,19 @@ export default function Pricing() {
                       }
                     }}
                     style={{
-                      marginTop: appleTheme.spacing[4],
-                      color: isDarkMode ? "#FFFFFF" : "#000000"
+                      marginTop: "auto",
+                      marginBottom: "16px",
+                      backgroundColor: "#007AFF",
+                      color: "#FFFFFF",
+                      border: "none",
+                      borderRadius: "8px",
+                      padding: "12px 20px",
+                      minHeight: "44px",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      transition: "all 0.2s ease-in-out",
+                      cursor: "pointer",
+                      width: "100%"
                     }}
                   >
                     {plan.buttonText}
@@ -558,7 +581,7 @@ export default function Pricing() {
                             </Typography>
                           </Box>
                         )}
-                      </Box>
+        </Box>
                     </div>
                   );
                 })}

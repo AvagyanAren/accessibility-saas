@@ -15,7 +15,8 @@ import {
   RecordVoiceOver as RecordVoiceOverIcon,
   Keyboard as KeyboardIcon,
   PhoneAndroid as PhoneAndroidIcon,
-  AccessTime as AccessTimeIcon
+  AccessTime as AccessTimeIcon,
+  CheckCircle
 } from "@mui/icons-material";
 
 // Tooltip Component
@@ -198,28 +199,37 @@ export default function Resources() {
 
   const tools = [
     {
-      name: "WAVE Web Accessibility Evaluator",
-      description: "Free web accessibility evaluation tool",
-      url: "https://wave.webaim.org/",
-      category: "Testing"
-    },
-    {
-      name: "axe DevTools",
-      description: "Browser extension for accessibility testing",
-      url: "https://www.deque.com/axe/devtools/",
-      category: "Development"
+      name: "WebAIM Contrast Checker",
+      description: "Online tool for checking color contrast ratios",
+      url: "https://webaim.org/resources/contrastchecker/",
+      category: "Design",
+      features: [
+        "Real-time contrast calculation",
+        "WCAG compliance checking", 
+        "Color blindness simulation"
+      ]
     },
     {
       name: "Color Oracle",
-      description: "Color blindness simulator for Windows, Mac, and Linux",
+      description: "Desktop application for color blindness simulation",
       url: "https://colororacle.org/",
-      category: "Design"
+      category: "Design",
+      features: [
+        "Real-time preview",
+        "Multiple color blindness types",
+        "Cross-platform support"
+      ]
     },
     {
-      name: "WebAIM Contrast Checker",
-      description: "Check color contrast ratios for accessibility",
-      url: "https://webaim.org/resources/contrastchecker/",
-      category: "Design"
+      name: "Stark Plugin",
+      description: "Design tool plugin for accessibility testing",
+      url: "https://www.getstark.co/",
+      category: "Development",
+      features: [
+        "Figma/Sketch integration",
+        "Contrast checking",
+        "Color blindness simulation"
+      ]
     }
   ];
 
@@ -284,44 +294,50 @@ export default function Resources() {
             marginBottom: appleTheme.spacing[12]
           }}>
             {articles.map((article, index) => (
-              <Link key={index} href={article.href} passHref legacyBehavior>
-                <a style={{ textDecoration: "none" }}>
-                  <div 
-                    style={{
-                      backgroundColor: "#FFFFFF",
-                      border: "1px solid #E5E5EA",
-                      borderRadius: "16px",
-                      padding: "24px",
-                      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                      boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-                      overflow: "hidden",
-                      minHeight: "120px",
-                      display: "flex",
-                      flexDirection: "column",
-                      position: "relative",
-                      zIndex: 1,
-                      height: "100%",
-                      contain: "layout style",
-                      cursor: article.available ? "pointer" : "not-allowed",
-                      opacity: article.available ? 1 : 0.6
-                    }}
-                    onMouseEnter={(e) => {
-                      if (article.available) {
-                        e.currentTarget.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.15)";
-                        e.currentTarget.style.transform = "translateY(-3px)";
-                        e.currentTarget.style.borderColor = "#007AFF";
-                        e.currentTarget.style.backgroundColor = "#F8F9FA";
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (article.available) {
-                        e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
-                        e.currentTarget.style.transform = "translateY(0)";
-                        e.currentTarget.style.borderColor = "#E5E5EA";
-                        e.currentTarget.style.backgroundColor = "#FFFFFF";
-                      }
-                    }}
-                  >
+              <Link key={index} href={article.href} style={{ textDecoration: "none", display: "block" }}>
+                <div 
+                  style={{
+                    backgroundColor: "#FFFFFF",
+                    border: "1px solid #E5E5EA",
+                    borderRadius: "16px",
+                    padding: "24px",
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+                    overflow: "hidden",
+                    minHeight: "120px",
+                    display: "flex",
+                    flexDirection: "column",
+                    position: "relative",
+                    zIndex: 1,
+                    height: "100%",
+                    contain: "layout style",
+                    cursor: article.available ? "pointer" : "not-allowed",
+                    opacity: article.available ? 1 : 0.6
+                  }}
+                  onClick={(e) => {
+                    if (article.available) {
+                      console.log("Article clicked:", article.href);
+                    } else {
+                      e.preventDefault();
+                    }
+                  }}
+                  onMouseEnter={(e) => {
+                    if (article.available) {
+                      e.currentTarget.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.15)";
+                      e.currentTarget.style.transform = "translateY(-3px)";
+                      e.currentTarget.style.borderColor = "#007AFF";
+                      e.currentTarget.style.backgroundColor = "#F8F9FA";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (article.available) {
+                      e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
+                      e.currentTarget.style.transform = "translateY(0)";
+                      e.currentTarget.style.borderColor = "#E5E5EA";
+                      e.currentTarget.style.backgroundColor = "#FFFFFF";
+                    }
+                  }}
+                >
                     <Stack spacing={4}>
                       <Flex align="flex-start" justify="space-between" gap={3}>
                         <Box style={{ color: article.color, flexShrink: 0 }}>
@@ -391,7 +407,6 @@ export default function Resources() {
                       </HStack>
                     </Stack>
                   </div>
-                </a>
               </Link>
             ))}
           </div>
@@ -410,55 +425,83 @@ export default function Resources() {
             marginBottom: appleTheme.spacing[12]
           }}>
             {tools.map((tool, index) => (
-              <div key={index} style={{
-                backgroundColor: "#FFFFFF",
-                border: "1px solid #E5E5EA",
-                borderRadius: "16px",
-                padding: "24px",
-                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-                overflow: "hidden",
-                minHeight: "120px",
-                display: "flex",
-                flexDirection: "column",
-                position: "relative",
-                zIndex: 1,
-                height: "auto",
-                contain: "layout style"
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.15)";
-                e.currentTarget.style.transform = "translateY(-3px)";
-                e.currentTarget.style.borderColor = "#007AFF";
-                e.currentTarget.style.backgroundColor = "#F8F9FA";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.borderColor = "#E5E5EA";
-                e.currentTarget.style.backgroundColor = "#FFFFFF";
+              <Card key={index} variant="elevated" padding="xl" style={{
+                backgroundColor: isDarkMode ? "rgba(28, 28, 30, 0.8)" : "#FFFFFF",
+                border: `1px solid ${isDarkMode ? "rgba(255, 255, 255, 0.1)" : "#E5E5EA"}`,
+                boxShadow: isDarkMode ? "0 4px 12px rgba(0, 0, 0, 0.3)" : "0 2px 8px rgba(0, 0, 0, 0.1)",
+                marginBottom: appleTheme.spacing[6]
               }}>
-                <Stack spacing={3}>
-                  <Flex align="flex-start" justify="space-between" gap={3}>
-                    <Box>
-                      <Typography variant="callout" weight="semibold" style={{ marginBottom: appleTheme.spacing[1] }}>
+                <Stack spacing={4}>
+                  {/* Header with number and title */}
+                  <Flex align="flex-start" gap={4}>
+                    <Box style={{
+                      width: "48px",
+                      height: "48px",
+                      backgroundColor: "#007AFF",
+                      borderRadius: "50%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0
+                    }}>
+                      <Typography variant="title2" style={{ 
+                        color: "white",
+                        fontWeight: appleTheme.typography.fontWeight.bold,
+                        fontSize: "20px"
+                      }}>
+                        {index + 1}
+                      </Typography>
+                    </Box>
+                    <Box style={{ flex: 1 }}>
+                      <Typography variant="title2" style={{ 
+                        fontWeight: appleTheme.typography.fontWeight.semibold,
+                        color: isDarkMode ? "#FFFFFF" : "#000000",
+                        marginBottom: appleTheme.spacing[2],
+                        fontSize: "20px",
+                        lineHeight: appleTheme.typography.lineHeight.tight
+                      }}>
                         {tool.name}
                       </Typography>
-                      <Typography variant="footnote" color="secondary">
+                      <Typography variant="body" style={{ 
+                        color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
+                        lineHeight: appleTheme.typography.lineHeight.relaxed,
+                        fontSize: "16px"
+                      }}>
                         {tool.description}
                       </Typography>
                     </Box>
-                    <ExternalLinkIcon style={{ color: appleTheme.colors.text.tertiary, flexShrink: 0 }} />
                   </Flex>
-                  
-                  <HStack justify="space-between" align="center">
+
+                  {/* Features list */}
+                  <Box>
+                    <Stack spacing={2}>
+                      {tool.features.map((feature, fIndex) => (
+                        <Flex key={fIndex} align="center" gap={2}>
+                          <CheckCircle style={{ 
+                            color: "#28a745", 
+                            fontSize: "18px",
+                            flexShrink: 0
+                          }} />
+                          <Typography variant="body" style={{ 
+                            color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
+                            fontSize: "15px"
+                          }}>
+                            {feature}
+                          </Typography>
+                        </Flex>
+                      ))}
+                    </Stack>
+                  </Box>
+
+                  {/* Footer with category and visit button */}
+                  <Flex align="center" justify="space-between">
                     <Box style={{
-                      padding: `${appleTheme.spacing[1]} ${appleTheme.spacing[2]}`,
-                      backgroundColor: appleTheme.colors.gray[100],
-                      borderRadius: appleTheme.borderRadius.base,
-                      fontSize: appleTheme.typography.fontSize.xs,
+                      padding: `${appleTheme.spacing[1]} ${appleTheme.spacing[3]}`,
+                      backgroundColor: getCategoryColor(tool.category),
+                      borderRadius: "20px",
+                      fontSize: "12px",
                       fontWeight: appleTheme.typography.fontWeight.medium,
-                      color: appleTheme.colors.text.secondary
+                      color: "white"
                     }}>
                       {tool.category}
                     </Box>
@@ -469,13 +512,23 @@ export default function Resources() {
                       rel="noopener noreferrer"
                       style={{ textDecoration: "none" }}
                     >
-                      <Button variant="ghost" size="small">
+                      <Button 
+                        variant="primary" 
+                        size="medium"
+                        style={{
+                          backgroundColor: "#007AFF",
+                          color: "white",
+                          padding: `${appleTheme.spacing[2]} ${appleTheme.spacing[4]}`,
+                          fontSize: "14px",
+                          fontWeight: appleTheme.typography.fontWeight.medium
+                        }}
+                      >
                         Visit Tool
                       </Button>
                     </a>
-                  </HStack>
+                  </Flex>
                 </Stack>
-              </div>
+              </Card>
             ))}
           </div>
         </Section>
@@ -507,9 +560,7 @@ export default function Resources() {
               Get the latest accessibility tips, guides, and industry news delivered to your inbox.
             </Typography>
             <HStack spacing={4} wrap="wrap" justify="center" style={{ marginTop: appleTheme.spacing[4] }}>
-              <Button
-                variant="secondary"
-                size="large"
+              <button
                 onClick={(e) => {
                   console.log("Newsletter button clicked");
                   e.preventDefault();
@@ -524,14 +575,31 @@ export default function Resources() {
                   padding: `${appleTheme.spacing[4]} ${appleTheme.spacing[8]}`,
                   borderRadius: appleTheme.borderRadius.lg,
                   boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-                  transition: "all 0.3s ease"
+                  transition: "all 0.3s ease",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: "16px",
+                  fontFamily: "inherit",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minHeight: "48px",
+                  minWidth: "200px"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#F8F9FA";
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.boxShadow = "0 6px 16px rgba(0, 0, 0, 0.2)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "white";
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.15)";
                 }}
               >
                 Subscribe to Newsletter
-              </Button>
-              <Button
-                variant="outline"
-                size="large"
+              </button>
+              <button
                 onClick={(e) => {
                   console.log("Twitter button clicked");
                   e.preventDefault();
@@ -539,15 +607,34 @@ export default function Resources() {
                   window.open("https://twitter.com/accessibility_saas", "_blank");
                 }}
                 style={{
-                  borderColor: "rgba(255, 255, 255, 0.3)",
+                  backgroundColor: "transparent",
+                  border: "2px solid rgba(255, 255, 255, 0.3)",
                   color: "white",
                   padding: `${appleTheme.spacing[4]} ${appleTheme.spacing[8]}`,
                   borderRadius: appleTheme.borderRadius.lg,
-                  transition: "all 0.3s ease"
+                  transition: "all 0.3s ease",
+                  cursor: "pointer",
+                  fontSize: "16px",
+                  fontFamily: "inherit",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minHeight: "48px",
+                  minWidth: "200px"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.1)";
+                  e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.6)";
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                  e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.3)";
+                  e.currentTarget.style.transform = "translateY(0)";
                 }}
               >
                 Follow on Twitter
-              </Button>
+              </button>
             </HStack>
           </Stack>
         </Card>
