@@ -90,17 +90,9 @@ const CheckIcon = () => <Check size={16} weight="bold" />;
 const ErrorIcon = () => <XCircle size={16} weight="fill" />;
 const ChevronDownIcon = () => <CaretDown size={16} weight="bold" />;
 
-const ChevronRightIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polyline points="9,18 15,12 9,6"/>
-  </svg>
-);
+const ChevronRightIcon = () => <CaretRight size={16} weight="bold" />;
 
-const KeyIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
-  </svg>
-);
+const KeyIcon = () => <Key size={20} weight="regular" />;
 
 const GlobeIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
