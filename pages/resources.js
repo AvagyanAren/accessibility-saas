@@ -117,6 +117,8 @@ const TagIcon = () => (
 
 export default function Resources() {
   const { isDarkMode } = useTheme();
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  
   const articles = [
     {
       title: "10 Common Accessibility Issues and How to Fix Them",
@@ -244,10 +246,18 @@ export default function Resources() {
     return colors[category] || appleTheme.colors.gray[500];
   };
 
+  // Get unique categories for filter
+  const categories = ["All", ...new Set(articles.map(article => article.category))];
+  
+  // Filter articles based on selected category
+  const filteredArticles = selectedCategory === "All" 
+    ? articles 
+    : articles.filter(article => article.category === selectedCategory);
+
   return (
     <div style={{ 
       backgroundColor: appleTheme.colors.background.secondary, 
-      minHeight: "100vh",
+        minHeight: "100vh",
       position: "relative",
       overflow: "hidden"
     }}>
@@ -280,36 +290,104 @@ export default function Resources() {
       <Container size="lg" padding="lg">
         {/* Articles Section */}
         <Section padding="lg">
-          <Typography variant="title2" style={{ 
-            marginBottom: appleTheme.spacing[8],
-            color: isDarkMode ? "#FFFFFF" : "#000000"
+          <Box style={{ marginBottom: appleTheme.spacing[8] }}>
+            <Typography variant="title2" style={{ 
+              color: isDarkMode ? "#FFFFFF" : "#000000",
+              marginBottom: appleTheme.spacing[6]
+            }}>
+              Articles & Guides
+            </Typography>
+            
+            {/* Filter Buttons */}
+            <div style={{ 
+              display: "flex",
+              flexWrap: "wrap",
+              gap: appleTheme.spacing[4],
+              alignItems: "center"
+            }}>
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  style={{
+                    padding: `${appleTheme.spacing[1]} ${appleTheme.spacing[3]}`,
+                    borderRadius: "16px",
+                    border: "none",
+                    fontSize: "13px",
+                    fontWeight: appleTheme.typography.fontWeight.medium,
+                    cursor: "pointer",
+                    transition: "all 0.2s ease-in-out",
+                    backgroundColor: selectedCategory === category 
+                      ? (category === "All" ? appleTheme.colors.primary[500] : getCategoryColor(category))
+                      : isDarkMode ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.05)",
+                    color: selectedCategory === category 
+                      ? "white" 
+                      : isDarkMode ? "#FFFFFF" : "#000000",
+                    border: selectedCategory === category 
+                      ? "none" 
+                      : `1px solid ${isDarkMode ? "rgba(255, 255, 255, 0.2)" : "rgba(0, 0, 0, 0.1)"}`,
+                    fontFamily: "inherit",
+                    minHeight: "28px",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    whiteSpace: "nowrap"
+                  }}
+                  onMouseEnter={(e) => {
+                    if (selectedCategory !== category) {
+                      e.currentTarget.style.backgroundColor = isDarkMode 
+                        ? "rgba(255, 255, 255, 0.15)" 
+                        : "rgba(0, 0, 0, 0.08)";
+                      e.currentTarget.style.transform = "translateY(-1px)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (selectedCategory !== category) {
+                      e.currentTarget.style.backgroundColor = isDarkMode 
+                        ? "rgba(255, 255, 255, 0.1)" 
+                        : "rgba(0, 0, 0, 0.05)";
+                      e.currentTarget.style.transform = "translateY(0)";
+                    }
+                  }}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          </Box>
+          
+          {/* Results counter */}
+          <Typography variant="footnote" style={{ 
+            color: isDarkMode ? "#AEAEB2" : "#6D6D70",
+            marginBottom: appleTheme.spacing[6],
+            fontSize: "14px"
           }}>
-            Articles & Guides
+            {filteredArticles.length} {filteredArticles.length === 1 ? 'article' : 'articles'} 
+            {selectedCategory !== "All" && ` in ${selectedCategory}`}
           </Typography>
           
           <div style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
-            gap: appleTheme.spacing[6],
+            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+            gap: appleTheme.spacing[4],
             marginBottom: appleTheme.spacing[12]
           }}>
-            {articles.map((article, index) => (
+            {filteredArticles.map((article, index) => (
               <Link key={index} href={article.href} style={{ textDecoration: "none", display: "block" }}>
                 <div 
                   style={{
                     backgroundColor: "#FFFFFF",
                     border: "1px solid #E5E5EA",
-                    borderRadius: "16px",
-                    padding: "24px",
+                    borderRadius: "12px",
+                    padding: "16px",
                     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                     boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
                     overflow: "hidden",
-                    minHeight: "120px",
+                    height: "160px",
                     display: "flex",
                     flexDirection: "column",
                     position: "relative",
                     zIndex: 1,
-                    height: "100%",
                     contain: "layout style",
                     cursor: article.available ? "pointer" : "not-allowed",
                     opacity: article.available ? 1 : 0.6
@@ -338,76 +416,82 @@ export default function Resources() {
                     }
                   }}
                 >
-                    <Stack spacing={4}>
-                      <Flex align="flex-start" justify="space-between" gap={3}>
-                        <Box style={{ color: article.color, flexShrink: 0 }}>
-                          {article.icon}
-                        </Box>
-                        <Box style={{
-                          padding: `${appleTheme.spacing[1]} ${appleTheme.spacing[2]}`,
-                          backgroundColor: getCategoryColor(article.category),
-                          color: "white",
-                          borderRadius: appleTheme.borderRadius.base,
-                          fontSize: appleTheme.typography.fontSize.xs,
-                          fontWeight: appleTheme.typography.fontWeight.semibold,
-                          textTransform: "uppercase"
+                    {/* Category badge in top-right corner */}
+                    <Box style={{
+                      position: "absolute",
+                      top: "12px",
+                      right: "12px",
+                      padding: `${appleTheme.spacing[1]} ${appleTheme.spacing[2]}`,
+                      backgroundColor: getCategoryColor(article.category),
+                      color: "white",
+                      borderRadius: "12px",
+                      fontSize: "10px",
+                      fontWeight: appleTheme.typography.fontWeight.semibold,
+                      textTransform: "uppercase",
+                      zIndex: 2
+                    }}>
+                      {article.category}
+                    </Box>
+                    
+                    {/* Icon in top-left */}
+                    <Box style={{ 
+                      color: article.color, 
+                      flexShrink: 0,
+                      marginBottom: appleTheme.spacing[3],
+                      marginTop: "4px"
+                    }}>
+                      {article.icon}
+                    </Box>
+                    
+                    {/* Title with proper spacing */}
+                    <Box style={{ 
+                      flex: 1, 
+                      marginBottom: appleTheme.spacing[3],
+                      paddingRight: "60px" // Space for the badge
+                    }}>
+                      <Typography variant="callout" weight="semibold" style={{ 
+                        color: isDarkMode ? "#FFFFFF" : "#000000",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                        lineHeight: "1.3",
+                        fontSize: "16px"
+                      }}>
+                        {article.title}
+                      </Typography>
+                    </Box>
+                    
+                    {/* Bottom content */}
+                    <HStack justify="space-between" align="center">
+                      <HStack spacing={2} align="center">
+                        <ClockIcon style={{ color: isDarkMode ? "#AEAEB2" : "#6D6D70", fontSize: "14px" }} />
+                        <Typography variant="caption1" style={{
+                          color: isDarkMode ? "#AEAEB2" : "#6D6D70",
+                          fontSize: "12px"
                         }}>
-                          {article.category}
-                        </Box>
-                      </Flex>
-                      
-                      <Box>
-                        <Typography variant="callout" weight="semibold" style={{ 
-                          marginBottom: appleTheme.spacing[2],
-                          color: isDarkMode ? "#FFFFFF" : "#000000"
-                        }}>
-                          {article.title}
+                          {article.readTime}
                         </Typography>
-                        <Typography variant="footnote" style={{
-                          color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
-                        }}>
-                          {article.description}
-                        </Typography>
-                      </Box>
-                      
-                      <HStack justify="space-between" align="center">
-                        <HStack spacing={2} align="center">
-                          <ClockIcon style={{ color: isDarkMode ? "#AEAEB2" : "#6D6D70" }} />
-                          <Typography variant="caption1" style={{
-                            color: isDarkMode ? "#AEAEB2" : "#6D6D70"
-                          }}>
-                            {article.readTime}
-                          </Typography>
-                        </HStack>
-                        <HStack spacing={1} align="center">
-                          <AccessTimeIcon style={{ 
-                            color: isDarkMode ? "#AEAEB2" : "#6D6D70",
-                            fontSize: "14px"
-                          }} />
-                          <Typography variant="caption1" style={{
-                            color: isDarkMode ? "#AEAEB2" : "#6D6D70"
-                          }}>
-                            {article.publishDate}
-                          </Typography>
-                        </HStack>
-                        
-                        {article.available ? (
-                          <Typography variant="caption1" weight="medium" style={{
-                            color: isDarkMode ? "#007AFF" : appleTheme.colors.primary[500]
-                          }}>
-                            Read Article →
-                          </Typography>
-                        ) : (
-                          <Typography variant="caption1" style={{
-                            color: isDarkMode ? "#AEAEB2" : "#6D6D70"
-                          }}>
-                            Coming Soon
-                          </Typography>
-                        )}
                       </HStack>
-                    </Stack>
+                      
+                      {article.available ? (
+                        <Typography variant="caption1" weight="medium" style={{
+                          color: isDarkMode ? "#007AFF" : appleTheme.colors.primary[500],
+                          fontSize: "12px"
+                        }}>
+                          Read Article →
+        </Typography>
+                      ) : (
+                        <Typography variant="caption1" style={{
+                          color: isDarkMode ? "#AEAEB2" : "#6D6D70",
+                          fontSize: "12px"
+                        }}>
+                          Coming Soon
+        </Typography>
+                      )}
+                    </HStack>
                   </div>
-              </Link>
+            </Link>
             ))}
           </div>
         </Section>

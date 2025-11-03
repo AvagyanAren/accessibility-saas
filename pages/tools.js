@@ -199,7 +199,7 @@ export default function Tools() {
             <Typography variant="headline" weight="regular" style={{
               color: isDarkMode ? '#FFFFFF' : "#2C2C2E",
               maxWidth: "600px",
-              margin: `0 auto ${appleTheme.spacing[8]} auto`,
+              margin: `0 auto ${appleTheme.spacing[4]} auto`,
               fontWeight: appleTheme.typography.fontWeight.medium
             }}>
               Comprehensive suite of tools to test, analyze, and improve your website's accessibility.
@@ -210,9 +210,9 @@ export default function Tools() {
 
       {/* Tools Grid */}
       <Container size="lg" padding="lg">
-        <Section padding="lg">
+        <Section padding="lg" style={{ paddingTop: appleTheme.spacing[4] }}>
           <Typography variant="title2" style={{ 
-            marginBottom: appleTheme.spacing[8],
+            marginBottom: appleTheme.spacing[6],
             color: isDarkMode ? '#FFFFFF' : '#000000'
           }}>
             Available Tools
@@ -352,7 +352,9 @@ export default function Tools() {
           padding: `${appleTheme.spacing[12]} ${appleTheme.spacing[8]}`,
           margin: `${appleTheme.spacing[8]} 0`,
           borderRadius: appleTheme.borderRadius.xl,
-          boxShadow: "0 20px 40px rgba(0, 122, 255, 0.3)"
+          boxShadow: "0 20px 40px rgba(0, 122, 255, 0.3)",
+          position: "relative",
+          zIndex: 10
         }}>
           <Stack spacing={6} align="center">
             <Typography variant="title1" style={{ 
@@ -384,7 +386,9 @@ export default function Tools() {
                       padding: `${appleTheme.spacing[4]} ${appleTheme.spacing[8]}`,
                       borderRadius: appleTheme.borderRadius.lg,
                       boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-                      transition: "all 0.3s ease"
+                      transition: "all 0.3s ease",
+                      position: "relative",
+                      zIndex: 11
                     }}
                   >
                     View Pricing
@@ -401,7 +405,9 @@ export default function Tools() {
                       color: "white",
                       padding: `${appleTheme.spacing[4]} ${appleTheme.spacing[8]}`,
                       borderRadius: appleTheme.borderRadius.lg,
-                      transition: "all 0.3s ease"
+                      transition: "all 0.3s ease",
+                      position: "relative",
+                      zIndex: 11
                     }}
                   >
                     API Documentation

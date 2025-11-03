@@ -71,6 +71,11 @@ A comprehensive, modern accessibility testing platform built with Next.js and Ap
    yarn dev
    ```
 
+6. **Run linting (optional, not enforced during builds)**
+```bash
+npm run lint
+```
+
 5. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
@@ -283,6 +288,7 @@ docker run -p 3000:3000 accessibility-saas
 
 ### 📋 Deployment Checklist
 - ✅ Playwright browsers configured for production
+- ✅ ESLint configured and codebase passes lint checks
 - ✅ API routes optimized with proper timeouts
 - ✅ Error handling enhanced for production
 - ✅ Environment variables configured

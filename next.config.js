@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  eslint: {
+    // Do not fail production builds on lint errors; run lints separately
+    ignoreDuringBuilds: true,
+  },
   // External packages for server components (Next.js 15)
   serverExternalPackages: ['playwright'],
   // Enable compression

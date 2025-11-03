@@ -472,6 +472,7 @@ export default function Home() {
   const [emailDialogOpen, setEmailDialogOpen] = useState(false);
   const [error, setError] = useState("");
   const [isMobile, setIsMobile] = useState(false);
+  const [isSearchStacked, setIsSearchStacked] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
   const [dataFromCache, setDataFromCache] = useState(false);
 
@@ -525,6 +526,7 @@ export default function Home() {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
         setIsMobile(window.innerWidth < 768);
+        setIsSearchStacked(window.innerWidth < 770);
       }, 100); // Debounce resize events
     };
     
@@ -631,17 +633,26 @@ export default function Home() {
   const themeColors = isDarkMode ? appleTheme.colors.dark : appleTheme.colors;
 
   return (
-    <div style={{ 
-      backgroundColor: themeColors.background.secondary, 
-        minHeight: "100vh",
+    <div className="page-container" style={{ 
+      minHeight: "100vh",
       position: "relative",
       overflow: "hidden"
     }}>
-      {/* Animated Background Elements - Reduced for better performance */}
-      <AnimatedGradient variant="default" intensity="low" />
+      {/* Animated Background Elements - Behind all content */}
+      <div className="animated-background" style={{ 
+        position: "fixed", 
+        top: 0, 
+        left: 0, 
+        width: "100%", 
+        height: "100%", 
+        zIndex: -1 
+      }}>
+        <AnimatedGradient variant="default" intensity="medium" />
+      </div>
       {/* Hero Section */}
       <Section 
-        background={isDarkMode ? "linear-gradient(135deg, #1C1C1E 0%, #2C2C2E 100%)" : "linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)"} 
+        className="hero-section"
+        background={isDarkMode ? "linear-gradient(135deg, rgba(28, 28, 30, 0.9) 0%, rgba(44, 44, 46, 0.9) 100%)" : "linear-gradient(135deg, rgba(245, 245, 247, 0.9) 0%, rgba(229, 229, 234, 0.9) 100%)"} 
         padding="xl"
         style={{ 
           paddingTop: isMobile ? appleTheme.spacing[12] : appleTheme.spacing[16],
@@ -652,7 +663,7 @@ export default function Home() {
           <Box style={{ textAlign: "center" }}>
             <Typography variant="display" style={{ 
               marginBottom: isMobile ? appleTheme.spacing[6] : appleTheme.spacing[8],
-              color: isDarkMode ? '#FFFFFF' : '#000000',
+              color: themeColors.text.primary,
               fontWeight: appleTheme.typography.fontWeight.bold,
               fontSize: isMobile ? "28px" : "42px",
               lineHeight: 1.2,
@@ -667,7 +678,7 @@ export default function Home() {
               Make Your Website Accessible to Everyone
   </Typography>
             <Typography variant="headline" weight="regular" style={{ 
-              color: isDarkMode ? '#E5E5EA' : '#1C1C1E',
+              color: themeColors.text.secondary,
               marginBottom: isMobile ? appleTheme.spacing[8] : appleTheme.spacing[10],
               maxWidth: "600px",
               margin: isMobile ? `0 auto ${appleTheme.spacing[8]} auto` : `0 auto ${appleTheme.spacing[10]} auto`,
@@ -689,36 +700,36 @@ export default function Home() {
               position: "relative",
               zIndex: 10
             }}>
-              <div style={{
+              <div className="search-container" style={{
       display: "flex",
-                flexDirection: "row",
+                flexDirection: isSearchStacked ? "column" : "row",
                 gap: "12px",
-                alignItems: "flex-start",
+                alignItems: "stretch",
                 width: "100%"
               }}>
-                <div style={{ 
+                <div className="search-input-wrapper" style={{ 
                   flex: 1, 
                   position: "relative",
                   width: "100%"
                 }}>
-                  <div style={{ 
+                  <div className="search-input" style={{ 
                     position: "relative", 
                     width: "100%",
                     height: "60px",
-                    backgroundColor: inputFocused ? "#FFFFFF" : (url.trim() ? "transparent" : "#F2F2F7"),
-                    border: `2px solid ${inputFocused ? "#007AFF" : (url.trim() ? "#007AFF" : "#D1D1D6")}`,
+                    backgroundColor: inputFocused ? themeColors.background.primary : (url.trim() ? "transparent" : themeColors.gray[100]),
+                    border: `2px solid ${inputFocused ? appleTheme.colors.primary[500] : (url.trim() ? appleTheme.colors.primary[500] : themeColors.gray[300])}`,
                     borderRadius: "9999px",
       display: "flex",
       alignItems: "center",
                     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                    boxShadow: inputFocused ? "0 0 0 6px rgba(0, 122, 255, 0.15)" : "0 4px 16px rgba(0, 0, 0, 0.08)"
+                    boxShadow: inputFocused ? "0 0 0 6px rgba(0, 122, 255, 0.15)" : (isDarkMode ? "0 4px 16px rgba(0, 0, 0, 0.3)" : "0 4px 16px rgba(0, 0, 0, 0.08)")
                   }}>
                     <div style={{
                       position: "absolute",
                       left: "16px",
                       top: "50%",
                       transform: "translateY(-50%)",
-                      color: "#8E8E93",
+                      color: themeColors.gray[500],
                       fontSize: "20px",
                       pointerEvents: "none",
                       zIndex: 10
@@ -757,7 +768,7 @@ export default function Home() {
                         backgroundColor: "transparent",
                         fontSize: "20px",
                         fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-                        color: "#000000",
+                        color: themeColors.text.primary,
                         zIndex: 1,
                         position: "relative",
                         cursor: "text",
@@ -775,7 +786,8 @@ export default function Home() {
                     disabled={scanning || !url.trim()}
                     loading={scanning}
                   style={{
-                    minWidth: "160px",
+                    minWidth: isSearchStacked ? "100%" : "160px",
+                    width: isSearchStacked ? "100%" : "auto",
                     height: "60px",
                     minHeight: "60px",
                     maxHeight: "60px",
@@ -832,7 +844,7 @@ export default function Home() {
 
             {/* Results Section - positioned right after search section */}
       {violations.length > 0 && (
-              <Box style={{ 
+              <Box className="results-section" style={{ 
                 marginTop: isMobile ? appleTheme.spacing[8] : appleTheme.spacing[12],
                 maxWidth: "1200px",
                 margin: `${isMobile ? appleTheme.spacing[8] : appleTheme.spacing[12]} auto 0 auto`,
@@ -878,11 +890,11 @@ export default function Home() {
                     zIndex: 1
                   }}>
                     <Typography variant="title2" style={{ 
-                      marginBottom: appleTheme.spacing[3],
-                      color: "#000000",
-                      fontSize: isMobile ? "20px" : "24px",
-                      fontWeight: "700",
-                      letterSpacing: "-0.5px"
+                      marginBottom: appleTheme.spacing[4],
+                      color: themeColors.text.primary,
+                      fontSize: isMobile ? "20px" : "22px",
+                      fontWeight: "600",
+                      letterSpacing: "-0.3px"
                     }}>
                       Accessibility Score
           </Typography>
@@ -893,11 +905,11 @@ export default function Home() {
                       justifyContent: isMobile ? "center" : "flex-start"
                     }}>
                       <div style={{ 
-                        fontSize: isMobile ? "48px" : "64px", 
-                        fontWeight: "800",
+                        fontSize: isMobile ? "48px" : "56px", 
+                        fontWeight: "700",
                         color: getScoreColor(accessibilityScore),
                         textShadow: `0 2px 4px ${getScoreColor(accessibilityScore)}30`,
-                        letterSpacing: "-2px",
+                        letterSpacing: "-1px",
                         lineHeight: 1
                       }}>
                         {accessibilityScore}
@@ -908,8 +920,8 @@ export default function Home() {
                         gap: "4px"
                       }}>
                         <Typography variant="body" style={{ 
-                          color: '#6C757D',
-                          fontSize: "16px",
+                          color: themeColors.gray[600],
+                          fontSize: isMobile ? "16px" : "18px",
                           fontWeight: "500"
                         }}>
                           out of 100
@@ -926,8 +938,8 @@ export default function Home() {
                             borderRadius: "50%"
                           }} />
                           <Typography variant="caption1" style={{ 
-                            color: '#6C757D',
-                            fontSize: "14px",
+                            color: themeColors.gray[600],
+                            fontSize: isMobile ? "14px" : "16px",
                             fontWeight: "500"
                           }}>
                             {violations.length} {violations.length === 1 ? 'issue' : 'issues'} found
@@ -948,21 +960,21 @@ export default function Home() {
                     <div style={{ display: "flex", gap: "8px" }}>
                     <button 
                       style={{
-                        height: "32px",
-                        backgroundColor: "#FFFFFF",
-                        color: "#007AFF",
-                        border: "1px solid #007AFF",
-                        borderRadius: "6px",
-                        fontSize: "13px",
+                        height: isMobile ? "32px" : "36px",
+                        backgroundColor: themeColors.background.primary,
+                        color: appleTheme.colors.primary[500],
+                        border: `1px solid ${appleTheme.colors.primary[500]}`,
+                        borderRadius: "8px",
+                        fontSize: isMobile ? "13px" : "14px",
                         fontWeight: "500",
-                        padding: "6px 12px",
+                        padding: isMobile ? "6px 12px" : "8px 16px",
         display: "flex",
         alignItems: "center",
                         justifyContent: "center",
-                        gap: "4px",
+                        gap: "6px",
                         cursor: "pointer",
                         transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                        boxShadow: "0 1px 3px rgba(0, 122, 255, 0.15)",
+                        boxShadow: isDarkMode ? "0 1px 3px rgba(0, 122, 255, 0.3)" : "0 1px 3px rgba(0, 122, 255, 0.15)",
                         fontFamily: "inherit"
                       }}
                       onMouseEnter={(e) => {
@@ -978,27 +990,27 @@ export default function Home() {
                         e.target.style.boxShadow = "0 1px 3px rgba(0, 122, 255, 0.15)";
                       }}
                     >
-                      <DownloadIcon style={{ width: "14px", height: "14px" }} />
+                      <DownloadIcon style={{ width: isMobile ? "14px" : "16px", height: isMobile ? "14px" : "16px" }} />
                       Download PDF
                     </button>
                     <button 
                       onClick={() => setEmailDialogOpen(true)}
                       style={{
-                        height: "32px",
-                        backgroundColor: "#FFFFFF",
-                        color: "#007AFF",
-                        border: "1px solid #007AFF",
-                        borderRadius: "6px",
-                        fontSize: "13px",
+                        height: isMobile ? "32px" : "36px",
+                        backgroundColor: themeColors.background.primary,
+                        color: appleTheme.colors.primary[500],
+                        border: `1px solid ${appleTheme.colors.primary[500]}`,
+                        borderRadius: "8px",
+                        fontSize: isMobile ? "13px" : "14px",
                         fontWeight: "500",
-                        padding: "6px 12px",
+                        padding: isMobile ? "6px 12px" : "8px 16px",
                 display: "flex",
                   alignItems: "center",
                         justifyContent: "center",
-                        gap: "4px",
+                        gap: "6px",
                         cursor: "pointer",
                         transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                        boxShadow: "0 1px 3px rgba(0, 122, 255, 0.15)",
+                        boxShadow: isDarkMode ? "0 1px 3px rgba(0, 122, 255, 0.3)" : "0 1px 3px rgba(0, 122, 255, 0.15)",
                         fontFamily: "inherit"
                       }}
                       onMouseEnter={(e) => {
@@ -1014,7 +1026,7 @@ export default function Home() {
                         e.target.style.boxShadow = "0 1px 3px rgba(0, 122, 255, 0.15)";
                       }}
                     >
-                      <EmailIcon style={{ width: "14px", height: "14px" }} />
+                      <EmailIcon style={{ width: isMobile ? "14px" : "16px", height: isMobile ? "14px" : "16px" }} />
                       Email Report
                     </button>
                     </div>
@@ -1022,18 +1034,18 @@ export default function Home() {
                       <button 
                         onClick={clearResults}
                         style={{
-                          height: "32px",
+                          height: isMobile ? "32px" : "36px",
                           backgroundColor: "transparent",
-                          color: "#1C1C1E",
+                          color: themeColors.text.primary,
                           border: "none",
-                          borderRadius: "6px",
-                          fontSize: "13px",
+                          borderRadius: "8px",
+                          fontSize: isMobile ? "13px" : "14px",
                           fontWeight: "500",
-                          padding: "6px 12px",
+                          padding: isMobile ? "6px 12px" : "8px 16px",
                   display: "flex",
                   alignItems: "center",
                           justifyContent: "center",
-                          gap: "4px",
+                          gap: "6px",
                           cursor: "pointer",
                           transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                           fontFamily: "inherit"
@@ -1047,7 +1059,7 @@ export default function Home() {
                           e.target.style.transform = "translateY(0)";
                         }}
                       >
-                        <ClearIcon color="#FF3B30" style={{ width: "14px", height: "14px" }} />
+                        <ClearIcon color="#FF3B30" style={{ width: isMobile ? "14px" : "16px", height: isMobile ? "14px" : "16px" }} />
                         Clear Results
                       </button>
                     </Tooltip>
@@ -1367,57 +1379,125 @@ export default function Home() {
       }}>
         {/* Features Section - only shown when no results */}
         {violations.length === 0 && (
-          <Section padding="lg" style={{ marginTop: isMobile ? appleTheme.spacing[8] : appleTheme.spacing[12] }}>
+          <Section className="features-section" padding="lg" style={{ 
+            marginTop: isMobile ? appleTheme.spacing[8] : appleTheme.spacing[12],
+            padding: `${appleTheme.spacing[12]} ${appleTheme.spacing[6]}`
+          }}>
             <Box style={{ textAlign: "center", marginBottom: appleTheme.spacing[12] }}>
               <Typography variant="title1" style={{ 
                 marginBottom: appleTheme.spacing[4],
-                color: isDarkMode ? '#FFFFFF' : '#000000'
+                color: themeColors.text.primary,
+                fontWeight: appleTheme.typography.fontWeight.bold
               }}>
-                Comprehensive Accessibility Testing
+                Detailed Reports with Actionable Recommendations
               </Typography>
               <Typography variant="body" style={{ 
                 maxWidth: "600px", 
                 margin: "0 auto",
                 marginBottom: appleTheme.spacing[8],
-                color: isDarkMode ? '#FFFFFF' : '#1C1C1E'
+                color: themeColors.text.secondary,
+                fontSize: appleTheme.typography.fontSize.lg,
+                lineHeight: appleTheme.typography.lineHeight.relaxed
               }}>
                 Our advanced scanner checks your website against WCAG guidelines and provides 
                 detailed reports with actionable recommendations.
               </Typography>
-        </Box>
+            </Box>
 
-            <div style={{
+            <div className="features-grid" style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-              gap: appleTheme.spacing[6]
+              gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+              gap: appleTheme.spacing[6],
+              maxWidth: "1200px",
+              margin: "0 auto",
+              alignItems: "stretch",
+              padding: `${appleTheme.spacing[2]} ${appleTheme.spacing[4]}`
             }}>
               {[
                 {
                   title: "WCAG Compliance",
-                  description: "Comprehensive testing against Web Content Accessibility Guidelines 2.1 AA standards."
+                  description: "Comprehensive testing against Web Content Accessibility Guidelines 2.1 AA standards.",
+                  icon: (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <circle cx="12" cy="12" r="10"/>
+                      <path d="M9 12l2 2 4-4"/>
+                    </svg>
+                  )
                 },
                 {
                   title: "Detailed Reports",
-                  description: "Get specific recommendations for each accessibility issue found on your website."
+                  description: "Get specific recommendations for each accessibility issue found on your website.",
+                  icon: (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                      <polyline points="14,2 14,8 20,8"/>
+                      <line x1="16" y1="13" x2="8" y2="13"/>
+                      <line x1="16" y1="17" x2="8" y2="17"/>
+                      <polyline points="10,9 9,9 8,9"/>
+                    </svg>
+                  )
                 },
                 {
                   title: "Export & Share",
-                  description: "Download PDF reports or email results to your team for collaborative improvements."
+                  description: "Download PDF reports or email results to your team for collaborative improvements.",
+                  icon: (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="7,10 12,15 17,10"/>
+                      <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                  )
                 }
               ].map((feature, index) => (
-                <Card key={index} variant="elevated" padding="large" hover>
-                  <Stack spacing={3}>
-                    <Typography variant="callout" weight="semibold" style={{
-                      color: isDarkMode ? '#FFFFFF' : '#000000'
+                <Card key={index} variant="elevated" padding="xl" hover className="feature-card" style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  textAlign: "left",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                  border: `1px solid ${themeColors.gray[200]}`,
+                  backgroundColor: themeColors.background.primary,
+                  borderRadius: appleTheme.borderRadius.xl,
+                  padding: `24px 16px`,
+                  boxShadow: isDarkMode ? "0 4px 12px rgba(0, 0, 0, 0.3)" : "0 4px 12px rgba(0, 0, 0, 0.08)",
+                  overflow: "visible"
+                }}>
+                  <div className="feature-card__container" style={{ 
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "flex-start"
+                  }}>
+                    <div className="feature-card__icon" style={{ 
+                      color: appleTheme.colors.primary[500],
+                      display: "flex",
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                      marginBottom: appleTheme.spacing[4],
+                      padding: `${appleTheme.spacing[2]} 0`
                     }}>
-                      {feature.title}
-                    </Typography>
-                    <Typography variant="footnote" style={{
-                      color: isDarkMode ? '#E5E5EA' : '#1C1C1E'
-                    }}>
-                      {feature.description}
-                    </Typography>
-                  </Stack>
+                      {feature.icon}
+                    </div>
+                    <div className="feature-card__content" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "flex-start" }}>
+                      <Typography variant="title2" weight="semibold" className="feature-card__title" style={{
+                        color: themeColors.text.primary,
+                        fontSize: "18px",
+                        fontWeight: "600",
+                        marginBottom: "6px",
+                        lineHeight: 1.3,
+                        textAlign: "left"
+                      }}>
+                        {feature.title}
+                      </Typography>
+                      <Typography variant="body" className="feature-card__description" style={{
+                        color: themeColors.text.secondary,
+                        fontSize: "15px",
+                        lineHeight: 1.5,
+                        fontWeight: "400",
+                        textAlign: "left"
+                      }}>
+                        {feature.description}
+                      </Typography>
+                    </div>
+                  </div>
                 </Card>
               ))}
             </div>

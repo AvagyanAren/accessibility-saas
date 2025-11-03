@@ -203,29 +203,33 @@ export default function Pricing() {
     }
   ];
 
+  const themeColors = isDarkMode ? appleTheme.colors.dark : appleTheme.colors;
+
   return (
-    <div style={{ 
-      backgroundColor: appleTheme.colors.background.secondary, 
+    <div className="pricing-page" style={{ 
+      backgroundColor: themeColors.background.secondary, 
         minHeight: "100vh",
       position: "relative",
       overflow: "hidden"
     }}>
       {/* Animated Background Elements */}
-      <AnimatedGradient variant="subtle" intensity="low" />
+      <div className="pricing-background">
+        <AnimatedGradient variant="subtle" intensity="low" />
+      </div>
       
       {/* Hero Section */}
-      <Section background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
+      <Section className="pricing-hero" background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
         <Container size="lg">
-          <Box style={{ textAlign: "center" }}>
-            <Typography variant="display" style={{ 
+          <Box className="pricing-hero__content" style={{ textAlign: "center" }}>
+            <Typography variant="display" className="pricing-hero__title" style={{ 
               marginBottom: appleTheme.spacing[4],
-              color: "#1C1C1E",
+              color: themeColors.text.primary,
               fontWeight: appleTheme.typography.fontWeight.bold
             }}>
               Simple, Transparent Pricing
             </Typography>
-            <Typography variant="headline" weight="regular" style={{ 
-              color: "#2C2C2E",
+            <Typography variant="headline" weight="regular" className="pricing-hero__subtitle" style={{ 
+              color: themeColors.text.secondary,
               maxWidth: "600px",
               margin: `0 auto ${appleTheme.spacing[8]} auto`,
               fontWeight: appleTheme.typography.fontWeight.medium
@@ -449,7 +453,7 @@ export default function Pricing() {
                       color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
                     }}>
                       {feature.description}
-                    </Typography>
+              </Typography>
                   </Stack>
                 </div>
               ))}
@@ -505,18 +509,20 @@ export default function Pricing() {
                       backgroundColor: "#FFFFFF",
                       border: "1px solid #E5E5EA",
                       borderRadius: "16px",
-                      padding: "24px",
+                      padding: "16px 16px",
                       transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                       boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
                       overflow: "hidden",
-                      minHeight: "120px",
+                      minHeight: "56px",
                       display: "flex",
                       flexDirection: "column",
                       position: "relative",
                       zIndex: 1,
                       height: "auto",
-                      contain: "layout style"
+                      contain: "layout style",
+                      cursor: "pointer"
                     }}
+                    onClick={() => setExpandedFAQ(isExpanded ? null : index)}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.15)";
                       e.currentTarget.style.transform = "translateY(-3px)";
@@ -529,22 +535,32 @@ export default function Pricing() {
                       e.currentTarget.style.borderColor = "#E5E5EA";
                       e.currentTarget.style.backgroundColor = "#FFFFFF";
                     }}>
-                      <Box>
+                      <Box style={{ 
+                        display: "flex", 
+                        flexDirection: "column", 
+                        justifyContent: "center",
+                        alignItems: "stretch",
+                        flex: 1,
+                        minHeight: "24px"
+                      }}>
                         <div style={{
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "space-between",
-                          width: "100%"
+                          width: "100%",
+                          height: "24px"
                         }}>
-                          <Typography variant="callout" weight="semibold" style={{ 
-                            color: isDarkMode ? "#FFFFFF" : "#000000",
+                          <Typography variant="callout" weight="bold" style={{ 
+                            color: isDarkMode ? "#FFFFFF" : "#1C1C1E",
                             flex: 1,
-                            margin: 0
+                            margin: 0,
+                            fontSize: "16px",
+                            lineHeight: 1.4,
+                            letterSpacing: "0.01em"
                           }}>
                             {faq.question}
                           </Typography>
                           <button
-                            onClick={() => setExpandedFAQ(isExpanded ? null : index)}
                             style={{
                               background: "none",
                               border: "none",
@@ -574,8 +590,12 @@ export default function Pricing() {
                             paddingTop: appleTheme.spacing[3],
                             borderTop: `1px solid ${isDarkMode ? appleTheme.colors.dark.gray[300] : appleTheme.colors.gray[200]}`
                           }}>
-                            <Typography variant="footnote" style={{
-                              color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
+                            <Typography variant="body" style={{
+                              color: isDarkMode ? "#AEAEB2" : "#6D6D70",
+                              fontSize: "15px",
+                              lineHeight: 1.5,
+                              fontWeight: "400",
+                              letterSpacing: "0.005em"
                             }}>
                               {faq.answer}
                             </Typography>

@@ -264,7 +264,7 @@ export default function ColorContrastChecker() {
                   {contrastRatio.toFixed(2)}:1
                 </Typography>
                 <Typography variant="body" style={{
-                  color: isDarkMode ? '#AEAEB2' : '#6D6D70'
+                  color: isDarkMode ? '#AEAEB2' : '#6D6D70' 
                 }}>
                   Contrast Ratio
                 </Typography>

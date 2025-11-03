@@ -212,29 +212,33 @@ export default function About() {
     }
   ];
 
+  const themeColors = isDarkMode ? appleTheme.colors.dark : appleTheme.colors;
+
   return (
-    <div style={{ 
-      backgroundColor: appleTheme.colors.background.secondary, 
+    <div className="about-page" style={{ 
+      backgroundColor: themeColors.background.secondary, 
         minHeight: "100vh",
       position: "relative",
       overflow: "hidden"
     }}>
       {/* Animated Background Elements */}
-      <AnimatedGradient variant="subtle" intensity="medium" />
+      <div className="about-background">
+        <AnimatedGradient variant="subtle" intensity="medium" />
+      </div>
       
       {/* Hero Section */}
-      <Section background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
+      <Section className="about-hero" background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
         <Container size="lg">
-          <Box style={{ textAlign: "center" }}>
-            <Typography variant="display" style={{ 
+          <Box className="about-hero__content" style={{ textAlign: "center" }}>
+            <Typography variant="display" className="about-hero__title" style={{ 
               marginBottom: appleTheme.spacing[6],
-              color: "#1C1C1E",
+              color: themeColors.text.primary,
               fontWeight: appleTheme.typography.fontWeight.bold
             }}>
               Making the Web Accessible, One Scan at a Time
             </Typography>
-            <Typography variant="headline" weight="regular" style={{ 
-              color: "#2C2C2E",
+            <Typography variant="headline" weight="regular" className="about-hero__subtitle" style={{ 
+              color: themeColors.text.secondary,
               marginBottom: appleTheme.spacing[8],
               maxWidth: "800px",
               margin: `0 auto ${appleTheme.spacing[8]} auto`,
@@ -245,6 +249,7 @@ export default function About() {
               Because everyone deserves to access the web, regardless of their abilities.
             </Typography>
             <button
+              className="about-hero__cta-button"
               style={{
                 backgroundColor: "white",
                 color: "#007AFF",
@@ -292,12 +297,12 @@ export default function About() {
         </Container>
       </Section>
 
-      <Container size="lg" padding="lg">
+      <Container size="lg" padding="lg" className="about-content">
         {/* Our Story */}
-        <Section padding="lg">
-          <Card variant="elevated" padding="xl" style={{ marginBottom: appleTheme.spacing[12] }}>
+        <Section className="about-story" padding="lg">
+          <Card variant="elevated" padding="xl" className="about-story__card" style={{ marginBottom: appleTheme.spacing[12] }}>
             <Stack spacing={6} align="center">
-              <Typography variant="title1" align="center" style={{
+              <Typography variant="title1" align="center" className="about-story__title" style={{
                 color: isDarkMode ? "#FFFFFF" : "#000000"
               }}>
                 Our Story
@@ -333,15 +338,15 @@ export default function About() {
           </Card>
 
           {/* Statistics */}
-          <Box style={{ marginBottom: appleTheme.spacing[12] }}>
-            <Typography variant="title2" align="center" style={{ 
+          <Box className="about-stats" style={{ marginBottom: appleTheme.spacing[12] }}>
+            <Typography variant="title2" align="center" className="about-stats__title" style={{ 
               marginBottom: appleTheme.spacing[8],
               color: isDarkMode ? "#FFFFFF" : "#000000"
             }}>
               The Numbers Don't Lie
             </Typography>
             
-            <div style={{
+            <div className="about-stats__grid" style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
               gap: appleTheme.spacing[8],
@@ -350,7 +355,7 @@ export default function About() {
               justifyItems: "center"
             }}>
               {stats.map((stat, index) => (
-                <div key={index} style={{
+                <div key={index} className="about-stats__card" style={{
                   backgroundColor: "#FFFFFF",
                   border: "1px solid #E5E5EA",
                   borderRadius: "16px",
@@ -570,7 +575,7 @@ export default function About() {
                         textAlign: "center"
                       }}>
                         {value.description}
-                      </Typography>
+        </Typography>
                     </Box>
                   </div>
                 </div>
