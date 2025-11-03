@@ -17,25 +17,34 @@ export const ThemeProvider = ({ children }) => {
   // Load theme preference from localStorage on mount (client-side only)
   useEffect(() => {
     setIsClient(true);
-    if (typeof window !== 'undefined') {
-      const savedTheme = localStorage.getItem('theme');
-      if (savedTheme) {
-        setIsDarkMode(savedTheme === 'dark');
-      } else {
-        // Check system preference
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        setIsDarkMode(prefersDark);
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      try {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+          setIsDarkMode(savedTheme === 'dark');
+        } else if (typeof window.matchMedia !== 'undefined') {
+          // Check system preference
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          setIsDarkMode(prefersDark);
+        }
+      } catch (e) {
+        // localStorage or matchMedia might not be available
+        console.warn('Could not access localStorage or matchMedia:', e);
       }
     }
   }, []);
 
   // Save theme preference to localStorage
   useEffect(() => {
-    if (isClient && typeof window !== 'undefined') {
-      localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-      // Update document class for CSS variables
-      if (typeof document !== 'undefined') {
-        document.documentElement.classList.toggle('dark', isDarkMode);
+    if (isClient && typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      try {
+        localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+        // Update document class for CSS variables
+        if (typeof document !== 'undefined') {
+          document.documentElement.classList.toggle('dark', isDarkMode);
+        }
+      } catch (e) {
+        console.warn('Could not save theme preference:', e);
       }
     }
   }, [isDarkMode, isClient]);

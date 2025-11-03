@@ -678,11 +678,15 @@ export const LanguageProvider = ({ children }) => {
 
   // Save language preference to localStorage and update document
   useEffect(() => {
-    if (isClient) {
-      localStorage.setItem('language', language);
-      // Update document lang attribute
-      if (typeof document !== 'undefined') {
-        document.documentElement.lang = language;
+    if (isClient && typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      try {
+        localStorage.setItem('language', language);
+        // Update document lang attribute
+        if (typeof document !== 'undefined') {
+          document.documentElement.lang = language;
+        }
+      } catch (e) {
+        console.warn('Could not save language preference:', e);
       }
     }
   }, [language, isClient]);

@@ -22,9 +22,8 @@ export default function LanguageSwitcher() {
     }
   };
 
-  // Render placeholder during SSR or initial load to prevent layout shift
-  // The placeholder matches the actual component structure
-  if (typeof window === 'undefined' || !mounted) {
+  // During SSR, return placeholder with matching dimensions
+  if (typeof window === 'undefined') {
     return (
       <div 
         style={{
@@ -32,14 +31,32 @@ export default function LanguageSwitcher() {
           alignItems: 'center',
           gap: '8px',
           height: '24px',
-          minWidth: '80px',
-          opacity: 0
+          minWidth: '80px'
         }}
         aria-hidden="true"
       >
-        <span style={{ fontSize: '12px' }}>RU</span>
-        <div style={{ width: '44px', height: '24px' }} />
-        <span style={{ fontSize: '12px' }}>ENG</span>
+        <span style={{ fontSize: '12px', opacity: 0 }}>RU</span>
+        <div style={{ width: '44px', height: '24px', opacity: 0 }} />
+        <span style={{ fontSize: '12px', opacity: 0 }}>ENG</span>
+      </div>
+    );
+  }
+
+  // If not mounted yet, show placeholder that will be replaced
+  if (!mounted) {
+    return (
+      <div 
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          height: '24px',
+          minWidth: '80px'
+        }}
+      >
+        <span style={{ fontSize: '12px', opacity: 0.3 }}>RU</span>
+        <div style={{ width: '44px', height: '24px', backgroundColor: '#007AFF20', borderRadius: '12px', opacity: 0.3 }} />
+        <span style={{ fontSize: '12px', opacity: 0.3 }}>ENG</span>
       </div>
     );
   }
