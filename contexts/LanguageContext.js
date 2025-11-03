@@ -647,24 +647,31 @@ const translations = {
 };
 
 export const LanguageProvider = ({ children }) => {
+  // Initialize with default language, will be updated on client
   const [language, setLanguage] = useState('en');
   const [isClient, setIsClient] = useState(false);
 
   // Load language preference from localStorage on mount (client-side only)
   useEffect(() => {
+    // Set isClient to true immediately when component mounts on client
     setIsClient(true);
-    if (typeof window !== 'undefined') {
-      const savedLanguage = localStorage.getItem('language');
-      if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'ru')) {
-        setLanguage(savedLanguage);
-      } else {
-        // Check browser language
-        const browserLang = navigator.language || navigator.userLanguage;
-        if (browserLang.startsWith('ru')) {
-          setLanguage('ru');
-        } else {
-          setLanguage('en');
+    
+    // Check for saved language or browser language
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      try {
+        const savedLanguage = localStorage.getItem('language');
+        if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'ru')) {
+          setLanguage(savedLanguage);
+        } else if (typeof navigator !== 'undefined') {
+          // Check browser language
+          const browserLang = navigator.language || navigator.userLanguage;
+          if (browserLang && browserLang.startsWith('ru')) {
+            setLanguage('ru');
+          }
         }
+      } catch (e) {
+        // localStorage might not be available
+        console.warn('Could not access localStorage:', e);
       }
     }
   }, []);
