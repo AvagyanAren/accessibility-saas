@@ -8,6 +8,14 @@ import { Container, Box, Flex, Stack, Section, HStack } from "../components/appl
 import { appleTheme } from "../styles/apple-theme";
 import { useTheme } from "../contexts/ThemeContext";
 import { useLanguage } from "../contexts/LanguageContext";
+import {
+  Code,
+  Copy,
+  Play,
+  Check,
+  XCircle,
+  CaretDown
+} from "phosphor-react";
 
 // Tooltip Component
 const Tooltip = memo(({ children, text, position = "top" }) => {
@@ -74,46 +82,13 @@ const Tooltip = memo(({ children, text, position = "top" }) => {
   );
 });
 
-// Icons
-const CodeIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polyline points="16,18 22,12 16,6"/>
-    <polyline points="8,6 2,12 8,18"/>
-  </svg>
-);
-
-const CopyIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-  </svg>
-);
-
-const PlayIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polygon points="5,3 19,12 5,21 5,3"/>
-  </svg>
-);
-
-const CheckIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polyline points="20,6 9,17 4,12"/>
-  </svg>
-);
-
-const ErrorIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="12" cy="12" r="10"/>
-    <line x1="15" y1="9" x2="9" y2="15"/>
-    <line x1="9" y1="9" x2="15" y2="15"/>
-  </svg>
-);
-
-const ChevronDownIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polyline points="6,9 12,15 18,9"/>
-  </svg>
-);
+// Icons with Phosphor React
+const CodeIcon = () => <Code size={20} weight="regular" />;
+const CopyIcon = () => <Copy size={16} weight="regular" />;
+const PlayIcon = () => <Play size={16} weight="fill" />;
+const CheckIcon = () => <Check size={16} weight="bold" />;
+const ErrorIcon = () => <XCircle size={16} weight="fill" />;
+const ChevronDownIcon = () => <CaretDown size={16} weight="bold" />;
 
 const ChevronRightIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { appleTheme } from '../../styles/apple-theme';
+import { CaretDown } from 'phosphor-react';
 
 export default function LanguageSwitcher() {
   const { language, changeLanguage, isClient } = useLanguage();
@@ -95,20 +96,14 @@ export default function LanguageSwitcher() {
       >
         <span style={{ fontSize: '16px', flexShrink: 0 }}>{currentLanguage.flag}</span>
         <span style={{ whiteSpace: 'nowrap' }}>{currentLanguage.code.toUpperCase()}</span>
-        <svg
-          width="12"
-          height="12"
-          viewBox="0 0 12 12"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
+        <CaretDown
+          size={12}
+          weight="bold"
           style={{
             transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
             transition: 'transform 0.2s ease'
           }}
-        >
-          <path d="M3 4l3 3 3-3" />
-        </svg>
+        />
       </button>
 
       {isOpen && (

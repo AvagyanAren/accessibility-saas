@@ -7,6 +7,15 @@ import { Container, Box, Flex, Stack, Section } from "../components/apple/Layout
 import { appleTheme } from "../styles/apple-theme";
 import { useTheme } from "../contexts/ThemeContext";
 import { useLanguage } from "../contexts/LanguageContext";
+import {
+  Check,
+  Star,
+  Lightning,
+  ShieldCheck,
+  Users,
+  Headphones,
+  CaretDown
+} from "phosphor-react";
 
 // Tooltip Component
 const Tooltip = memo(({ children, text, position = "top" }) => {

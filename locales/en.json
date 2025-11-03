@@ -1,0 +1,40 @@
+{
+  "common": {
+    "scanWebsite": "Scan Website",
+    "scanning": "Scanning...",
+    "startScanning": "Start Scanning Now",
+    "clearResults": "Clear Results",
+    "downloadPdf": "Download PDF",
+    "emailReport": "Email Report",
+    "accessibilityScore": "Accessibility Score",
+    "scanned": "Scanned",
+    "outOf": "out of",
+    "issuesFound": "issues found",
+    "issue": "issue",
+    "language": "Language"
+  },
+  "home": {
+    "title": "Make Your Website Accessible to Everyone",
+    "subtitle": "Get instant accessibility insights with our advanced AI-powered scanner. Ensure your website meets WCAG 2.1 standards and create an inclusive digital experience for all users.",
+    "enterUrl": "Enter website URL",
+    "urlPlaceholder": "https://example.com",
+    "wcagIssues": "WCAG Accessibility Issues",
+    "uxAuditResults": "UX Audit Results",
+    "websitesScanned": "Websites Scanned",
+    "accuracyRate": "Accuracy Rate",
+    "issuesFixed": "Issues Fixed",
+    "compliance": "Compliance"
+  },
+  "about": {
+    "title": "Making the Web Accessible, One Scan at a Time",
+    "subtitle": "We're on a mission to make digital accessibility testing as simple as checking your email. Because everyone deserves to access the web, regardless of their abilities.",
+    "startFirstScan": "Start Your First Scan",
+    "ourStory": "Our Story",
+    "theNumbers": "The Numbers Don't Lie",
+    "whyChoose": "Why Choose ScanWeb?",
+    "ourValues": "Our Values",
+    "readyToMake": "Ready to Make Your Website Accessible?",
+    "joinThousands": "Join thousands of developers and designers who are already using ScanWeb to create more inclusive digital experiences."
+  }
+}
+

@@ -75,92 +75,19 @@ const Tooltip = memo(({ children, text, position = "top" }) => {
   );
 });
 
-// Icons (simplified SVG components)
-const AccessibilityIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="12" cy="4" r="2"/>
-    <path d="M19 13v-2a7 7 0 0 0-14 0v2"/>
-    <path d="M12 14l-3 6h6l-3-6z"/>
-    <path d="M12 14v8"/>
-  </svg>
-);
+// Icons with Phosphor React
+const AccessibilityIcon = () => <Accessibility size={24} weight="regular" />;
+const SpeedIcon = () => <Lightning size={24} weight="fill" />;
+const CodeIcon = () => <Code size={24} weight="regular" />;
 
-const SpeedIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/>
-  </svg>
-);
-
-const CodeIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polyline points="16,18 22,12 16,6"/>
-    <polyline points="8,6 2,12 8,18"/>
-  </svg>
-);
-
-const DesignIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-    <line x1="8" y1="21" x2="16" y2="21"/>
-    <line x1="12" y1="17" x2="12" y2="21"/>
-  </svg>
-);
-
-const SupportIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M9 12l2 2 4-4"/>
-    <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"/>
-    <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"/>
-    <path d="M13 12h3a2 2 0 0 1 2 2v1"/>
-    <path d="M11 12H8a2 2 0 0 0-2 2v1"/>
-  </svg>
-);
-
-const PeopleIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-    <circle cx="9" cy="7" r="4"/>
-    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-  </svg>
-);
-
-const TrendingUpIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polyline points="23,6 13.5,15.5 8.5,10.5 1,18"/>
-    <polyline points="17,6 23,6 23,12"/>
-  </svg>
-);
-
-const BusinessIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M3 21h18"/>
-    <path d="M5 21V7l8-4v18"/>
-    <path d="M19 21V11l-6-4"/>
-  </svg>
-);
-
-const LightbulbIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1z"/>
-    <path d="M12 2C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/>
-  </svg>
-);
-
-const RocketIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
-    <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
-    <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/>
-    <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
-  </svg>
-);
-
-const CheckIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polyline points="20,6 9,17 4,12"/>
-  </svg>
-);
+const DesignIcon = () => <Lightbulb size={24} weight="regular" />;
+const SupportIcon = () => <ShieldCheck size={24} weight="regular" />;
+const PeopleIcon = () => <People size={24} weight="regular" />;
+const TrendingUpIcon = () => <TrendingUp size={24} weight="regular" />;
+const BusinessIcon = () => <Business size={24} weight="regular" />;
+const LightbulbIcon = () => <Lightbulb size={24} weight="regular" />;
+const RocketIcon = () => <Rocket size={24} weight="regular" />;
+const CheckIcon = () => <Check size={16} weight="bold" />;
 
 export default function About() {
   const { isDarkMode } = useTheme();

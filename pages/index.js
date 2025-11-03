@@ -8,113 +8,38 @@ import { Container, Box, Flex, Stack, Section } from "../components/apple/Layout
 import { appleTheme } from "../styles/apple-theme";
 import { useTheme } from "../contexts/ThemeContext";
 import { useLanguage } from "../contexts/LanguageContext";
+import { 
+  MagnifyingGlass, 
+  Check, 
+  WarningCircle, 
+  Download, 
+  Envelope, 
+  ChartLineUp, 
+  Lightning, 
+  ShieldCheck, 
+  FileText, 
+  Lock, 
+  Question, 
+  CaretDown, 
+  CaretUp, 
+  Trash 
+} from "phosphor-react";
 
-// Icons (memoized SVG components for better performance)
-const SearchIcon = memo(() => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    <circle cx="11" cy="11" r="8"/>
-    <path d="m21 21-4.35-4.35"/>
-  </svg>
-));
-
-const CheckIcon = memo(() => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    <polyline points="20,6 9,17 4,12"/>
-  </svg>
-));
-
-const AlertIcon = memo(() => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    <circle cx="12" cy="12" r="10"/>
-    <line x1="12" y1="8" x2="12" y2="12"/>
-    <line x1="12" y1="16" x2="12.01" y2="16"/>
-  </svg>
-));
-
-const DownloadIcon = memo(() => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-    <polyline points="7,10 12,15 17,10"/>
-    <line x1="12" y1="15" x2="12" y2="3"/>
-  </svg>
-));
-
-const EmailIcon = memo(() => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-    <polyline points="22,6 12,13 2,6"/>
-  </svg>
-));
-
-// Professional feature icons
-const AnalysisIcon = memo(() => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    <path d="M3 3v18h18"/>
-    <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/>
-  </svg>
-));
-
-const SpeedIcon = memo(() => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-  </svg>
-));
-
-const ComplianceIcon = memo(() => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    <path d="M9 12l2 2 4-4"/>
-    <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"/>
-    <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"/>
-    <path d="M13 12h6"/>
-    <path d="M5 12H1"/>
-  </svg>
-));
-
-const ReportIcon = memo(() => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-    <polyline points="14,2 14,8 20,8"/>
-    <line x1="16" y1="13" x2="8" y2="13"/>
-    <line x1="16" y1="17" x2="8" y2="17"/>
-    <polyline points="10,9 9,9 8,9"/>
-  </svg>
-));
-
-const SecurityIcon = memo(() => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-    <path d="M9 12l2 2 4-4"/>
-  </svg>
-));
-
-const SupportIcon = memo(() => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    <circle cx="12" cy="12" r="10"/>
-    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-    <line x1="12" y1="17" x2="12.01" y2="17"/>
-  </svg>
-));
-
-const ChevronDownIcon = memo(() => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    <polyline points="6,9 12,15 18,9"/>
-  </svg>
-));
-
-const ChevronUpIcon = memo(() => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    <polyline points="18,15 12,9 6,15"/>
-  </svg>
-));
-
-const ClearIcon = memo(({ color = "currentColor" }) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" aria-hidden="true">
-    <polyline points="3,6 5,6 21,6"/>
-    <path d="m19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"/>
-    <line x1="10" y1="11" x2="10" y2="17"/>
-    <line x1="14" y1="11" x2="14" y2="17"/>
-  </svg>
-));
+// Icons with Phosphor React
+const SearchIcon = memo(() => <MagnifyingGlass size={20} weight="regular" aria-hidden="true" />);
+const CheckIcon = memo(() => <Check size={16} weight="bold" aria-hidden="true" />);
+const AlertIcon = memo(() => <WarningCircle size={16} weight="fill" aria-hidden="true" />);
+const DownloadIcon = memo(() => <Download size={16} weight="regular" aria-hidden="true" />);
+const EmailIcon = memo(() => <Envelope size={16} weight="regular" aria-hidden="true" />);
+const AnalysisIcon = memo(() => <ChartLineUp size={24} weight="regular" aria-hidden="true" />);
+const SpeedIcon = memo(() => <Lightning size={24} weight="fill" aria-hidden="true" />);
+const ComplianceIcon = memo(() => <ShieldCheck size={24} weight="regular" aria-hidden="true" />);
+const ReportIcon = memo(() => <FileText size={24} weight="regular" aria-hidden="true" />);
+const SecurityIcon = memo(() => <Lock size={24} weight="regular" aria-hidden="true" />);
+const SupportIcon = memo(() => <Question size={24} weight="regular" aria-hidden="true" />);
+const ChevronDownIcon = memo(() => <CaretDown size={16} weight="bold" aria-hidden="true" />);
+const ChevronUpIcon = memo(() => <CaretUp size={16} weight="bold" aria-hidden="true" />);
+const ClearIcon = memo(({ color = "currentColor" }) => <Trash size={16} weight="regular" color={color} aria-hidden="true" />);
 
 // Tooltip Component with delay
 const Tooltip = memo(({ children, text, position = "top", delay = 3000 }) => {

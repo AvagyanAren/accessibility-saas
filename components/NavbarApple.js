@@ -8,6 +8,7 @@ import { useLanguage } from "../contexts/LanguageContext";
 import LanguageSwitcher from "./apple/LanguageSwitcher";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { List } from "phosphor-react";
 
 export default function NavbarApple() {
   const { isDarkMode } = useTheme();
@@ -47,48 +48,28 @@ export default function NavbarApple() {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  // Burger Icon Component
+  // Burger Icon Component with Phosphor
   const BurgerIcon = () => (
-    <div
+    <button
       onClick={toggleMobileMenu}
       style={{
         display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-around",
-        width: "24px",
-        height: "20px",
+        alignItems: "center",
+        justifyContent: "center",
+        width: "32px",
+        height: "32px",
         cursor: "pointer",
-        padding: "4px"
+        backgroundColor: "transparent",
+        border: "none",
+        padding: "4px",
+        color: isDarkMode ? '#FFFFFF' : appleTheme.colors.text.primary,
+        transition: "all 0.3s ease",
       }}
+      aria-label="Toggle menu"
+      aria-expanded={isMobileMenuOpen}
     >
-      <div
-        style={{
-          width: "100%",
-          height: "2px",
-          backgroundColor: isDarkMode ? '#FFFFFF' : appleTheme.colors.text.primary,
-          transition: "all 0.3s ease",
-          transform: isMobileMenuOpen ? "rotate(45deg) translate(5px, 5px)" : "none"
-        }}
-      />
-      <div
-        style={{
-          width: "100%",
-          height: "2px",
-          backgroundColor: isDarkMode ? '#FFFFFF' : appleTheme.colors.text.primary,
-          transition: "all 0.3s ease",
-          opacity: isMobileMenuOpen ? 0 : 1
-        }}
-      />
-      <div
-        style={{
-          width: "100%",
-          height: "2px",
-          backgroundColor: isDarkMode ? '#FFFFFF' : appleTheme.colors.text.primary,
-          transition: "all 0.3s ease",
-          transform: isMobileMenuOpen ? "rotate(-45deg) translate(7px, -6px)" : "none"
-        }}
-      />
-    </div>
+      <List size={24} weight="regular" />
+    </button>
   );
 
   return (

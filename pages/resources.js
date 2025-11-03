@@ -9,16 +9,29 @@ import { useTheme } from "../contexts/ThemeContext";
 import { useLanguage } from "../contexts/LanguageContext";
 import Link from "next/link";
 import {
-  Article as ArticleIcon,
-  School as SchoolIcon,
-  Code as CodeIcon,
-  Palette as DesignIcon,
-  RecordVoiceOver as RecordVoiceOverIcon,
-  Keyboard as KeyboardIcon,
-  PhoneAndroid as PhoneAndroidIcon,
-  AccessTime as AccessTimeIcon,
-  CheckCircle
-} from "@mui/icons-material";
+  Article,
+  GraduationCap,
+  Code,
+  Palette,
+  Microphone,
+  Keyboard,
+  DeviceMobile,
+  Clock,
+  CheckCircle,
+  Download,
+  ArrowSquareOut,
+  Tag
+} from "phosphor-react";
+
+// Icon aliases for compatibility
+const ArticleIcon = Article;
+const SchoolIcon = GraduationCap;
+const CodeIcon = Code;
+const DesignIcon = Palette;
+const RecordVoiceOverIcon = Microphone;
+const KeyboardIcon = Keyboard;
+const PhoneAndroidIcon = DeviceMobile;
+const AccessTimeIcon = Clock;
 
 // Tooltip Component
 const Tooltip = memo(({ children, text, position = "top" }) => {
@@ -85,36 +98,11 @@ const Tooltip = memo(({ children, text, position = "top" }) => {
   );
 });
 
-// Custom Icons (keeping only the ones not available in Material-UI)
-const DownloadIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-    <polyline points="7,10 12,15 17,10"/>
-    <line x1="12" y1="15" x2="12" y2="3"/>
-  </svg>
-);
-
-const ExternalLinkIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-    <polyline points="15,3 21,3 21,9"/>
-    <line x1="10" y1="14" x2="21" y2="3"/>
-  </svg>
-);
-
-const ClockIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="12" cy="12" r="10"/>
-    <polyline points="12,6 12,12 16,14"/>
-  </svg>
-);
-
-const TagIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
-    <line x1="7" y1="7" x2="7.01" y2="7"/>
-  </svg>
-);
+// Custom Icons with Phosphor React
+const DownloadIcon = () => <Download size={16} weight="regular" />;
+const ExternalLinkIcon = () => <ArrowSquareOut size={16} weight="regular" />;
+const ClockIcon = () => <Clock size={16} weight="regular" />;
+const TagIcon = () => <Tag size={16} weight="regular" />;
 
 export default function Resources() {
   const { isDarkMode } = useTheme();
