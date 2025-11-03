@@ -6,6 +6,7 @@ import AnimatedGradient from "../components/apple/AnimatedGradient";
 import { Container, Box, Flex, Stack, Section, HStack } from "../components/apple/Layout";
 import { appleTheme } from "../styles/apple-theme";
 import { useTheme } from "../contexts/ThemeContext";
+import { useLanguage } from "../contexts/LanguageContext";
 import Link from "next/link";
 import {
   Article as ArticleIcon,
@@ -117,14 +118,15 @@ const TagIcon = () => (
 
 export default function Resources() {
   const { isDarkMode } = useTheme();
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const { t } = useLanguage();
+  const [selectedCategory, setSelectedCategory] = useState(t("resources.categoryAll"));
   
   const articles = [
     {
-      title: "10 Common Accessibility Issues and How to Fix Them",
-      description: "Learn about the most frequent accessibility problems found on websites and practical solutions to resolve them.",
-      category: "Beginner",
-      readTime: "5 min read",
+      title: t("resources.article1Title"),
+      description: t("resources.article1Desc"),
+      category: t("resources.categoryBeginner"),
+      readTime: `5 ${t("resources.minRead")}`,
       publishDate: "December 15, 2024",
       icon: <ArticleIcon />,
       color: appleTheme.colors.primary[500],
@@ -132,10 +134,10 @@ export default function Resources() {
       available: true
     },
     {
-      title: "WCAG 2.1 Compliance Guide: Complete Web Accessibility Standards",
-      description: "Master the Web Content Accessibility Guidelines (WCAG) 2.1 to create inclusive, accessible websites that comply with international standards.",
-      category: "Advanced",
-      readTime: "8 min read",
+      title: t("resources.article2Title"),
+      description: t("resources.article2Desc"),
+      category: t("resources.categoryAdvanced"),
+      readTime: `8 ${t("resources.minRead")}`,
       publishDate: "December 15, 2024",
       icon: <SchoolIcon />,
       color: appleTheme.colors.success,
@@ -143,10 +145,10 @@ export default function Resources() {
       available: true
     },
     {
-      title: "Color Contrast Accessibility: Complete Guide for Web Designers",
-      description: "Master color contrast requirements to create accessible, inclusive designs that meet WCAG standards and provide excellent user experience.",
-      category: "Design",
-      readTime: "6 min read",
+      title: t("resources.article3Title"),
+      description: t("resources.article3Desc"),
+      category: t("resources.categoryDesign"),
+      readTime: `6 ${t("resources.minRead")}`,
       publishDate: "December 15, 2024",
       icon: <DesignIcon />,
       color: "#FF6B35",
@@ -154,10 +156,10 @@ export default function Resources() {
       available: true
     },
     {
-      title: "Screen Reader Optimization: Complete Accessibility Guide",
-      description: "Learn how to optimize your website for screen readers and assistive technologies. Create inclusive experiences that work seamlessly with NVDA, JAWS, VoiceOver.",
-      category: "Testing",
-      readTime: "7 min read",
+      title: t("resources.article4Title"),
+      description: t("resources.article4Desc"),
+      category: t("resources.categoryTesting"),
+      readTime: `7 ${t("resources.minRead")}`,
       publishDate: "December 15, 2024",
       icon: <RecordVoiceOverIcon />,
       color: appleTheme.colors.primary[600],
@@ -165,10 +167,10 @@ export default function Resources() {
       available: true
     },
     {
-      title: "Keyboard Navigation Accessibility: Complete Implementation Guide",
-      description: "Master keyboard navigation patterns and focus management to create truly accessible web experiences for users who rely on keyboard-only interaction.",
-      category: "Advanced",
-      readTime: "9 min read",
+      title: t("resources.article5Title"),
+      description: t("resources.article5Desc"),
+      category: t("resources.categoryAdvanced"),
+      readTime: `9 ${t("resources.minRead")}`,
       publishDate: "December 15, 2024",
       icon: <KeyboardIcon />,
       color: appleTheme.colors.warning,
@@ -176,10 +178,10 @@ export default function Resources() {
       available: true
     },
     {
-      title: "Mobile Accessibility: Complete Best Practices Guide",
-      description: "Master mobile accessibility to create inclusive experiences on smartphones and tablets. Learn essential techniques for touch interfaces and responsive design.",
-      category: "Advanced",
-      readTime: "8 min read",
+      title: t("resources.article6Title"),
+      description: t("resources.article6Desc"),
+      category: t("resources.categoryAdvanced"),
+      readTime: `8 ${t("resources.minRead")}`,
       publishDate: "December 15, 2024",
       icon: <PhoneAndroidIcon />,
       color: appleTheme.colors.success,
@@ -187,11 +189,11 @@ export default function Resources() {
       available: true
     },
     {
-      title: "Building Accessible React Components",
-      description: "Best practices for creating accessible React components that work with screen readers and keyboard navigation.",
-      category: "Development",
-      readTime: "8 min read",
-      publishDate: "Coming Soon",
+      title: t("resources.article7Title"),
+      description: t("resources.article7Desc"),
+      category: t("resources.categoryDevelopment"),
+      readTime: `8 ${t("resources.minRead")}`,
+      publishDate: t("resources.comingSoon"),
       icon: <CodeIcon />,
       color: appleTheme.colors.warning,
       href: "/articles/accessible-react-components",
@@ -271,17 +273,21 @@ export default function Resources() {
             <Typography variant="display" style={{ 
               marginBottom: appleTheme.spacing[4],
               color: "#1C1C1E",
-              fontWeight: appleTheme.typography.fontWeight.bold
+              fontWeight: appleTheme.typography.fontWeight.bold,
+              wordBreak: "break-word",
+              overflowWrap: "break-word"
             }}>
-              Accessibility Resources
+              {t("resources.title")}
             </Typography>
             <Typography variant="headline" weight="regular" style={{ 
               color: "#2C2C2E",
               maxWidth: "600px",
               margin: `0 auto ${appleTheme.spacing[8]} auto`,
-              fontWeight: appleTheme.typography.fontWeight.medium
+              fontWeight: appleTheme.typography.fontWeight.medium,
+              wordBreak: "break-word",
+              overflowWrap: "break-word"
             }}>
-              Learn, grow, and build more accessible digital experiences with our comprehensive guides and tools.
+              {t("resources.subtitle")}
             </Typography>
           </Box>
         </Container>

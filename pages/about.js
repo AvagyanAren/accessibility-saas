@@ -6,6 +6,7 @@ import AnimatedGradient from "../components/apple/AnimatedGradient";
 import { Container, Box, Flex, Stack, Section } from "../components/apple/Layout";
 import { appleTheme } from "../styles/apple-theme";
 import { useTheme } from "../contexts/ThemeContext";
+import { useLanguage } from "../contexts/LanguageContext";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -163,51 +164,52 @@ const CheckIcon = () => (
 
 export default function About() {
   const { isDarkMode } = useTheme();
+  const { t } = useLanguage();
   const router = useRouter();
   const stats = [
-    { number: "1B+", label: "People with disabilities worldwide", icon: <PeopleIcon /> },
-    { number: "71%", label: "Of users with disabilities leave sites due to poor accessibility", icon: <TrendingUpIcon /> },
-    { number: "15%", label: "Of the global population has a disability", icon: <AccessibilityIcon /> },
-    { number: "2.3x", label: "Higher conversion rates for accessible websites", icon: <BusinessIcon /> },
+    { number: "1B+", label: t("about.stat1"), icon: <PeopleIcon /> },
+    { number: "71%", label: t("about.stat2"), icon: <TrendingUpIcon /> },
+    { number: "15%", label: t("about.stat3"), icon: <AccessibilityIcon /> },
+    { number: "2.3x", label: t("about.stat4"), icon: <BusinessIcon /> },
   ];
 
   const features = [
     {
       icon: <SpeedIcon />,
-      title: "Lightning Fast Scans",
-      description: "Get comprehensive accessibility reports in under 30 seconds. No more waiting around for slow, outdated tools."
+      title: t("about.feature1Title"),
+      description: t("about.feature1Desc")
     },
     {
       icon: <CodeIcon />,
-      title: "Developer-Friendly",
-      description: "Built by developers, for developers. Integrate seamlessly into your workflow with our API and CI/CD tools."
+      title: t("about.feature2Title"),
+      description: t("about.feature2Desc")
     },
     {
       icon: <DesignIcon />,
-      title: "Design Integration",
-      description: "Perfect for designers who want to ensure their creations work for everyone, not just the majority."
+      title: t("about.feature3Title"),
+      description: t("about.feature3Desc")
     },
     {
       icon: <SupportIcon />,
-      title: "Expert Guidance",
-      description: "Don't just find problems—learn how to fix them with our detailed guides and actionable recommendations."
+      title: t("about.feature4Title"),
+      description: t("about.feature4Desc")
     }
   ];
 
   const values = [
     {
-      title: "Inclusion First",
-      description: "We believe digital products should work for everyone, regardless of ability. Every decision we make is guided by this principle.",
+      title: t("about.value1Title"),
+      description: t("about.value1Desc"),
       icon: <AccessibilityIcon />
     },
     {
-      title: "Simplicity Matters",
-      description: "Accessibility testing shouldn't be complicated. We've made it as simple as entering a URL and clicking scan.",
+      title: t("about.value2Title"),
+      description: t("about.value2Desc"),
       icon: <LightbulbIcon />
     },
     {
-      title: "Continuous Innovation",
-      description: "The web evolves constantly, and so do we. We're always improving our tools to catch the latest accessibility issues.",
+      title: t("about.value3Title"),
+      description: t("about.value3Desc"),
       icon: <RocketIcon />
     }
   ];
@@ -303,36 +305,44 @@ export default function About() {
           <Card variant="elevated" padding="xl" className="about-story__card" style={{ marginBottom: appleTheme.spacing[12] }}>
             <Stack spacing={6} align="center">
               <Typography variant="title1" align="center" className="about-story__title" style={{
-                color: isDarkMode ? "#FFFFFF" : "#000000"
+                color: isDarkMode ? "#FFFFFF" : "#000000",
+                wordBreak: "break-word",
+                overflowWrap: "break-word"
               }}>
-                Our Story
+                {t("about.ourStory")}
               </Typography>
               
               <Typography variant="body" align="center" style={{ 
                 fontSize: appleTheme.typography.fontSize.lg,
                 lineHeight: appleTheme.typography.lineHeight.relaxed,
                 maxWidth: "800px",
-                color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
+                color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
+                wordBreak: "break-word",
+                overflowWrap: "break-word"
               }}>
-                It started with a simple observation: while working on web projects, we noticed that accessibility testing was always an afterthought—if it happened at all.
+                {t("about.storyParagraph1")}
               </Typography>
               
               <Typography variant="body" align="center" style={{ 
                 fontSize: appleTheme.typography.fontSize.lg,
                 lineHeight: appleTheme.typography.lineHeight.relaxed,
                 maxWidth: "800px",
-                color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
+                color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
+                wordBreak: "break-word",
+                overflowWrap: "break-word"
               }}>
-                We saw developers struggling with complex, expensive tools that took forever to run. We saw designers creating beautiful interfaces that worked great for some users but completely failed others. And most importantly, we saw millions of people being excluded from the digital world simply because their needs weren't considered.
+                {t("about.storyParagraph2")}
               </Typography>
 
               <Typography variant="body" align="center" style={{ 
                 fontSize: appleTheme.typography.fontSize.lg,
                 lineHeight: appleTheme.typography.lineHeight.relaxed,
                 maxWidth: "800px",
-                color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
+                color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
+                wordBreak: "break-word",
+                overflowWrap: "break-word"
               }}>
-                So we built ScanWeb—a tool that makes accessibility testing as simple as checking your email. No complex setup, no expensive licenses, no waiting around for results. Just enter a URL, click scan, and get actionable insights in seconds.
+                {t("about.storyParagraph3")}
               </Typography>
             </Stack>
           </Card>
@@ -341,9 +351,11 @@ export default function About() {
           <Box className="about-stats" style={{ marginBottom: appleTheme.spacing[12] }}>
             <Typography variant="title2" align="center" className="about-stats__title" style={{ 
               marginBottom: appleTheme.spacing[8],
-              color: isDarkMode ? "#FFFFFF" : "#000000"
+              color: isDarkMode ? "#FFFFFF" : "#000000",
+              wordBreak: "break-word",
+              overflowWrap: "break-word"
             }}>
-              The Numbers Don't Lie
+              {t("about.theNumbers")}
             </Typography>
             
             <div className="about-stats__grid" style={{
@@ -420,9 +432,11 @@ export default function About() {
           <Box style={{ marginBottom: appleTheme.spacing[12] }}>
             <Typography variant="title2" align="center" style={{ 
               marginBottom: appleTheme.spacing[8],
-              color: isDarkMode ? "#FFFFFF" : "#000000"
+              color: isDarkMode ? "#FFFFFF" : "#000000",
+              wordBreak: "break-word",
+              overflowWrap: "break-word"
             }}>
-              Why Choose ScanWeb?
+              {t("about.whyChoose")}
             </Typography>
             
             <div style={{
@@ -477,7 +491,9 @@ export default function About() {
                     fontWeight: "600",
                     marginBottom: "12px",
                     lineHeight: 1.3,
-                    textAlign: "center"
+                    textAlign: "center",
+                    wordBreak: "break-word",
+                    overflowWrap: "break-word"
                   }}>
                     {feature.title}
                   </Typography>
@@ -486,7 +502,9 @@ export default function About() {
                     fontSize: "14px",
                     lineHeight: 1.5,
                     fontWeight: "400",
-                    textAlign: "center"
+                    textAlign: "center",
+                    wordBreak: "break-word",
+                    overflowWrap: "break-word"
                   }}>
                     {feature.description}
                   </Typography>
@@ -499,9 +517,11 @@ export default function About() {
           <Box style={{ marginBottom: appleTheme.spacing[12] }}>
             <Typography variant="title2" align="center" style={{ 
               marginBottom: appleTheme.spacing[8],
-              color: isDarkMode ? "#FFFFFF" : "#000000"
+              color: isDarkMode ? "#FFFFFF" : "#000000",
+              wordBreak: "break-word",
+              overflowWrap: "break-word"
             }}>
-              Our Values
+              {t("about.ourValues")}
             </Typography>
             
             <div style={{
@@ -563,7 +583,9 @@ export default function About() {
                         fontSize: "18px",
                         fontWeight: "600",
                         lineHeight: 1.3,
-                        textAlign: "center"
+                        textAlign: "center",
+                        wordBreak: "break-word",
+                        overflowWrap: "break-word"
                       }}>
                         {value.title}
                       </Typography>
@@ -572,7 +594,9 @@ export default function About() {
                         fontSize: "14px",
                         lineHeight: 1.5,
                         fontWeight: "400",
-                        textAlign: "center"
+                        textAlign: "center",
+                        wordBreak: "break-word",
+                        overflowWrap: "break-word"
                       }}>
                         {value.description}
         </Typography>
@@ -596,18 +620,22 @@ export default function About() {
               <Typography variant="title1" style={{ 
                 color: "white",
                 fontWeight: appleTheme.typography.fontWeight.bold,
-                marginBottom: appleTheme.spacing[2]
+                marginBottom: appleTheme.spacing[2],
+                wordBreak: "break-word",
+                overflowWrap: "break-word"
               }}>
-                Ready to Make Your Website Accessible?
+                {t("about.readyToMake")}
         </Typography>
               <Typography variant="headline" style={{ 
                 color: "white",
                 opacity: 0.95,
                 maxWidth: "600px",
                 fontWeight: appleTheme.typography.fontWeight.medium,
-                lineHeight: appleTheme.typography.lineHeight.relaxed
+                lineHeight: appleTheme.typography.lineHeight.relaxed,
+                wordBreak: "break-word",
+                overflowWrap: "break-word"
               }}>
-                Join thousands of developers and designers who are already using ScanWeb to create more inclusive digital experiences.
+                {t("about.joinThousands")}
         </Typography>
               <Box style={{ marginTop: appleTheme.spacing[4] }}>
                 <button
@@ -652,7 +680,7 @@ export default function About() {
                     e.target.style.boxShadow = "0 4px 12px rgba(0, 122, 255, 0.15)";
                   }}
                 >
-                  Start Scanning Now
+                  {t("common.startScanning")}
                 </button>
               </Box>
             </Stack>

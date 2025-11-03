@@ -6,6 +6,7 @@ import AnimatedGradient from "../components/apple/AnimatedGradient";
 import { Container, Box, Flex, Stack, Section } from "../components/apple/Layout";
 import { appleTheme } from "../styles/apple-theme";
 import { useTheme } from "../contexts/ThemeContext";
+import { useLanguage } from "../contexts/LanguageContext";
 
 // Tooltip Component
 const Tooltip = memo(({ children, text, position = "top" }) => {
@@ -122,59 +123,60 @@ const ChevronDownIcon = () => (
 
 export default function Pricing() {
   const { isDarkMode } = useTheme();
+  const { t } = useLanguage();
   const [expandedFAQ, setExpandedFAQ] = useState(null);
   const plans = [
     {
-      name: "Free",
+      name: t("pricing.planFree"),
       price: "$0",
-      period: "forever",
-      description: "Perfect for getting started with accessibility testing",
+      period: t("pricing.planForever"),
+      description: t("pricing.planFreeDesc"),
       features: [
-        "Up to 10 scans per month",
-        "Basic accessibility report",
-        "WCAG 2.1 AA compliance check",
-        "Email support",
-        "Community resources"
+        t("pricing.feature10Scans"),
+        t("pricing.featureBasicReport"),
+        t("pricing.featureWCAGAA"),
+        t("pricing.featureEmailSupport"),
+        t("pricing.featureCommunity")
       ],
-      buttonText: "Start Free Trial",
+      buttonText: t("pricing.buttonStartFree"),
       buttonVariant: "primary",
       popular: false
     },
     {
-      name: "Pro",
+      name: t("pricing.planPro"),
       price: "$19",
-      period: "per month",
-      description: "For professionals who need comprehensive accessibility testing",
+      period: t("pricing.planPerMonth"),
+      description: t("pricing.planProDesc"),
       features: [
-        "Unlimited scans",
-        "Advanced accessibility reports",
-        "WCAG 2.1 AAA compliance check",
-        "PDF and CSV export",
-        "Email reports",
-        "Priority support",
-        "API access",
-        "Custom integrations"
+        t("pricing.featureUnlimitedScans"),
+        t("pricing.featureAdvancedReport"),
+        t("pricing.featureWCAGAAA"),
+        t("pricing.featurePDFExport"),
+        t("pricing.featureEmailReports"),
+        t("pricing.featurePrioritySupport"),
+        t("pricing.featureAPIAccess"),
+        t("pricing.featureCustomIntegrations")
       ],
-      buttonText: "Start Pro Trial",
+      buttonText: t("pricing.buttonStartPro"),
       buttonVariant: "primary",
       popular: true
     },
     {
-      name: "Enterprise",
-      price: "Custom",
-      period: "pricing",
-      description: "For teams and organizations with advanced needs",
+      name: t("pricing.planEnterprise"),
+      price: t("pricing.planCustom"),
+      period: t("pricing.planCustomPricing"),
+      description: t("pricing.planEnterpriseDesc"),
       features: [
-        "Everything in Pro",
-        "Team collaboration tools",
-        "Advanced analytics dashboard",
-        "Custom compliance frameworks",
-        "Dedicated account manager",
-        "SLA guarantee",
-        "On-premise deployment",
-        "Custom training sessions"
+        t("pricing.featureEverythingPro"),
+        t("pricing.featureTeamCollab"),
+        t("pricing.featureAnalytics"),
+        t("pricing.featureCustomFrameworks"),
+        t("pricing.featureAccountManager"),
+        t("pricing.featureSLA"),
+        t("pricing.featureOnPremise"),
+        t("pricing.featureTraining")
       ],
-      buttonText: "Contact Sales",
+      buttonText: t("pricing.buttonContactSales"),
       buttonVariant: "primary",
       popular: false
     }
@@ -183,23 +185,23 @@ export default function Pricing() {
   const features = [
     {
       icon: <ZapIcon />,
-      title: "Lightning Fast",
-      description: "Get results in under 30 seconds"
+      title: t("pricing.featureFast"),
+      description: t("pricing.featureFastDesc")
     },
     {
       icon: <ShieldIcon />,
-      title: "Secure & Private",
-      description: "Your data is encrypted and never shared"
+      title: t("pricing.featureSecure"),
+      description: t("pricing.featureSecureDesc")
     },
     {
       icon: <UsersIcon />,
-      title: "Team Collaboration",
-      description: "Share reports and work together"
+      title: t("pricing.featureTeam"),
+      description: t("pricing.featureTeamDesc")
     },
     {
       icon: <HeadphonesIcon />,
-      title: "Expert Support",
-      description: "Get help when you need it"
+      title: t("pricing.featureSupport"),
+      description: t("pricing.featureSupportDesc")
     }
   ];
 
@@ -224,17 +226,21 @@ export default function Pricing() {
             <Typography variant="display" className="pricing-hero__title" style={{ 
               marginBottom: appleTheme.spacing[4],
               color: themeColors.text.primary,
-              fontWeight: appleTheme.typography.fontWeight.bold
+              fontWeight: appleTheme.typography.fontWeight.bold,
+              wordBreak: "break-word",
+              overflowWrap: "break-word"
             }}>
-              Simple, Transparent Pricing
+              {t("pricing.title")}
             </Typography>
             <Typography variant="headline" weight="regular" className="pricing-hero__subtitle" style={{ 
               color: themeColors.text.secondary,
               maxWidth: "600px",
               margin: `0 auto ${appleTheme.spacing[8]} auto`,
-              fontWeight: appleTheme.typography.fontWeight.medium
+              fontWeight: appleTheme.typography.fontWeight.medium,
+              wordBreak: "break-word",
+              overflowWrap: "break-word"
             }}>
-              Choose the plan that fits your needs. Start free, upgrade anytime.
+              {t("pricing.subtitle")}
         </Typography>
           </Box>
         </Container>
@@ -366,11 +372,11 @@ export default function Pricing() {
                       console.log("Pricing button clicked:", plan.buttonText);
                       e.preventDefault();
                       e.stopPropagation();
-                      if (plan.buttonText === "Start Free Trial") {
+                      if (plan.buttonText === t("pricing.buttonStartFree")) {
                         window.location.href = "/";
-                      } else if (plan.buttonText === "Start Pro Trial") {
+                      } else if (plan.buttonText === t("pricing.buttonStartPro")) {
                         window.location.href = "/";
-                      } else if (plan.buttonText === "Contact Sales") {
+                      } else if (plan.buttonText === t("pricing.buttonContactSales")) {
                         window.location.href = "mailto:sales@accessibility-saas.com";
                       }
                     }}
@@ -408,8 +414,10 @@ export default function Pricing() {
             
             <div style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-              gap: appleTheme.spacing[6]
+              // Fixed column width to allow centering of the last row when count isn't a multiple of columns
+              gridTemplateColumns: "repeat(auto-fit, 280px)",
+              gap: appleTheme.spacing[6],
+              justifyContent: "center"
             }}>
               {features.map((feature, index) => (
                 <div key={index} style={{
@@ -420,12 +428,12 @@ export default function Pricing() {
                   transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                   boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
                   overflow: "hidden",
-                  minHeight: "120px",
+                  // Make all feature cards the same height
+                  height: "200px",
                   display: "flex",
                   flexDirection: "column",
                   position: "relative",
                   zIndex: 1,
-                  height: "auto",
                   contain: "layout style",
                   textAlign: "center"
                 }}
@@ -446,12 +454,16 @@ export default function Pricing() {
                       {feature.icon}
                     </Box>
                     <Typography variant="callout" weight="bold" align="center" style={{
-                      color: isDarkMode ? "#FFFFFF" : "#000000"
+                      color: isDarkMode ? "#FFFFFF" : "#000000",
+                      // Ensure visibly bolder title
+                      fontWeight: appleTheme.typography.fontWeight.bold
                     }}>
                       {feature.title}
                     </Typography>
                     <Typography variant="footnote" weight="regular" align="center" style={{
-                      color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
+                      color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
+                      // Ensure description appears lighter than title
+                      fontWeight: appleTheme.typography.fontWeight.regular
                     }}>
                       {feature.description}
               </Typography>

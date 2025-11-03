@@ -80,6 +80,133 @@ const analyzeHTML = (html) => {
   return violations;
 };
 
+// Helper function to perform UX audit
+const performUXAudit = (html, url) => {
+  const uxIssues = [];
+  
+  // Check for viewport meta tag (mobile responsiveness)
+  if (!html.includes('viewport')) {
+    uxIssues.push({
+      id: 'viewport-meta',
+      category: 'mobile',
+      severity: 'high',
+      title: 'Missing Viewport Meta Tag',
+      description: 'The page lacks a viewport meta tag, which may cause poor mobile user experience.',
+      recommendation: 'Add <meta name="viewport" content="width=device-width, initial-scale=1"> to the head section.',
+      impact: 'Users on mobile devices may experience zoomed-out or improperly scaled content.'
+    });
+  }
+
+  // Check for navigation clarity
+  const navCount = (html.match(/<nav[^>]*>/gi) || []).length;
+  const headerCount = (html.match(/<header[^>]*>/gi) || []).length;
+  if (navCount === 0 && headerCount === 0) {
+    uxIssues.push({
+      id: 'navigation-structure',
+      category: 'navigation',
+      severity: 'medium',
+      title: 'Unclear Navigation Structure',
+      description: 'No semantic navigation or header elements found. Users may struggle to find their way around.',
+      recommendation: 'Use <nav> or <header> elements to clearly define navigation and page structure.',
+      impact: 'Users may experience confusion when navigating the site.'
+    });
+  }
+
+  // Check for call-to-action visibility (buttons/links)
+  const buttonCount = (html.match(/<button[^>]*>/gi) || []).length;
+  const anchorCount = (html.match(/<a[^>]*href/gi) || []).length;
+  if (buttonCount === 0 && anchorCount < 3) {
+    uxIssues.push({
+      id: 'call-to-action',
+      category: 'engagement',
+      severity: 'low',
+      title: 'Limited Call-to-Action Elements',
+      description: 'Few interactive elements (buttons/links) found. Users may have limited engagement options.',
+      recommendation: 'Ensure important actions are clearly visible as buttons or prominent links.',
+      impact: 'Users may miss important actions or next steps.'
+    });
+  }
+
+  // Check for form usability
+  const formCount = (html.match(/<form[^>]*>/gi) || []).length;
+  const inputCount = (html.match(/<input[^>]*>/gi) || []).length;
+  if (formCount > 0 && inputCount > 0) {
+    const labelCount = (html.match(/<label[^>]*>/gi) || []).length;
+    if (labelCount < inputCount * 0.7) {
+      uxIssues.push({
+        id: 'form-usability',
+        category: 'forms',
+        severity: 'medium',
+        title: 'Forms May Lack Clear Labels',
+        description: 'Some form inputs appear to be missing labels, which can confuse users.',
+        recommendation: 'Ensure all form inputs have associated <label> elements or aria-labels for clarity.',
+        impact: 'Users may struggle to understand what information to enter in form fields.'
+      });
+    }
+  }
+
+  // Check for content hierarchy (headings)
+  const h1Count = (html.match(/<h1[^>]*>/gi) || []).length;
+  if (h1Count === 0) {
+    uxIssues.push({
+      id: 'content-hierarchy',
+      category: 'content',
+      severity: 'medium',
+      title: 'Missing Main Heading (H1)',
+      description: 'No H1 heading found. Clear heading structure helps users understand content hierarchy.',
+      recommendation: 'Add a single H1 element that describes the main purpose of the page.',
+      impact: 'Users may have difficulty understanding the page structure and main content.'
+    });
+  } else if (h1Count > 1) {
+    uxIssues.push({
+      id: 'multiple-h1',
+      category: 'content',
+      severity: 'low',
+      title: 'Multiple H1 Headings Found',
+      description: 'Multiple H1 headings can confuse users and search engines about the page structure.',
+      recommendation: 'Use a single H1 per page and use H2-H6 for subsections.',
+      impact: 'Users may be unclear about the primary focus of the page.'
+    });
+  }
+
+  // Check for loading performance indicators
+  const imgTags = html.match(/<img[^>]*>/gi) || [];
+  const largeImgCount = imgTags.filter(img => {
+    // Check for inline images (base64) or missing sizing attributes
+    return img.includes('data:image') || (!img.includes('width=') && !img.includes('height='));
+  }).length;
+  
+  if (largeImgCount > 0 && imgTags.length > 0) {
+    const percentage = (largeImgCount / imgTags.length) * 100;
+    if (percentage > 50) {
+      uxIssues.push({
+        id: 'image-optimization',
+        category: 'performance',
+        severity: 'medium',
+        title: 'Images May Need Optimization',
+        description: `Many images (${Math.round(percentage)}%) may lack proper sizing or optimization, potentially affecting page load speed.`,
+        recommendation: 'Use responsive images with width/height attributes and consider lazy loading for better performance.',
+        impact: 'Slow loading images can frustrate users and increase bounce rates.'
+      });
+    }
+  }
+
+  // Check for meta description (SEO/UX)
+  if (!html.includes('meta name="description"') && !html.includes('meta property="og:description"')) {
+    uxIssues.push({
+      id: 'meta-description',
+      category: 'discoverability',
+      severity: 'low',
+      title: 'Missing Meta Description',
+      description: 'No meta description tag found. This affects how the page appears in search results.',
+      recommendation: 'Add a meta description tag that summarizes the page content (150-160 characters).',
+      impact: 'The page may have poor representation in search results, affecting user expectations.'
+    });
+  }
+
+  return uxIssues;
+};
+
 // Simple in-memory rate limiting (for production, use Redis)
 const rateLimitMap = new Map();
 const RATE_LIMIT_WINDOW = 60000; // 1 minute
@@ -196,9 +323,16 @@ export default async function handler(req, res) {
     
     // Basic accessibility analysis using helper function
     const violations = analyzeHTML(html);
+    
+    // Perform UX audit
+    const uxIssues = performUXAudit(html, url);
 
     const results = {
       violations: violations,
+      uxAudit: {
+        issues: uxIssues,
+        scannedUrl: url
+      },
       passes: [],
       incomplete: [],
       inapplicable: [],
@@ -240,9 +374,14 @@ export default async function handler(req, res) {
         if (altResponse.ok) {
           const html = await altResponse.text();
           const violations = analyzeHTML(html);
+          const uxIssues = performUXAudit(html, url);
           
           const results = {
             violations: violations,
+            uxAudit: {
+              issues: uxIssues,
+              scannedUrl: url
+            },
             passes: [],
             incomplete: [],
             inapplicable: [],
@@ -305,6 +444,17 @@ export default async function handler(req, res) {
     }
 
     const results = await new AxeBuilder({ page }).analyze();
+    
+    // Get HTML for UX audit
+    const html = await page.content();
+    const uxIssues = performUXAudit(html, url);
+    
+    // Add UX audit to results
+    results.uxAudit = {
+      issues: uxIssues,
+      scannedUrl: url
+    };
+    
     res.status(200).json(results);
   } catch (err) {
     console.error("Playwright scan error:", err);
@@ -336,8 +486,30 @@ export default async function handler(req, res) {
       }
     ];
 
+    // Try to get HTML from a simple fetch for UX audit
+    let uxIssues = [];
+    try {
+      const simpleResponse = await fetch(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (compatible; AccessibilityScanner/1.0)'
+        },
+        timeout: 5000
+      });
+      if (simpleResponse.ok) {
+        const html = await simpleResponse.text();
+        uxIssues = performUXAudit(html, url);
+      }
+    } catch (e) {
+      // If we can't get HTML, just continue without UX audit
+      console.log("Could not perform UX audit:", e.message);
+    }
+
     const results = {
       violations: basicViolations,
+      uxAudit: {
+        issues: uxIssues,
+        scannedUrl: url
+      },
       passes: [],
       incomplete: [],
       inapplicable: [],

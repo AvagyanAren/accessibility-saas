@@ -7,6 +7,7 @@ import AnimatedGradient from "../components/apple/AnimatedGradient";
 import { Container, Box, Flex, Stack, Section, HStack } from "../components/apple/Layout";
 import { appleTheme } from "../styles/apple-theme";
 import { useTheme } from "../contexts/ThemeContext";
+import { useLanguage } from "../contexts/LanguageContext";
 
 // Tooltip Component
 const Tooltip = memo(({ children, text, position = "top" }) => {
@@ -142,6 +143,7 @@ const ShieldIcon = () => (
 
 export default function ApiDocs() {
   const { isDarkMode } = useTheme();
+  const { t } = useLanguage();
   const [testUrl, setTestUrl] = useState("");
   const [testResult, setTestResult] = useState(null);
   const [loading, setLoading] = useState(false);

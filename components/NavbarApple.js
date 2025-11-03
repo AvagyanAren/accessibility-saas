@@ -1,27 +1,30 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useMemo } from "react";
 import Typography from "./apple/Typography";
 import Button from "./apple/Button";
 import { Box, Flex, HStack } from "./apple/Layout";
 import { appleTheme } from "../styles/apple-theme";
 import { useTheme } from "../contexts/ThemeContext";
-import ThemeToggle from "./apple/ThemeToggle";
+import { useLanguage } from "../contexts/LanguageContext";
+import LanguageSwitcher from "./apple/LanguageSwitcher";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
 export default function NavbarApple() {
   const { isDarkMode } = useTheme();
+  const { t, language } = useLanguage();
   const router = useRouter();
   const navbarRef = useRef(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  const navigationItems = [
-    { name: "Home", href: "/" },
-    { name: "About", href: "/about" },
-    { name: "Pricing", href: "/pricing" },
-    { name: "Resources", href: "/resources" },
-    { name: "API Docs", href: "/api-docs" }
-  ];
+  // Memoize navigation items so they update when language changes
+  const navigationItems = useMemo(() => [
+    { name: t("nav.home"), href: "/", key: "home" },
+    { name: t("nav.about"), href: "/about", key: "about" },
+    { name: t("nav.pricing"), href: "/pricing", key: "pricing" },
+    { name: t("nav.resources"), href: "/resources", key: "resources" },
+    { name: t("nav.apiDocs"), href: "/api-docs", key: "apiDocs" }
+  ], [t, language]);
 
   // Check if screen is mobile (less than 770px)
   useEffect(() => {
@@ -123,7 +126,7 @@ export default function NavbarApple() {
                 {navigationItems.map((item) => {
                   const isActive = router.pathname === item.href;
                   return (
-                    <Link key={item.name} href={item.href} passHref legacyBehavior>
+                    <Link key={item.key} href={item.href} passHref legacyBehavior>
                       <a style={{ textDecoration: "none" }}>
                         <Button
                           variant="ghost"
@@ -140,7 +143,12 @@ export default function NavbarApple() {
                             height: "auto",
                             minHeight: "auto",
                             display: "flex",
-                            alignItems: "center"
+                            alignItems: "center",
+                            whiteSpace: "nowrap",
+                            wordBreak: "keep-all",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            maxWidth: "100%"
                           }}
                         >
                           {item.name}
@@ -171,7 +179,7 @@ export default function NavbarApple() {
                         alignItems: "center"
                       }}
                     >
-                      All Tools
+                      {t("nav.allTools")}
                     </Button>
                   </a>
                 </Link>
@@ -179,9 +187,9 @@ export default function NavbarApple() {
             )}
           </HStack>
 
-          {/* Right side - Theme Toggle and Burger Menu */}
-          <HStack spacing={4} align="center">
-            <ThemeToggle />
+          {/* Right side - Language Switcher and Burger Menu */}
+          <HStack spacing={4} align="center" style={{ flexShrink: 0 }}>
+            <LanguageSwitcher />
             {isMobile && <BurgerIcon />}
           </HStack>
         </Flex>
@@ -206,7 +214,7 @@ export default function NavbarApple() {
                 {navigationItems.map((item) => {
                   const isActive = router.pathname === item.href;
                   return (
-                    <Link key={item.name} href={item.href} passHref legacyBehavior>
+                    <Link key={item.key} href={item.href} passHref legacyBehavior>
                       <a style={{ textDecoration: "none" }}>
                         <Button
                           variant="ghost"
@@ -254,7 +262,7 @@ export default function NavbarApple() {
                         minHeight: "auto"
                       }}
                     >
-                      All Tools
+                      {t("nav.allTools")}
                     </Button>
                   </a>
                 </Link>

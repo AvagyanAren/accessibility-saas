@@ -1,0 +1,461 @@
+import React, { createContext, useContext, useState, useEffect } from 'react';
+
+const LanguageContext = createContext();
+
+export const useLanguage = () => {
+  const context = useContext(LanguageContext);
+  if (!context) {
+    throw new Error('useLanguage must be used within a LanguageProvider');
+  }
+  return context;
+};
+
+// Translation files
+const translations = {
+  en: {
+    common: {
+      scanWebsite: "Scan Website",
+      scanning: "Scanning...",
+      startScanning: "Start Scanning Now",
+      clearResults: "Clear Results",
+      downloadPdf: "Download PDF",
+      emailReport: "Email Report",
+      accessibilityScore: "Accessibility Score",
+      scanned: "Scanned",
+      outOf: "out of",
+      issuesFound: "issues found",
+      issue: "issue",
+      language: "Language"
+    },
+    home: {
+      title: "Make Your Website Accessible to Everyone",
+      subtitle: "Get instant accessibility insights with our advanced AI-powered scanner. Ensure your website meets WCAG 2.1 standards and create an inclusive digital experience for all users.",
+      enterUrl: "Enter website URL",
+      urlPlaceholder: "https://example.com",
+      wcagIssues: "WCAG Accessibility Issues",
+      uxAuditResults: "UX Audit Results",
+      websitesScanned: "Websites Scanned",
+      accuracyRate: "Accuracy Rate",
+      issuesFixed: "Issues Fixed",
+      compliance: "Compliance"
+    },
+    about: {
+      title: "Making the Web Accessible, One Scan at a Time",
+      subtitle: "We're on a mission to make digital accessibility testing as simple as checking your email. Because everyone deserves to access the web, regardless of their abilities.",
+      startFirstScan: "Start Your First Scan",
+      ourStory: "Our Story",
+      storyParagraph1: "It started with a simple observation: while working on web projects, we noticed that accessibility testing was always an afterthought—if it happened at all.",
+      storyParagraph2: "We saw developers struggling with complex, expensive tools that took forever to run. We saw designers creating beautiful interfaces that worked great for some users but completely failed others. And most importantly, we saw millions of people being excluded from the digital world simply because their needs weren't considered.",
+      storyParagraph3: "So we built ScanWeb—a tool that makes accessibility testing as simple as checking your email. No complex setup, no expensive licenses, no waiting around for results. Just enter a URL, click scan, and get actionable insights in seconds.",
+      theNumbers: "The Numbers Don't Lie",
+      stat1: "People with disabilities worldwide",
+      stat2: "Of users with disabilities leave sites due to poor accessibility",
+      stat3: "Of the global population has a disability",
+      stat4: "Higher conversion rates for accessible websites",
+      whyChoose: "Why Choose ScanWeb?",
+      feature1Title: "Lightning Fast Scans",
+      feature1Desc: "Get comprehensive accessibility reports in under 30 seconds. No more waiting around for slow, outdated tools.",
+      feature2Title: "Developer-Friendly",
+      feature2Desc: "Built by developers, for developers. Integrate seamlessly into your workflow with our API and CI/CD tools.",
+      feature3Title: "Design Integration",
+      feature3Desc: "Perfect for designers who want to ensure their creations work for everyone, not just the majority.",
+      feature4Title: "Expert Guidance",
+      feature4Desc: "Don't just find problems—learn how to fix them with our detailed guides and actionable recommendations.",
+      ourValues: "Our Values",
+      value1Title: "Inclusion First",
+      value1Desc: "We believe digital products should work for everyone, regardless of ability. Every decision we make is guided by this principle.",
+      value2Title: "Simplicity Matters",
+      value2Desc: "Accessibility testing shouldn't be complicated. We've made it as simple as entering a URL and clicking scan.",
+      value3Title: "Continuous Innovation",
+      value3Desc: "The web evolves constantly, and so do we. We're always improving our tools to catch the latest accessibility issues.",
+      readyToMake: "Ready to Make Your Website Accessible?",
+      joinThousands: "Join thousands of developers and designers who are already using ScanWeb to create more inclusive digital experiences."
+    },
+    nav: {
+      home: "Home",
+      about: "About",
+      pricing: "Pricing",
+      resources: "Resources",
+      apiDocs: "API Docs",
+      allTools: "All Tools"
+    },
+    pricing: {
+      title: "Simple, Transparent Pricing",
+      subtitle: "Choose the plan that fits your needs. Start free, upgrade anytime.",
+      planFree: "Free",
+      planPro: "Pro",
+      planEnterprise: "Enterprise",
+      planFreeDesc: "Perfect for getting started with accessibility testing",
+      planProDesc: "For professionals who need comprehensive accessibility testing",
+      planEnterpriseDesc: "For teams and organizations with advanced needs",
+      planForever: "forever",
+      planPerMonth: "per month",
+      planCustom: "Custom",
+      planCustomPricing: "pricing",
+      featureUnlimitedScans: "Unlimited scans",
+      feature10Scans: "Up to 10 scans per month",
+      featureBasicReport: "Basic accessibility report",
+      featureAdvancedReport: "Advanced accessibility reports",
+      featureWCAGAA: "WCAG 2.1 AA compliance check",
+      featureWCAGAAA: "WCAG 2.1 AAA compliance check",
+      featureEmailSupport: "Email support",
+      featurePrioritySupport: "Priority support",
+      featureCommunity: "Community resources",
+      featurePDFExport: "PDF and CSV export",
+      featureEmailReports: "Email reports",
+      featureAPIAccess: "API access",
+      featureCustomIntegrations: "Custom integrations",
+      featureEverythingPro: "Everything in Pro",
+      featureTeamCollab: "Team collaboration tools",
+      featureAnalytics: "Advanced analytics dashboard",
+      featureCustomFrameworks: "Custom compliance frameworks",
+      featureAccountManager: "Dedicated account manager",
+      featureSLA: "SLA guarantee",
+      featureOnPremise: "On-premise deployment",
+      featureTraining: "Custom training sessions",
+      buttonStartFree: "Start Free Trial",
+      buttonStartPro: "Start Pro Trial",
+      buttonContactSales: "Contact Sales",
+      featureFast: "Lightning Fast",
+      featureFastDesc: "Get results in under 30 seconds",
+      featureSecure: "Secure & Private",
+      featureSecureDesc: "Your data is encrypted and never shared",
+      featureTeam: "Team Collaboration",
+      featureTeamDesc: "Share reports and work together",
+      featureSupport: "Expert Support",
+      featureSupportDesc: "Get help when you need it"
+    },
+    resources: {
+      title: "Accessibility Resources & Learning",
+      subtitle: "Everything you need to master web accessibility",
+      categoryAll: "All",
+      categoryBeginner: "Beginner",
+      categoryAdvanced: "Advanced",
+      categoryDesign: "Design",
+      categoryTesting: "Testing",
+      categoryDevelopment: "Development",
+      article1Title: "10 Common Accessibility Issues and How to Fix Them",
+      article1Desc: "Learn about the most frequent accessibility problems found on websites and practical solutions to resolve them.",
+      article2Title: "WCAG 2.1 Compliance Guide: Complete Web Accessibility Standards",
+      article2Desc: "Master the Web Content Accessibility Guidelines (WCAG) 2.1 to create inclusive, accessible websites that comply with international standards.",
+      article3Title: "Color Contrast Accessibility: Complete Guide for Web Designers",
+      article3Desc: "Master color contrast requirements to create accessible, inclusive designs that meet WCAG standards and provide excellent user experience.",
+      article4Title: "Screen Reader Optimization: Complete Accessibility Guide",
+      article4Desc: "Learn how to optimize your website for screen readers and assistive technologies. Create inclusive experiences that work seamlessly with NVDA, JAWS, VoiceOver.",
+      article5Title: "Keyboard Navigation Accessibility: Complete Implementation Guide",
+      article5Desc: "Master keyboard navigation patterns and focus management to create truly accessible web experiences for users who rely on keyboard-only interaction.",
+      article6Title: "Mobile Accessibility: Complete Best Practices Guide",
+      article6Desc: "Master mobile accessibility to create inclusive experiences on smartphones and tablets. Learn essential techniques for touch interfaces and responsive design.",
+      article7Title: "Building Accessible React Components",
+      article7Desc: "Best practices for creating accessible React components that work with screen readers and keyboard navigation.",
+      minRead: "min read",
+      comingSoon: "Coming Soon"
+    },
+    tools: {
+      title: "Accessibility Testing Tools",
+      subtitle: "Powerful tools to test and improve your website's accessibility",
+      toolContrast: "Color Contrast Checker",
+      toolContrastDesc: "Test color combinations for WCAG accessibility compliance. Input hex codes and get instant contrast ratio results.",
+      toolAltText: "Alt Text Analyzer",
+      toolAltTextDesc: "Scan any webpage to find images missing alt text attributes. Perfect for quick accessibility audits.",
+      toolKeyboard: "Keyboard Navigator",
+      toolKeyboardDesc: "Test your website's keyboard navigation and focus management to ensure it works perfectly without a mouse.",
+      toolPerformance: "Performance Audit",
+      toolPerformanceDesc: "Analyze how accessibility features impact your website's performance and optimize accordingly.",
+      toolScreenReader: "Screen Reader Simulator",
+      toolScreenReaderDesc: "Experience your website as screen reader users do. Test with NVDA, JAWS, and VoiceOver compatibility.",
+      statusAvailable: "Available",
+      featureWCAG: "WCAG AA/AAA compliance",
+      featureLivePreview: "Live preview",
+      featureColorGen: "Random color generator",
+      featureDetailedReport: "Detailed compliance report",
+      featureBulkScan: "Bulk image scanning",
+      featureMissingDetection: "Missing alt text detection",
+      featureSuggestions: "Improvement suggestions",
+      featureExport: "Export results",
+      needAdvanced: "Need More Advanced Features?",
+      needAdvancedDesc: "Upgrade to Pro for unlimited scans, advanced reporting, and priority support.",
+      viewPricing: "View Pricing",
+      viewAPI: "View API Docs"
+    },
+    index: {
+      statsScanned: "Websites Scanned",
+      statsAccuracy: "Accuracy Rate",
+      statsFixed: "Issues Fixed",
+      statsCompliance: "Compliance",
+      whyChoose: "Why Choose Our Accessibility Scanner?",
+      featureAnalysis: "Comprehensive Analysis",
+      featureAnalysisDesc: "Advanced AI-powered scanning detects 50+ accessibility issues including color contrast, alt text, keyboard navigation, ARIA labels, and screen reader compatibility with 99.9% accuracy.",
+      featureFast: "Lightning Fast Results",
+      featureFastDesc: "Get detailed accessibility reports in under 30 seconds with actionable recommendations, code snippets, and priority-based issue categorization for immediate implementation.",
+      featureWCAG: "WCAG 2.1 AA Compliance",
+      featureWCAGDesc: "Ensures your website meets international accessibility standards (WCAG 2.1 AA) and legal requirements including ADA, Section 508, and EN 301 549 compliance.",
+      featureReports: "Professional Reports",
+      featureReportsDesc: "Generate comprehensive PDF reports with executive summaries, detailed findings, remediation guides, and progress tracking for stakeholder presentations and compliance documentation.",
+      featureSecurity: "Enterprise Security",
+      featureSecurityDesc: "Bank-level security with SOC 2 compliance, encrypted data transmission, and privacy-first approach. Your website data is never stored or shared with third parties.",
+      featureExpert: "Expert Support",
+      featureExpertDesc: "24/7 technical support from accessibility experts, integration assistance, custom scanning rules, and ongoing consultation to ensure your digital accessibility success.",
+      tooltipClear: "Clear all scan results and start over",
+      ariaUrlLabel: "Website URL to scan for accessibility issues"
+    }
+  },
+  ru: {
+    common: {
+      scanWebsite: "Проверить сайт на доступность",
+      scanning: "Анализируем ваш сайт...",
+      startScanning: "Начать проверку",
+      clearResults: "Очистить результаты",
+      downloadPdf: "Скачать PDF-отчёт",
+      emailReport: "Отправить отчёт на email",
+      accessibilityScore: "Оценка доступности сайта",
+      scanned: "Проверен сайт",
+      outOf: "из",
+      issuesFound: "найдено проблем",
+      issue: "проблема",
+      language: "Язык"
+    },
+    home: {
+      title: "Проверка доступности сайта: сделайте ваш ресурс доступным для каждого пользователя",
+      subtitle: "Бесплатная проверка доступности сайта онлайн. Аудит соответствия WCAG 2.1, анализ удобства использования и рекомендации по улучшению доступности веб-ресурса. Проверьте ваш сайт за 30 секунд.",
+      enterUrl: "Введите URL сайта для проверки доступности",
+      urlPlaceholder: "https://example.com",
+      wcagIssues: "Нарушения доступности WCAG",
+      uxAuditResults: "Результаты UX-аудита сайта",
+      websitesScanned: "Сайтов проверено",
+      accuracyRate: "Точность анализа",
+      issuesFixed: "Проблем исправлено",
+      compliance: "Соответствие WCAG"
+    },
+    about: {
+      title: "Проверка доступности сайта: делаем интернет доступным для каждого",
+      subtitle: "Простая и быстрая проверка доступности веб-сайтов. Мы поможем вам улучшить доступность сайта, соответствие стандартам WCAG 2.1 и создать комфортный пользовательский опыт для всех посетителей, включая людей с ограниченными возможностями.",
+      startFirstScan: "Запустить проверку доступности",
+      ourStory: "О нашей компании",
+      storyParagraph1: "Всё началось с простого наблюдения: работая над веб-проектами, мы заметили, что тестирование доступности всегда было делом второстепенным — если оно вообще проводилось.",
+      storyParagraph2: "Мы видели, как разработчики борются со сложными и дорогими инструментами, которые работали очень долго. Мы видели дизайнеров, создающих красивые интерфейсы, которые отлично работали для одних пользователей, но полностью не работали для других. И самое главное, мы видели миллионы людей, исключённых из цифрового мира просто потому, что их потребности не учитывались.",
+      storyParagraph3: "Поэтому мы создали ScanWeb — инструмент, который делает проверку доступности такой же простой, как проверка электронной почты. Никаких сложных настроек, дорогих лицензий или долгих ожиданий результатов. Просто введите URL, нажмите «проверить» и получите полезные рекомендации за секунды.",
+      theNumbers: "Статистика доступности сайтов",
+      stat1: "Человек с ограниченными возможностями в мире",
+      stat2: "Пользователей с ограниченными возможностями покидают сайты из-за плохой доступности",
+      stat3: "Населения планеты имеют ограниченные возможности",
+      stat4: "Выше конверсия у доступных веб-сайтов",
+      whyChoose: "Преимущества проверки доступности на ScanWeb",
+      feature1Title: "Мгновенная проверка",
+      feature1Desc: "Получите подробный отчёт о доступности менее чем за 30 секунд. Больше не нужно ждать результатов от медленных устаревших инструментов.",
+      feature2Title: "Для разработчиков",
+      feature2Desc: "Создано разработчиками для разработчиков. Легко интегрируйте в ваш рабочий процесс через наш API и инструменты CI/CD.",
+      feature3Title: "Интеграция с дизайном",
+      feature3Desc: "Идеально подходит для дизайнеров, которые хотят убедиться, что их творения работают для всех, а не только для большинства.",
+      feature4Title: "Экспертная поддержка",
+      feature4Desc: "Не просто находим проблемы — вы узнаете, как их исправить, благодаря нашим подробным руководствам и практическим рекомендациям.",
+      ourValues: "Наши принципы работы",
+      value1Title: "Инклюзивность прежде всего",
+      value1Desc: "Мы верим, что цифровые продукты должны работать для всех, независимо от способностей. Этим принципом мы руководствуемся в каждом решении.",
+      value2Title: "Простота важна",
+      value2Desc: "Проверка доступности не должна быть сложной. Мы сделали её настолько простой, что достаточно ввести URL и нажать «проверить».",
+      value3Title: "Постоянные улучшения",
+      value3Desc: "Веб постоянно развивается, и мы тоже. Мы постоянно улучшаем наши инструменты, чтобы находить последние проблемы доступности.",
+      readyToMake: "Готовы улучшить доступность вашего сайта?",
+      joinThousands: "Тысячи веб-разработчиков и дизайнеров уже используют ScanWeb для создания доступных и удобных веб-сайтов, соответствующих стандартам WCAG 2.1."
+    },
+    nav: {
+      home: "Главная",
+      about: "О нас",
+      pricing: "Тарифы",
+      resources: "Ресурсы",
+      apiDocs: "API документация",
+      allTools: "Все инструменты"
+    },
+    pricing: {
+      title: "Простые и прозрачные тарифы",
+      subtitle: "Выберите план, который подходит вашим потребностям. Начните бесплатно, обновите в любое время.",
+      planFree: "Бесплатно",
+      planPro: "Про",
+      planEnterprise: "Корпоративный",
+      planFreeDesc: "Идеально для начала работы с тестированием доступности",
+      planProDesc: "Для профессионалов, которым нужна комплексная проверка доступности",
+      planEnterpriseDesc: "Для команд и организаций с расширенными потребностями",
+      planForever: "навсегда",
+      planPerMonth: "в месяц",
+      planCustom: "По запросу",
+      planCustomPricing: "цены",
+      featureUnlimitedScans: "Неограниченные проверки",
+      feature10Scans: "До 10 проверок в месяц",
+      featureBasicReport: "Базовый отчёт о доступности",
+      featureAdvancedReport: "Расширенные отчёты о доступности",
+      featureWCAGAA: "Проверка соответствия WCAG 2.1 AA",
+      featureWCAGAAA: "Проверка соответствия WCAG 2.1 AAA",
+      featureEmailSupport: "Поддержка по email",
+      featurePrioritySupport: "Приоритетная поддержка",
+      featureCommunity: "Ресурсы сообщества",
+      featurePDFExport: "Экспорт PDF и CSV",
+      featureEmailReports: "Отчёты по email",
+      featureAPIAccess: "Доступ к API",
+      featureCustomIntegrations: "Индивидуальные интеграции",
+      featureEverythingPro: "Всё из тарифа Про",
+      featureTeamCollab: "Инструменты командной работы",
+      featureAnalytics: "Расширенная аналитическая панель",
+      featureCustomFrameworks: "Индивидуальные системы соответствия",
+      featureAccountManager: "Выделенный менеджер по работе с клиентами",
+      featureSLA: "Гарантия SLA",
+      featureOnPremise: "Развёртывание на вашей инфраструктуре",
+      featureTraining: "Индивидуальные обучающие сессии",
+      buttonStartFree: "Начать бесплатно",
+      buttonStartPro: "Попробовать Про",
+      buttonContactSales: "Связаться с отделом продаж",
+      featureFast: "Мгновенная проверка",
+      featureFastDesc: "Получите результаты менее чем за 30 секунд",
+      featureSecure: "Безопасность и конфиденциальность",
+      featureSecureDesc: "Ваши данные зашифрованы и никогда не передаются третьим лицам",
+      featureTeam: "Командная работа",
+      featureTeamDesc: "Делитесь отчётами и работайте вместе",
+      featureSupport: "Экспертная поддержка",
+      featureSupportDesc: "Получите помощь, когда она вам нужна"
+    },
+    resources: {
+      title: "Ресурсы и обучение по доступности",
+      subtitle: "Всё, что нужно для освоения веб-доступности",
+      categoryAll: "Все",
+      categoryBeginner: "Для начинающих",
+      categoryAdvanced: "Продвинутый",
+      categoryDesign: "Дизайн",
+      categoryTesting: "Тестирование",
+      categoryDevelopment: "Разработка",
+      article1Title: "10 распространённых проблем доступности и способы их решения",
+      article1Desc: "Узнайте о самых частых проблемах доступности на сайтах и практических решениях для их устранения.",
+      article2Title: "Руководство по соответствию WCAG 2.1: полные стандарты веб-доступности",
+      article2Desc: "Освойте Руководство по доступности веб-контента (WCAG) 2.1 для создания инклюзивных, доступных сайтов, соответствующих международным стандартам.",
+      article3Title: "Доступность цветового контраста: полное руководство для веб-дизайнеров",
+      article3Desc: "Освойте требования к цветовому контрасту для создания доступных, инклюзивных дизайнов, соответствующих стандартам WCAG.",
+      article4Title: "Оптимизация для скринридеров: полное руководство по доступности",
+      article4Desc: "Узнайте, как оптимизировать сайт для скринридеров и вспомогательных технологий. Создавайте инклюзивный опыт, работающий с NVDA, JAWS, VoiceOver.",
+      article5Title: "Доступность навигации с клавиатуры: полное руководство по внедрению",
+      article5Desc: "Освойте паттерны навигации с клавиатуры и управление фокусом для создания доступного веб-опыта для пользователей, полагающихся только на клавиатуру.",
+      article6Title: "Мобильная доступность: полное руководство по лучшим практикам",
+      article6Desc: "Освойте мобильную доступность для создания инклюзивного опыта на смартфонах и планшетах. Изучите основные техники для сенсорных интерфейсов.",
+      article7Title: "Создание доступных React-компонентов",
+      article7Desc: "Лучшие практики создания доступных React-компонентов, работающих со скринридерами и навигацией с клавиатуры.",
+      minRead: "мин чтения",
+      comingSoon: "Скоро"
+    },
+    tools: {
+      title: "Инструменты для тестирования доступности",
+      subtitle: "Мощные инструменты для проверки и улучшения доступности вашего сайта",
+      toolContrast: "Проверка цветового контраста",
+      toolContrastDesc: "Проверьте комбинации цветов на соответствие WCAG. Введите hex-коды и получите мгновенные результаты контраста.",
+      toolAltText: "Анализатор альтернативного текста",
+      toolAltTextDesc: "Просканируйте любую веб-страницу, чтобы найти изображения без атрибутов alt. Идеально для быстрого аудита доступности.",
+      toolKeyboard: "Навигация с клавиатуры",
+      toolKeyboardDesc: "Протестируйте навигацию с клавиатуры и управление фокусом, чтобы убедиться, что всё работает без мыши.",
+      toolPerformance: "Аудит производительности",
+      toolPerformanceDesc: "Проанализируйте, как функции доступности влияют на производительность сайта, и оптимизируйте соответственно.",
+      toolScreenReader: "Симулятор скринридера",
+      toolScreenReaderDesc: "Оцените свой сайт так, как его видят пользователи скринридеров. Протестируйте совместимость с NVDA, JAWS и VoiceOver.",
+      statusAvailable: "Доступно",
+      featureWCAG: "Соответствие WCAG AA/AAA",
+      featureLivePreview: "Живой предпросмотр",
+      featureColorGen: "Генератор случайных цветов",
+      featureDetailedReport: "Подробный отчёт о соответствии",
+      featureBulkScan: "Массовое сканирование изображений",
+      featureMissingDetection: "Обнаружение отсутствующего alt-текста",
+      featureSuggestions: "Рекомендации по улучшению",
+      featureExport: "Экспорт результатов",
+      needAdvanced: "Нужны расширенные функции?",
+      needAdvancedDesc: "Перейдите на Pro для неограниченных проверок, расширенной отчётности и приоритетной поддержки.",
+      viewPricing: "Посмотреть тарифы",
+      viewAPI: "Посмотреть API"
+    },
+    index: {
+      statsScanned: "Сайтов проверено",
+      statsAccuracy: "Точность",
+      statsFixed: "Проблем исправлено",
+      statsCompliance: "Соответствие",
+      whyChoose: "Почему выбирают наш сканер доступности?",
+      featureAnalysis: "Комплексный анализ",
+      featureAnalysisDesc: "Продвинутое AI-сканирование обнаруживает 50+ проблем доступности, включая цветовой контраст, alt-текст, навигацию с клавиатуры, ARIA-метки и совместимость со скринридерами с точностью 99,9%.",
+      featureFast: "Мгновенные результаты",
+      featureFastDesc: "Получите подробные отчёты о доступности менее чем за 30 секунд с практическими рекомендациями, фрагментами кода и категоризацией проблем по приоритетам для немедленной реализации.",
+      featureWCAG: "Соответствие WCAG 2.1 AA",
+      featureWCAGDesc: "Обеспечивает соответствие вашего сайта международным стандартам доступности (WCAG 2.1 AA) и правовым требованиям, включая ADA, Section 508 и EN 301 549.",
+      featureReports: "Профессиональные отчёты",
+      featureReportsDesc: "Генерируйте подробные PDF-отчёты с резюме, детальными находками, руководствами по исправлению и отслеживанием прогресса для презентаций стейкхолдерам и документации соответствия.",
+      featureSecurity: "Корпоративная безопасность",
+      featureSecurityDesc: "Банковый уровень безопасности с соответствием SOC 2, шифрованием передачи данных и подходом, ориентированным на конфиденциальность. Данные вашего сайта никогда не хранятся и не передаются третьим лицам.",
+      featureExpert: "Экспертная поддержка",
+      featureExpertDesc: "Круглосуточная техническая поддержка от экспертов по доступности, помощь в интеграции, индивидуальные правила сканирования и постоянные консультации для успеха вашей цифровой доступности.",
+      tooltipClear: "Очистить все результаты сканирования и начать заново",
+      ariaUrlLabel: "URL сайта для проверки на проблемы доступности"
+    }
+  }
+};
+
+export const LanguageProvider = ({ children }) => {
+  const [language, setLanguage] = useState('en');
+  const [isClient, setIsClient] = useState(false);
+
+  // Load language preference from localStorage on mount (client-side only)
+  useEffect(() => {
+    setIsClient(true);
+    const savedLanguage = localStorage.getItem('language');
+    if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'ru')) {
+      setLanguage(savedLanguage);
+    } else {
+      // Check browser language
+      if (typeof window !== 'undefined') {
+        const browserLang = navigator.language || navigator.userLanguage;
+        if (browserLang.startsWith('ru')) {
+          setLanguage('ru');
+        } else {
+          setLanguage('en');
+        }
+      }
+    }
+  }, []);
+
+  // Save language preference to localStorage and update document
+  useEffect(() => {
+    if (isClient) {
+      localStorage.setItem('language', language);
+      // Update document lang attribute
+      if (typeof document !== 'undefined') {
+        document.documentElement.lang = language;
+      }
+    }
+  }, [language, isClient]);
+
+  const changeLanguage = (lang) => {
+    if (lang === 'en' || lang === 'ru') {
+      setLanguage(lang);
+    }
+  };
+
+  const t = (path) => {
+    const keys = path.split('.');
+    let value = translations[language];
+    
+    for (const key of keys) {
+      if (value && typeof value === 'object') {
+        value = value[key];
+      } else {
+        return path; // Return path if translation not found
+      }
+    }
+    
+    return value || path;
+  };
+
+  const value = {
+    language,
+    changeLanguage,
+    t,
+    isClient
+  };
+
+  return (
+    <LanguageContext.Provider value={value}>
+      {children}
+    </LanguageContext.Provider>
+  );
+};
+

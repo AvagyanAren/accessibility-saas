@@ -127,51 +127,52 @@ const ExternalLinkIcon = () => (
 
 export default function Tools() {
   const { isDarkMode } = useTheme();
+  const { t } = useLanguage();
 
   const tools = [
     {
       id: "color-contrast",
-      title: "Color Contrast Checker",
-      description: "Test color combinations for WCAG accessibility compliance. Input hex codes and get instant contrast ratio results.",
+      title: t("tools.toolContrast"),
+      description: t("tools.toolContrastDesc"),
       icon: <ContrastIcon />,
       color: "#007AFF",
-      status: "Available",
-      features: ["WCAG AA/AAA compliance", "Live preview", "Random color generator", "Detailed compliance report"]
+      status: t("tools.statusAvailable"),
+      features: [t("tools.featureWCAG"), t("tools.featureLivePreview"), t("tools.featureColorGen"), t("tools.featureDetailedReport")]
     },
     {
       id: "alt-text-analyzer",
-      title: "Alt Text Analyzer",
-      description: "Scan any webpage to find images missing alt text attributes. Perfect for quick accessibility audits.",
+      title: t("tools.toolAltText"),
+      description: t("tools.toolAltTextDesc"),
       icon: <ImageIcon />,
       color: "#30D158",
-      status: "Available",
-      features: ["Bulk image scanning", "Missing alt text detection", "Improvement suggestions", "Export results"]
+      status: t("tools.statusAvailable"),
+      features: [t("tools.featureBulkScan"), t("tools.featureMissingDetection"), t("tools.featureSuggestions"), t("tools.featureExport")]
     },
     {
       id: "keyboard-navigator",
-      title: "Keyboard Navigation Tester",
-      description: "Test keyboard accessibility by navigating through interactive elements without using a mouse.",
+      title: t("tools.toolKeyboard"),
+      description: t("tools.toolKeyboardDesc"),
       icon: <KeyboardIcon />,
       color: "#FF9F0A",
-      status: "Available",
+      status: t("tools.statusAvailable"),
       features: ["Tab order testing", "Focus indicators", "Skip links detection", "Navigation flow analysis"]
     },
     {
       id: "performance-audit",
-      title: "Performance Audit",
-      description: "Analyze website performance metrics that impact accessibility, including loading times and resource optimization.",
+      title: t("tools.toolPerformance"),
+      description: t("tools.toolPerformanceDesc"),
       icon: <TrendingUpIcon />,
       color: "#FF6B6B",
-      status: "Available",
+      status: t("tools.statusAvailable"),
       features: ["Load time analysis", "Resource optimization", "Performance scoring", "Improvement recommendations"]
     },
     {
       id: "screen-reader-simulator",
-      title: "Screen Reader Simulator",
-      description: "Experience how your website sounds to screen reader users. Test with different screen reader voices and settings.",
+      title: t("tools.toolScreenReader"),
+      description: t("tools.toolScreenReaderDesc"),
       icon: <RecordVoiceOverIcon />,
       color: "#9C27B0",
-      status: "Available",
+      status: t("tools.statusAvailable"),
       features: ["Voice simulation", "Multiple voices", "Speed control", "Content structure analysis"]
     }
   ];
@@ -192,17 +193,21 @@ export default function Tools() {
             <Typography variant="display" style={{
               marginBottom: appleTheme.spacing[4],
               color: isDarkMode ? '#FFFFFF' : "#1C1C1E",
-              fontWeight: appleTheme.typography.fontWeight.bold
+              fontWeight: appleTheme.typography.fontWeight.bold,
+              wordBreak: "break-word",
+              overflowWrap: "break-word"
             }}>
-              Accessibility Tools
+              {t("tools.title")}
             </Typography>
             <Typography variant="headline" weight="regular" style={{
               color: isDarkMode ? '#FFFFFF' : "#2C2C2E",
               maxWidth: "600px",
               margin: `0 auto ${appleTheme.spacing[4]} auto`,
-              fontWeight: appleTheme.typography.fontWeight.medium
+              fontWeight: appleTheme.typography.fontWeight.medium,
+              wordBreak: "break-word",
+              overflowWrap: "break-word"
             }}>
-              Comprehensive suite of tools to test, analyze, and improve your website's accessibility.
+              {t("tools.subtitle")}
             </Typography>
           </Box>
         </Container>
@@ -213,9 +218,11 @@ export default function Tools() {
         <Section padding="lg" style={{ paddingTop: appleTheme.spacing[4] }}>
           <Typography variant="title2" style={{ 
             marginBottom: appleTheme.spacing[6],
-            color: isDarkMode ? '#FFFFFF' : '#000000'
+            color: isDarkMode ? '#FFFFFF' : '#000000',
+            wordBreak: "break-word",
+            overflowWrap: "break-word"
           }}>
-            Available Tools
+            {t("tools.title")}
           </Typography>
 
           <div style={{
@@ -360,18 +367,22 @@ export default function Tools() {
             <Typography variant="title1" style={{ 
               color: "white",
               fontWeight: appleTheme.typography.fontWeight.bold,
-              marginBottom: appleTheme.spacing[2]
+              marginBottom: appleTheme.spacing[2],
+              wordBreak: "break-word",
+              overflowWrap: "break-word"
             }}>
-              Need More Advanced Features?
+              {t("tools.needAdvanced")}
             </Typography>
             <Typography variant="headline" style={{ 
               color: "white",
               opacity: 0.95,
               maxWidth: "500px",
               fontWeight: appleTheme.typography.fontWeight.medium,
-              lineHeight: appleTheme.typography.lineHeight.relaxed
+              lineHeight: appleTheme.typography.lineHeight.relaxed,
+              wordBreak: "break-word",
+              overflowWrap: "break-word"
             }}>
-              Upgrade to Pro for unlimited scans, advanced reporting, and priority support.
+              {t("tools.needAdvancedDesc")}
             </Typography>
             <HStack spacing={4} wrap="wrap" justify="center" style={{ marginTop: appleTheme.spacing[4] }}>
               <Link href="/pricing" passHref legacyBehavior>
@@ -391,7 +402,7 @@ export default function Tools() {
                       zIndex: 11
                     }}
                   >
-                    View Pricing
+                    {t("tools.viewPricing")}
                   </Button>
                 </a>
               </Link>
@@ -410,7 +421,7 @@ export default function Tools() {
                       zIndex: 11
                     }}
                   >
-                    API Documentation
+                    {t("tools.viewAPI")}
                   </Button>
                 </a>
               </Link>

@@ -7,6 +7,7 @@ import AnimatedGradient from "../components/apple/AnimatedGradient";
 import { Container, Box, Flex, Stack, Section } from "../components/apple/Layout";
 import { appleTheme } from "../styles/apple-theme";
 import { useTheme } from "../contexts/ThemeContext";
+import { useLanguage } from "../contexts/LanguageContext";
 
 // Icons (memoized SVG components for better performance)
 const SearchIcon = memo(() => (
@@ -466,8 +467,10 @@ const ViolationCard = ({ violation, isDarkMode, getStatusColor }) => {
 
 export default function Home() {
   const { isDarkMode } = useTheme();
+  const { t } = useLanguage();
   const [url, setUrl] = useState("");
   const [violations, setViolations] = useState([]);
+  const [uxAudit, setUxAudit] = useState(null);
   const [scanning, setScanning] = useState(false);
   const [emailDialogOpen, setEmailDialogOpen] = useState(false);
   const [error, setError] = useState("");
@@ -493,6 +496,7 @@ export default function Home() {
         // Clear expired data
         localStorage.removeItem("scanUrl");
         localStorage.removeItem("scanViolations");
+        localStorage.removeItem("scanUxAudit");
         localStorage.removeItem("scanTimestamp");
         return;
       }
@@ -509,11 +513,23 @@ export default function Home() {
           setDataFromCache(true);
         }
       }
+      
+      // Load UX audit from localStorage
+      const savedUxAudit = localStorage.getItem("scanUxAudit");
+      if (savedUxAudit) {
+        try {
+          const parsedUxAudit = JSON.parse(savedUxAudit);
+          setUxAudit(parsedUxAudit);
+        } catch (e) {
+          console.error('Error loading UX audit:', e);
+        }
+      }
     } catch (error) {
       console.error('Error loading saved data:', error);
       // Clear corrupted data
       localStorage.removeItem('scanUrl');
       localStorage.removeItem('scanViolations');
+      localStorage.removeItem('scanUxAudit');
       localStorage.removeItem('scanTimestamp');
     }
   }, []);
@@ -547,6 +563,7 @@ export default function Home() {
     const startTime = performance.now();
     setScanning(true);
     setViolations([]);
+    setUxAudit(null);
     setError("");
     setInputFocused(false);
     setDataFromCache(false);
@@ -566,13 +583,18 @@ export default function Home() {
       }
       
       const newViolations = data.violations || [];
+      const newUxAudit = data.uxAudit || null;
       
       // Save results to localStorage with timestamp
       localStorage.setItem('scanUrl', url.trim());
       localStorage.setItem('scanViolations', JSON.stringify(newViolations));
+      if (newUxAudit) {
+        localStorage.setItem('scanUxAudit', JSON.stringify(newUxAudit));
+      }
       localStorage.setItem('scanTimestamp', Date.now().toString());
       
       setViolations(newViolations);
+      setUxAudit(newUxAudit);
       
       // Performance logging
       const endTime = performance.now();
@@ -589,10 +611,12 @@ export default function Home() {
   const clearResults = useCallback(() => {
     setUrl("");
     setViolations([]);
+    setUxAudit(null);
     setError("");
     setDataFromCache(false);
     localStorage.removeItem('scanUrl');
     localStorage.removeItem('scanViolations');
+    localStorage.removeItem('scanUxAudit');
     localStorage.removeItem('scanTimestamp');
   }, []);
 
@@ -675,20 +699,22 @@ export default function Home() {
               WebkitTextFillColor: "transparent",
               backgroundClip: "text"
             }}>
-              Make Your Website Accessible to Everyone
+              {t("home.title")}
   </Typography>
             <Typography variant="headline" weight="regular" style={{ 
               color: themeColors.text.secondary,
               marginBottom: isMobile ? appleTheme.spacing[8] : appleTheme.spacing[10],
-              maxWidth: "600px",
+              maxWidth: "700px",
               margin: isMobile ? `0 auto ${appleTheme.spacing[8]} auto` : `0 auto ${appleTheme.spacing[10]} auto`,
               fontWeight: appleTheme.typography.fontWeight.medium,
               fontSize: isMobile ? "16px" : "20px",
-              lineHeight: 1.5,
-              padding: isMobile ? "0 20px" : "0"
+              lineHeight: 1.6,
+              padding: isMobile ? "0 20px" : "0",
+              wordBreak: "break-word",
+              overflowWrap: "break-word",
+              hyphens: "auto"
             }}>
-              Get instant accessibility insights with our advanced AI-powered scanner. 
-              Ensure your website meets WCAG 2.1 standards and create an inclusive digital experience for all users.
+              {t("home.subtitle")}
   </Typography>
 
             {/* URL Input Section - Centered and Prominent */}
@@ -738,7 +764,7 @@ export default function Home() {
                     </div>
                     <input
                       type="url"
-                      placeholder="Enter website URL"
+                      placeholder={t("home.enterUrl")}
                       value={url}
                       onChange={(e) => {
                         setUrl(e.target.value);
@@ -754,7 +780,7 @@ export default function Home() {
                       onBlur={(e) => {
                         setInputFocused(false);
                       }}
-                      aria-label="Website URL to scan for accessibility issues"
+                      aria-label={t("index.ariaUrlLabel")}
                       aria-describedby="url-help"
                       autoComplete="url"
                       spellCheck="false"
@@ -817,7 +843,7 @@ export default function Home() {
                     e.target.style.boxShadow = "0 4px 12px rgba(0, 122, 255, 0.3)";
                   }}
                 >
-                  {scanning ? "Scanning..." : "Scan Website"}
+                  {scanning ? t("common.scanning") : t("common.scanWebsite")}
     </Button>
               </div>
               
@@ -843,7 +869,7 @@ export default function Home() {
             </Box>
 
             {/* Results Section - positioned right after search section */}
-      {violations.length > 0 && (
+      {(violations.length > 0 || (uxAudit && uxAudit.issues && uxAudit.issues.length > 0)) && (
               <Box className="results-section" style={{ 
                 marginTop: isMobile ? appleTheme.spacing[8] : appleTheme.spacing[12],
                 maxWidth: "1200px",
@@ -890,14 +916,25 @@ export default function Home() {
                     zIndex: 1
                   }}>
                     <Typography variant="title2" style={{ 
-                      marginBottom: appleTheme.spacing[4],
+                      marginBottom: appleTheme.spacing[2],
                       color: themeColors.text.primary,
                       fontSize: isMobile ? "20px" : "22px",
                       fontWeight: "600",
                       letterSpacing: "-0.3px"
                     }}>
-                      Accessibility Score
+                      {t("common.accessibilityScore")}
           </Typography>
+                    {(url || (uxAudit && uxAudit.scannedUrl)) && (
+                      <Typography variant="caption1" style={{
+                        color: themeColors.text.secondary,
+                        fontSize: "14px",
+                        marginBottom: appleTheme.spacing[4],
+                        display: "block",
+                        wordBreak: "break-word"
+                      }}>
+                        {t("common.scanned")}: {uxAudit && uxAudit.scannedUrl ? uxAudit.scannedUrl : url}
+                      </Typography>
+                    )}
                     <div style={{
                       display: "flex",
                       alignItems: "center",
@@ -924,7 +961,7 @@ export default function Home() {
                           fontSize: isMobile ? "16px" : "18px",
                           fontWeight: "500"
                         }}>
-                          out of 100
+                          {t("common.outOf")} 100
           </Typography>
                         <div style={{
                           display: "flex",
@@ -942,7 +979,7 @@ export default function Home() {
                             fontSize: isMobile ? "14px" : "16px",
                             fontWeight: "500"
                           }}>
-                            {violations.length} {violations.length === 1 ? 'issue' : 'issues'} found
+                            {violations.length} {violations.length === 1 ? t("common.issue") : t("common.issuesFound")}
           </Typography>
                         </div>
                       </div>
@@ -991,7 +1028,7 @@ export default function Home() {
                       }}
                     >
                       <DownloadIcon style={{ width: isMobile ? "14px" : "16px", height: isMobile ? "14px" : "16px" }} />
-                      Download PDF
+                      {t("common.downloadPdf")}
                     </button>
                     <button 
                       onClick={() => setEmailDialogOpen(true)}
@@ -1011,7 +1048,8 @@ export default function Home() {
                         cursor: "pointer",
                         transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                         boxShadow: isDarkMode ? "0 1px 3px rgba(0, 122, 255, 0.3)" : "0 1px 3px rgba(0, 122, 255, 0.15)",
-                        fontFamily: "inherit"
+                        fontFamily: "inherit",
+                        whiteSpace: "nowrap"
                       }}
                       onMouseEnter={(e) => {
                         e.target.style.backgroundColor = "#007AFF";
@@ -1027,10 +1065,10 @@ export default function Home() {
                       }}
                     >
                       <EmailIcon style={{ width: isMobile ? "14px" : "16px", height: isMobile ? "14px" : "16px" }} />
-                      Email Report
+                      {t("common.emailReport")}
                     </button>
                     </div>
-                    <Tooltip text="Clear all scan results and start over" delay={4000}>
+                    <Tooltip text={t("index.tooltipClear")} delay={4000}>
                       <button 
                         onClick={clearResults}
                         style={{
@@ -1060,44 +1098,196 @@ export default function Home() {
                         }}
                       >
                         <ClearIcon color="#FF3B30" style={{ width: isMobile ? "14px" : "16px", height: isMobile ? "14px" : "16px" }} />
-                        Clear Results
+                        {t("common.clearResults")}
                       </button>
                     </Tooltip>
                   </div>
                 </div>
 
-                {/* Accessibility Issues Title */}
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "20px" }}>
-                  <Typography variant="title3" style={{
-                    color: "#000000",
-                    fontSize: "18px",
-                    fontWeight: "600",
-                    textAlign: "left"
-                  }}>
-                    Accessibility Issues ({violations.length})
-                  </Typography>
-                </div>
+                {/* WCAG Accessibility Issues Title */}
+                {violations.length > 0 && (
+                  <>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "20px" }}>
+                      <Typography variant="title3" style={{
+                        color: "#000000",
+                        fontSize: "18px",
+                        fontWeight: "600",
+                        textAlign: "left"
+                      }}>
+                        {t("home.wcagIssues")} ({violations.length})
+                      </Typography>
+                    </div>
 
-                {/* Violations Grid */}
-                <div style={{
-                  display: "grid",
-                  gridTemplateColumns: isMobile 
-                    ? "1fr" 
-                    : "repeat(auto-fit, minmax(300px, 1fr))",
-                  gap: isMobile ? "12px" : "20px",
-                  maxWidth: "100%",
-                  width: "100%",
-                  alignItems: "start"
-                }}>
-                  {violations.map((violation, index) => (
-                    <ViolationCard 
-                      key={`violation-${index}-${violation.id || 'unknown'}`} 
-                      violation={violation} 
-                      isDarkMode={isDarkMode}
-                      getStatusColor={getStatusColor}
-                    />
-                  ))}
-                </div>
+                    {/* Violations Grid */}
+                    <div style={{
+                      display: "grid",
+                      gridTemplateColumns: isMobile 
+                        ? "1fr" 
+                        : "repeat(auto-fit, minmax(300px, 1fr))",
+                      gap: isMobile ? "12px" : "20px",
+                      maxWidth: "100%",
+                      width: "100%",
+                      alignItems: "start"
+                    }}>
+                      {violations.map((violation, index) => (
+                        <ViolationCard 
+                          key={`violation-${index}-${violation.id || 'unknown'}`} 
+                          violation={violation} 
+                          isDarkMode={isDarkMode}
+                          getStatusColor={getStatusColor}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {/* UX Audit Section */}
+                {uxAudit && uxAudit.issues && uxAudit.issues.length > 0 && (
+                  <>
+                    <div style={{ 
+                      display: "flex", 
+                      alignItems: "center", 
+                      gap: "8px", 
+                      marginTop: "40px",
+                      marginBottom: "20px" 
+                    }}>
+                      <Typography variant="title3" style={{
+                        color: "#000000",
+                        fontSize: "18px",
+                        fontWeight: "600",
+                        textAlign: "left"
+                      }}>
+                        {t("home.uxAuditResults")} ({uxAudit.issues.length})
+                      </Typography>
+                    </div>
+
+                    {/* UX Issues Grid */}
+                    <div style={{
+                      display: "grid",
+                      gridTemplateColumns: isMobile 
+                        ? "1fr" 
+                        : "repeat(auto-fit, minmax(300px, 1fr))",
+                      gap: isMobile ? "12px" : "20px",
+                      maxWidth: "100%",
+                      width: "100%",
+                      alignItems: "start"
+                    }}>
+                      {uxAudit.issues.map((issue, index) => {
+                        const getSeverityColor = (severity) => {
+                          switch (severity) {
+                            case 'high': return '#FF3B30';
+                            case 'medium': return '#FF9500';
+                            case 'low': return '#34C759';
+                            default: return '#8E8E93';
+                          }
+                        };
+
+                        return (
+                          <div
+                            key={`ux-issue-${index}-${issue.id || 'unknown'}`}
+                            style={{
+                              backgroundColor: "#FFFFFF",
+                              border: `1px solid ${getSeverityColor(issue.severity)}40`,
+                              borderRadius: "12px",
+                              padding: "20px",
+                              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
+                              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.12)";
+                              e.currentTarget.style.transform = "translateY(-2px)";
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.08)";
+                              e.currentTarget.style.transform = "translateY(0)";
+                            }}
+                          >
+                            <div style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "8px",
+                              marginBottom: "12px"
+                            }}>
+                              <div style={{
+                                width: "8px",
+                                height: "8px",
+                                borderRadius: "50%",
+                                backgroundColor: getSeverityColor(issue.severity)
+                              }} />
+                              <Typography variant="callout" style={{
+                                color: "#000000",
+                                fontSize: "16px",
+                                fontWeight: "600",
+                                textTransform: "capitalize"
+                              }}>
+                                {issue.severity} Priority
+                              </Typography>
+                              <div style={{
+                                padding: "4px 8px",
+                                backgroundColor: `${getSeverityColor(issue.severity)}20`,
+                                borderRadius: "6px",
+                                fontSize: "11px",
+                                fontWeight: "600",
+                                color: getSeverityColor(issue.severity),
+                                textTransform: "uppercase"
+                              }}>
+                                {issue.category}
+                              </div>
+                            </div>
+                            <Typography variant="title3" style={{
+                              color: "#000000",
+                              fontSize: "16px",
+                              fontWeight: "600",
+                              marginBottom: "8px"
+                            }}>
+                              {issue.title}
+                            </Typography>
+                            <Typography variant="body" style={{
+                              color: "#1C1C1E",
+                              fontSize: "14px",
+                              lineHeight: 1.5,
+                              marginBottom: "12px"
+                            }}>
+                              {issue.description}
+                            </Typography>
+                            <div style={{
+                              padding: "12px",
+                              backgroundColor: "#F8F9FA",
+                              borderRadius: "8px",
+                              marginBottom: "12px"
+                            }}>
+                              <Typography variant="caption1" style={{
+                                color: "#007AFF",
+                                fontSize: "12px",
+                                fontWeight: "600",
+                                marginBottom: "6px",
+                                display: "block"
+                              }}>
+                                Recommendation:
+                              </Typography>
+                              <Typography variant="caption1" style={{
+                                color: "#1C1C1E",
+                                fontSize: "13px",
+                                lineHeight: 1.4
+                              }}>
+                                {issue.recommendation}
+                              </Typography>
+                            </div>
+                            {issue.impact && (
+                              <Typography variant="footnote" style={{
+                                color: "#8E8E93",
+                                fontSize: "12px",
+                                fontStyle: "italic"
+                              }}>
+                                Impact: {issue.impact}
+                              </Typography>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
                 </Box>
       )}
 
@@ -1149,9 +1339,11 @@ export default function Home() {
                 textAlign: "center",
                 marginBottom: isMobile ? appleTheme.spacing[6] : appleTheme.spacing[8],
                 fontSize: isMobile ? "20px" : "28px",
-                fontWeight: "600"
+                fontWeight: "600",
+                wordBreak: "break-word",
+                overflowWrap: "break-word"
               }}>
-                Why Choose Our Accessibility Scanner?
+                {t("index.whyChoose")}
   </Typography>
 
               <div style={{
@@ -1162,33 +1354,33 @@ export default function Home() {
                 {[
                   {
                     icon: <AnalysisIcon />,
-                    title: "Comprehensive Analysis",
-                    description: "Advanced AI-powered scanning detects 50+ accessibility issues including color contrast, alt text, keyboard navigation, ARIA labels, and screen reader compatibility with 99.9% accuracy."
+                    title: t("index.featureAnalysis"),
+                    description: t("index.featureAnalysisDesc")
                   },
                   {
                     icon: <SpeedIcon />,
-                    title: "Lightning Fast Results",
-                    description: "Get detailed accessibility reports in under 30 seconds with actionable recommendations, code snippets, and priority-based issue categorization for immediate implementation."
+                    title: t("index.featureFast"),
+                    description: t("index.featureFastDesc")
                   },
                   {
                     icon: <ComplianceIcon />,
-                    title: "WCAG 2.1 AA Compliance",
-                    description: "Ensures your website meets international accessibility standards (WCAG 2.1 AA) and legal requirements including ADA, Section 508, and EN 301 549 compliance."
+                    title: t("index.featureWCAG"),
+                    description: t("index.featureWCAGDesc")
                   },
                   {
                     icon: <ReportIcon />,
-                    title: "Professional Reports",
-                    description: "Generate comprehensive PDF reports with executive summaries, detailed findings, remediation guides, and progress tracking for stakeholder presentations and compliance documentation."
+                    title: t("index.featureReports"),
+                    description: t("index.featureReportsDesc")
                   },
                   {
                     icon: <SecurityIcon />,
-                    title: "Enterprise Security",
-                    description: "Bank-level security with SOC 2 compliance, encrypted data transmission, and privacy-first approach. Your website data is never stored or shared with third parties."
+                    title: t("index.featureSecurity"),
+                    description: t("index.featureSecurityDesc")
                   },
                   {
                     icon: <SupportIcon />,
-                    title: "Expert Support",
-                    description: "24/7 technical support from accessibility experts, integration assistance, custom scanning rules, and ongoing consultation to ensure your digital accessibility success."
+                    title: t("index.featureExpert"),
+                    description: t("index.featureExpertDesc")
                   }
                 ].map((feature, index) => (
                   <Box key={index} style={{
