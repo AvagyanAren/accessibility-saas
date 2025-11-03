@@ -1450,7 +1450,7 @@ export default function Home() {
                 fontSize: isMobile ? "16px" : "18px",
                 fontWeight: "500"
               }}>
-                Trusted by leading organizations worldwide
+                {t("index.trustedBy")}
   </Typography>
 
               <div style={{
@@ -1462,12 +1462,12 @@ export default function Home() {
                 opacity: 0.7
               }}>
                 {[
-                  "Fortune 500 Companies",
-                  "Government Agencies", 
-                  "Educational Institutions",
-                  "Healthcare Organizations",
-                  "E-commerce Platforms",
-                  "Financial Services"
+                  t("index.orgFortune500"),
+                  t("index.orgGovernment"), 
+                  t("index.orgEducational"),
+                  t("index.orgHealthcare"),
+                  t("index.orgEcommerce"),
+                  t("index.orgFinancial")
                 ].map((indicator, index) => (
                   <Box key={index} style={{
                     padding: `${appleTheme.spacing[2]} ${appleTheme.spacing[4]}`,
@@ -1478,7 +1478,9 @@ export default function Home() {
                     <Typography variant="footnote" style={{
                       color: isDarkMode ? '#E5E5EA' : '#1C1C1E',
                       fontSize: "12px",
-                      fontWeight: "500"
+                      fontWeight: "500",
+                      wordBreak: "break-word",
+                      overflowWrap: "break-word"
                     }}>
                       {indicator}
                 </Typography>
@@ -1502,9 +1504,11 @@ export default function Home() {
                 textAlign: "center",
                 marginBottom: isMobile ? appleTheme.spacing[6] : appleTheme.spacing[8],
                 fontSize: isMobile ? "20px" : "24px",
-                fontWeight: "600"
+                fontWeight: "600",
+                wordBreak: "break-word",
+                overflowWrap: "break-word"
               }}>
-                Technical Specifications
+                {t("index.technicalSpecs")}
               </Typography>
               
               <div style={{
@@ -1514,16 +1518,16 @@ export default function Home() {
               }}>
                 {[
                   {
-                    title: "Scanning Technology",
-                    details: ["AI-Powered Analysis", "Real-time Processing", "50+ Check Types", "Custom Rules Engine"]
+                    title: t("index.specScanningTech"),
+                    details: [t("index.detailAIAnalysis"), t("index.detailRealTime"), t("index.detail50Checks"), t("index.detailCustomRules")]
                   },
                   {
-                    title: "Compliance Standards",
-                    details: ["WCAG 2.1 AA/AAA", "ADA Compliance", "Section 508", "EN 301 549"]
+                    title: t("index.specCompliance"),
+                    details: [t("index.detailWCAG"), t("index.detailADA"), t("index.detailSection508"), t("index.detailEN301549")]
                   },
                   {
-                    title: "Integration Options",
-                    details: ["REST API", "Webhook Support", "CI/CD Integration", "Browser Extension"]
+                    title: t("index.specIntegration"),
+                    details: [t("index.detailRESTAPI"), t("index.detailWebhook"), t("index.detailCICD"), t("index.detailBrowserExt")]
                   }
                 ].map((spec, index) => (
                   <Box key={index}>
@@ -1531,7 +1535,9 @@ export default function Home() {
                       color: isDarkMode ? '#FFFFFF' : '#000000',
                       fontSize: "16px",
                       fontWeight: "600",
-                      marginBottom: appleTheme.spacing[3]
+                      marginBottom: appleTheme.spacing[3],
+                      wordBreak: "break-word",
+                      overflowWrap: "break-word"
                     }}>
                       {spec.title}
                     </Typography>
@@ -1550,7 +1556,9 @@ export default function Home() {
                           }} />
                           <Typography variant="footnote" style={{
                             color: isDarkMode ? '#E5E5EA' : '#1C1C1E',
-                            fontSize: "13px"
+                            fontSize: "13px",
+                            wordBreak: "break-word",
+                            overflowWrap: "break-word"
                           }}>
                             {detail}
                           </Typography>
@@ -1579,9 +1587,11 @@ export default function Home() {
               <Typography variant="title1" style={{ 
                 marginBottom: appleTheme.spacing[4],
                 color: themeColors.text.primary,
-                fontWeight: appleTheme.typography.fontWeight.bold
+                fontWeight: appleTheme.typography.fontWeight.bold,
+                wordBreak: "break-word",
+                overflowWrap: "break-word"
               }}>
-                Detailed Reports with Actionable Recommendations
+                {t("index.detailedReportsTitle")}
               </Typography>
               <Typography variant="body" style={{ 
                 maxWidth: "600px", 
@@ -1589,10 +1599,11 @@ export default function Home() {
                 marginBottom: appleTheme.spacing[8],
                 color: themeColors.text.secondary,
                 fontSize: appleTheme.typography.fontSize.lg,
-                lineHeight: appleTheme.typography.lineHeight.relaxed
+                lineHeight: appleTheme.typography.lineHeight.relaxed,
+                wordBreak: "break-word",
+                overflowWrap: "break-word"
               }}>
-                Our advanced scanner checks your website against WCAG guidelines and provides 
-                detailed reports with actionable recommendations.
+                {t("index.detailedReportsDesc")}
               </Typography>
             </Box>
 
@@ -1607,8 +1618,8 @@ export default function Home() {
             }}>
               {[
                 {
-                  title: "WCAG Compliance",
-                  description: "Comprehensive testing against Web Content Accessibility Guidelines 2.1 AA standards.",
+                  title: t("index.reportWCAGTitle"),
+                  description: t("index.reportWCAGDesc"),
                   icon: (
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <circle cx="12" cy="12" r="10"/>
@@ -1617,8 +1628,8 @@ export default function Home() {
                   )
                 },
                 {
-                  title: "Detailed Reports",
-                  description: "Get specific recommendations for each accessibility issue found on your website.",
+                  title: t("index.reportDetailedTitle"),
+                  description: t("index.reportDetailedDesc"),
                   icon: (
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -1630,8 +1641,8 @@ export default function Home() {
                   )
                 },
                 {
-                  title: "Export & Share",
-                  description: "Download PDF reports or email results to your team for collaborative improvements.",
+                  title: t("index.reportExportTitle"),
+                  description: t("index.reportExportDesc"),
                   icon: (
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -1675,7 +1686,9 @@ export default function Home() {
                         fontWeight: "600",
                         marginBottom: "6px",
                         lineHeight: 1.3,
-                        textAlign: "left"
+                        textAlign: "left",
+                        wordBreak: "break-word",
+                        overflowWrap: "break-word"
                       }}>
                         {feature.title}
                       </Typography>
@@ -1684,7 +1697,9 @@ export default function Home() {
                         fontSize: "15px",
                         lineHeight: 1.5,
                         fontWeight: "400",
-                        textAlign: "left"
+                        textAlign: "left",
+                        wordBreak: "break-word",
+                        overflowWrap: "break-word"
                       }}>
                         {feature.description}
                       </Typography>

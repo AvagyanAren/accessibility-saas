@@ -306,7 +306,7 @@ export default function Pricing() {
                     fontSize: appleTheme.typography.fontSize.sm,
                     fontWeight: appleTheme.typography.fontWeight.semibold
                   }}>
-                    Most Popular
+                    {t("pricing.mostPopular")}
                   </Box>
                 )}
                 
