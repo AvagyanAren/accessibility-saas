@@ -247,11 +247,12 @@ export default function Pricing() {
             display: "grid",
             gridTemplateColumns: "repeat(3, 1fr)",
             gap: appleTheme.spacing[4],
-            marginBottom: appleTheme.spacing[16],
             alignItems: "center",
             justifyItems: "center",
             maxWidth: "1200px",
-            margin: "0 auto"
+            margin: "0 auto",
+            // Ensure spacing between pricing cards and "Why Choose ScanWeb?" matches the next section gap
+            marginBottom: appleTheme.spacing[12]
           }}>
             {plans.map((plan, index) => (
               <div 
