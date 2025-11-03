@@ -4,10 +4,27 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { appleTheme } from '../../styles/apple-theme';
 
 export default function LanguageSwitcher() {
-  const { language, changeLanguage } = useLanguage();
+  const { language, changeLanguage, isClient } = useLanguage();
   const { isDarkMode } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
+
+  // Don't render until client-side is ready
+  if (!isClient) {
+    return (
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '6px',
+        padding: '6px 10px',
+        backgroundColor: 'transparent',
+        border: '1px solid rgba(0, 0, 0, 0.1)',
+        borderRadius: '8px',
+        minWidth: '70px',
+        height: '32px'
+      }} />
+    );
+  }
 
   const languages = [
     { code: 'en', name: 'English', flag: '🇬🇧' },
