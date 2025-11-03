@@ -6,18 +6,18 @@ import Input from "../../components/apple/Input";
 import Card from "../../components/apple/Card";
 import { appleTheme } from "../../styles/apple-theme";
 import {
-  RecordVoiceOver,
+  Microphone,
   CheckCircle,
-  Error,
-  Warning,
+  XCircle,
+  WarningCircle,
   Info,
-  PlayArrow,
+  Play,
   Stop,
-  VolumeUp,
-  ExpandMore,
+  SpeakerHigh,
+  CaretDown,
   Lightbulb,
   Rocket
-} from "@mui/icons-material";
+} from "phosphor-react";
 import Link from "next/link";
 
 import { Container, Section } from "../../components/apple/Layout";
@@ -167,17 +167,17 @@ export default function ScreenReaderSimulator() {
 
   const getSeverityIcon = (severity) => {
     switch (severity) {
-      case "critical": return <Error />;
-      case "warning": return <Warning />;
-      case "info": return <Info />;
-      default: return <Info />;
+      case "critical": return <XCircle size={16} weight="fill" />;
+      case "warning": return <WarningCircle size={16} weight="fill" />;
+      case "info": return <Info size={16} weight="fill" />;
+      default: return <Info size={16} weight="fill" />;
     }
   };
 
   const tabs = [
-    { label: "Screen Reader Output", icon: <VolumeUp /> },
-    { label: "Issues Found", icon: <Warning /> },
-    { label: "Recommendations", icon: <CheckCircle /> }
+    { label: "Screen Reader Output", icon: <SpeakerHigh size={20} weight="regular" /> },
+    { label: "Issues Found", icon: <WarningCircle size={20} weight="fill" /> },
+    { label: "Recommendations", icon: <CheckCircle size={20} weight="fill" /> }
   ];
 
   return (
@@ -235,7 +235,7 @@ export default function ScreenReaderSimulator() {
                 onChange={setUrl}
                 size="large"
                 variant="filled"
-                startIcon={<RecordVoiceOver />}
+                startIcon={<Microphone size={20} weight="regular" />}
               />
             </Box>
             <Button
@@ -244,7 +244,7 @@ export default function ScreenReaderSimulator() {
               onClick={handleSimulate}
               disabled={simulating}
               loading={simulating}
-              startIcon={<PlayArrow />}
+              startIcon={<Play size={16} weight="fill" />}
             >
               {simulating ? "Simulating..." : "Start Simulation"}
             </Button>
@@ -454,7 +454,7 @@ export default function ScreenReaderSimulator() {
                   <VStack spacing={2}>
                     {results.recommendations.map((recommendation, index) => (
                       <HStack key={index} spacing={2} align="center">
-                        <CheckCircle style={{ color: appleTheme.colors.success, fontSize: "20px" }} />
+                        <CheckCircle size={20} weight="fill" color={appleTheme.colors.success} />
                         <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
                           {recommendation}
                         </Typography>
@@ -487,7 +487,7 @@ export default function ScreenReaderSimulator() {
                 alignItems: "center",
                 gap: "8px"
               }}>
-                <CheckCircle style={{ fontSize: "24px" }} />
+                <CheckCircle size={24} weight="fill" />
                 Essential Requirements
               </Typography>
               <VStack spacing={2}>

@@ -6,36 +6,13 @@ import Input from "../../components/apple/Input";
 import { Container, Box, Flex, Stack, Section, HStack } from "../../components/apple/Layout";
 import { appleTheme } from "../../styles/apple-theme";
 import { useTheme } from "../../contexts/ThemeContext";
+import { Eyedropper, Check, XCircle, ArrowsClockwise } from "phosphor-react";
 
 // Icons
-const ContrastIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="12" cy="12" r="3"/>
-    <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1"/>
-  </svg>
-);
-
-const CheckIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polyline points="20,6 9,17 4,12"/>
-  </svg>
-);
-
-const ErrorIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="12" cy="12" r="10"/>
-    <line x1="15" y1="9" x2="9" y2="15"/>
-    <line x1="9" y1="9" x2="15" y2="15"/>
-  </svg>
-);
-
-const RefreshIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polyline points="23,4 23,10 17,10"/>
-    <polyline points="1,20 1,14 7,14"/>
-    <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
-  </svg>
-);
+const ContrastIcon = () => <Eyedropper size={24} weight="regular" />;
+const CheckIcon = () => <Check size={16} weight="bold" />;
+const ErrorIcon = () => <XCircle size={16} weight="fill" />;
+const RefreshIcon = () => <ArrowsClockwise size={16} weight="regular" />;
 
 export default function ColorContrastChecker() {
   const { isDarkMode } = useTheme();

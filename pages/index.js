@@ -22,7 +22,9 @@ import {
   Question, 
   CaretDown, 
   CaretUp, 
-  Trash 
+  Trash,
+  CheckCircle,
+  ArrowSquareDown
 } from "phosphor-react";
 
 // Icons with Phosphor React
@@ -872,40 +874,48 @@ export default function Home() {
                         color: getScoreColor(accessibilityScore),
                         textShadow: `0 2px 4px ${getScoreColor(accessibilityScore)}30`,
                         letterSpacing: "-1px",
-                        lineHeight: 1
+                        lineHeight: 1,
+                        flexShrink: 0
                       }}>
                         {accessibilityScore}
                       </div>
                       <div style={{
-                display: "flex",
-                flexDirection: "column",
-                        gap: "4px"
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "4px",
+                        justifyContent: "flex-start",
+                        alignItems: "flex-start"
                       }}>
                         <Typography variant="body" style={{ 
                           color: themeColors.gray[600],
                           fontSize: isMobile ? "16px" : "18px",
-                          fontWeight: "500"
+                          fontWeight: "500",
+                          lineHeight: 1.2
                         }}>
                           {t("common.outOf")} 100
-          </Typography>
+                        </Typography>
                         <div style={{
                           display: "flex",
                           alignItems: "center",
-                          gap: "8px"
+                          gap: "8px",
+                          lineHeight: 1.2
                         }}>
                           <div style={{
                             width: "8px",
                             height: "8px",
                             backgroundColor: violations.length === 0 ? "#34C759" : getScoreColor(accessibilityScore),
-                            borderRadius: "50%"
+                            borderRadius: "50%",
+                            flexShrink: 0
                           }} />
                           <Typography variant="caption1" style={{ 
                             color: themeColors.gray[600],
                             fontSize: isMobile ? "14px" : "16px",
-                            fontWeight: "500"
+                            fontWeight: "500",
+                            lineHeight: 1.2,
+                            whiteSpace: "nowrap"
                           }}>
                             {violations.length} {violations.length === 1 ? t("common.issue") : t("common.issuesFound")}
-          </Typography>
+                          </Typography>
                         </div>
                       </div>
                     </div>
@@ -1107,6 +1117,52 @@ export default function Home() {
                           }
                         };
 
+                        const getSeverityText = (severity) => {
+                          switch (severity) {
+                            case 'high': return t("home.severityHigh");
+                            case 'medium': return t("home.severityMedium");
+                            case 'low': return t("home.severityLow");
+                            default: return severity;
+                          }
+                        };
+
+                        const getCategoryText = (category) => {
+                          switch (category?.toLowerCase()) {
+                            case 'mobile': return t("home.categoryMobile");
+                            case 'navigation': return t("home.categoryNavigation");
+                            case 'engagement': return t("home.categoryEngagement");
+                            case 'forms': return t("home.categoryForms");
+                            case 'content': return t("home.categoryContent");
+                            case 'seo': return t("home.categorySEO");
+                            case 'performance': return t("home.categoryPerformance");
+                            default: return category;
+                          }
+                        };
+
+                        const getIssueTranslation = (issueId, field) => {
+                          // Map issue IDs to translation key prefixes
+                          const issueIdMap = {
+                            'viewport-meta': 'Viewport',
+                            'navigation-structure': 'Navigation',
+                            'call-to-action': 'CTA',
+                            'form-usability': 'Forms',
+                            'content-hierarchy': 'Content',
+                            'image-alt': 'Image',
+                            'meta-description': 'Meta'
+                          };
+                          
+                          const prefix = issueIdMap[issueId] || issueId.charAt(0).toUpperCase() + issueId.slice(1).replace(/-/g, '');
+                          const translationKey = `home.uxIssue${prefix}${field.charAt(0).toUpperCase() + field.slice(1)}`;
+                          const translation = t(translationKey);
+                          // If translation doesn't exist, return null to fallback to original
+                          return translation !== translationKey ? translation : null;
+                        };
+
+                        const translatedTitle = getIssueTranslation(issue.id, 'title') || issue.title;
+                        const translatedDesc = getIssueTranslation(issue.id, 'desc') || issue.description;
+                        const translatedRec = getIssueTranslation(issue.id, 'rec') || issue.recommendation;
+                        const translatedImpact = issue.impact ? (getIssueTranslation(issue.id, 'impact') || issue.impact) : null;
+
                         return (
                           <div
                             key={`ux-issue-${index}-${issue.id || 'unknown'}`}
@@ -1145,7 +1201,7 @@ export default function Home() {
                                 fontWeight: "600",
                                 textTransform: "capitalize"
                               }}>
-                                {issue.severity} Priority
+                                {getSeverityText(issue.severity)} {t("home.priority")}
                               </Typography>
                               <div style={{
                                 padding: "4px 8px",
@@ -1156,7 +1212,7 @@ export default function Home() {
                                 color: getSeverityColor(issue.severity),
                                 textTransform: "uppercase"
                               }}>
-                                {issue.category}
+                                {getCategoryText(issue.category)}
                               </div>
                             </div>
                             <Typography variant="title3" style={{
@@ -1165,7 +1221,7 @@ export default function Home() {
                               fontWeight: "600",
                               marginBottom: "8px"
                             }}>
-                              {issue.title}
+                              {translatedTitle}
                             </Typography>
                             <Typography variant="body" style={{
                               color: "#1C1C1E",
@@ -1173,13 +1229,14 @@ export default function Home() {
                               lineHeight: 1.5,
                               marginBottom: "12px"
                             }}>
-                              {issue.description}
+                              {translatedDesc}
                             </Typography>
                             <div style={{
                               padding: "12px",
-                              backgroundColor: "#F8F9FA",
+                              backgroundColor: "#FFFFFF",
                               borderRadius: "8px",
-                              marginBottom: "12px"
+                              marginBottom: "12px",
+                              border: "1px solid #E5E5EA"
                             }}>
                               <Typography variant="caption1" style={{
                                 color: "#007AFF",
@@ -1188,23 +1245,23 @@ export default function Home() {
                                 marginBottom: "6px",
                                 display: "block"
                               }}>
-                                Recommendation:
+                                {t("home.recommendation")}
                               </Typography>
                               <Typography variant="caption1" style={{
                                 color: "#1C1C1E",
                                 fontSize: "13px",
                                 lineHeight: 1.4
                               }}>
-                                {issue.recommendation}
+                                {translatedRec}
                               </Typography>
                             </div>
-                            {issue.impact && (
+                            {translatedImpact && (
                               <Typography variant="footnote" style={{
                                 color: "#8E8E93",
                                 fontSize: "12px",
                                 fontStyle: "italic"
                               }}>
-                                Impact: {issue.impact}
+                                {t("home.impact")} {translatedImpact}
                               </Typography>
                             )}
                           </div>
@@ -1227,10 +1284,10 @@ export default function Home() {
               flexWrap: "wrap"
             }}>
               {[
-                { number: "1B+", label: "Websites Scanned" },
-                { number: "99.9%", label: "Accuracy Rate" },
-                { number: "2.5M+", label: "Issues Fixed" },
-                { number: "WCAG 2.1", label: "Compliance" }
+                { number: "1B+", label: t("index.statsScanned") },
+                { number: "99.9%", label: t("index.statsAccuracy") },
+                { number: "2.5M+", label: t("index.statsFixed") },
+                { number: "WCAG 2.1", label: t("index.statsCompliance") }
               ].map((stat, index) => (
                 <Box key={index} style={{ textAlign: "center" }}>
                   <Typography variant="title1" style={{
@@ -1499,14 +1556,14 @@ export default function Home() {
         </Container>
       </Section>
 
-      <Container size="lg" padding="lg" style={{ 
-        paddingBottom: isMobile ? appleTheme.spacing[12] : appleTheme.spacing[16]
+      <Container size="lg" style={{ 
+        paddingBottom: isMobile ? appleTheme.spacing[12] : appleTheme.spacing[16],
+        paddingTop: isMobile ? appleTheme.spacing[8] : appleTheme.spacing[12]
       }}>
         {/* Features Section - only shown when no results */}
         {violations.length === 0 && (
           <Section className="features-section" padding="lg" style={{ 
-            marginTop: isMobile ? appleTheme.spacing[8] : appleTheme.spacing[12],
-            padding: `${appleTheme.spacing[12]} ${appleTheme.spacing[6]}`
+            padding: `${appleTheme.spacing[12]} 0`
           }}>
             <Box style={{ textAlign: "center", marginBottom: appleTheme.spacing[12] }}>
               <Typography variant="title1" style={{ 
@@ -1534,47 +1591,27 @@ export default function Home() {
 
             <div className="features-grid" style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
               gap: appleTheme.spacing[6],
-              maxWidth: "1200px",
+              maxWidth: "900px",
               margin: "0 auto",
-              alignItems: "stretch",
-              padding: `${appleTheme.spacing[2]} ${appleTheme.spacing[4]}`
+              alignItems: "stretch"
             }}>
               {[
                 {
                   title: t("index.reportWCAGTitle"),
                   description: t("index.reportWCAGDesc"),
-                  icon: (
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="12" cy="12" r="10"/>
-                      <path d="M9 12l2 2 4-4"/>
-                    </svg>
-                  )
+                  icon: <CheckCircle size={20} weight="regular" />
                 },
                 {
                   title: t("index.reportDetailedTitle"),
                   description: t("index.reportDetailedDesc"),
-                  icon: (
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                      <polyline points="14,2 14,8 20,8"/>
-                      <line x1="16" y1="13" x2="8" y2="13"/>
-                      <line x1="16" y1="17" x2="8" y2="17"/>
-                      <polyline points="10,9 9,9 8,9"/>
-                    </svg>
-                  )
+                  icon: <FileText size={20} weight="regular" />
                 },
                 {
                   title: t("index.reportExportTitle"),
                   description: t("index.reportExportDesc"),
-                  icon: (
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                      <polyline points="7,10 12,15 17,10"/>
-                      <line x1="12" y1="15" x2="12" y2="3"/>
-                    </svg>
-                  )
+                  icon: <ArrowSquareDown size={20} weight="regular" />
                 }
               ].map((feature, index) => (
                 <Card key={index} variant="elevated" padding="xl" hover className="feature-card" style={{
@@ -1600,7 +1637,10 @@ export default function Home() {
                       justifyContent: "flex-start",
                       alignItems: "center",
                       marginBottom: appleTheme.spacing[4],
-                      padding: `${appleTheme.spacing[2]} 0`
+                      padding: appleTheme.spacing[2],
+                      backgroundColor: isDarkMode ? "rgba(0, 122, 255, 0.1)" : "rgba(0, 122, 255, 0.05)",
+                      borderRadius: appleTheme.borderRadius.md,
+                      width: "fit-content"
                     }}>
                       {feature.icon}
                     </div>

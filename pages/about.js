@@ -9,6 +9,18 @@ import { useTheme } from "../contexts/ThemeContext";
 import { useLanguage } from "../contexts/LanguageContext";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import {
+  UserFocus,
+  Lightning,
+  Code,
+  Lightbulb,
+  Rocket,
+  Users,
+  ChartLineUp,
+  ShieldCheck,
+  Buildings,
+  Check
+} from "phosphor-react";
 
 // Tooltip Component
 const Tooltip = memo(({ children, text, position = "top" }) => {
@@ -76,15 +88,15 @@ const Tooltip = memo(({ children, text, position = "top" }) => {
 });
 
 // Icons with Phosphor React
-const AccessibilityIcon = () => <Accessibility size={24} weight="regular" />;
+const AccessibilityIcon = () => <UserFocus size={24} weight="regular" />;
 const SpeedIcon = () => <Lightning size={24} weight="fill" />;
 const CodeIcon = () => <Code size={24} weight="regular" />;
 
 const DesignIcon = () => <Lightbulb size={24} weight="regular" />;
 const SupportIcon = () => <ShieldCheck size={24} weight="regular" />;
-const PeopleIcon = () => <People size={24} weight="regular" />;
-const TrendingUpIcon = () => <TrendingUp size={24} weight="regular" />;
-const BusinessIcon = () => <Business size={24} weight="regular" />;
+const PeopleIcon = () => <Users size={24} weight="regular" />;
+const TrendingUpIcon = () => <ChartLineUp size={24} weight="regular" />;
+const BusinessIcon = () => <Buildings size={24} weight="regular" />;
 const LightbulbIcon = () => <Lightbulb size={24} weight="regular" />;
 const RocketIcon = () => <Rocket size={24} weight="regular" />;
 const CheckIcon = () => <Check size={16} weight="bold" />;
@@ -408,7 +420,12 @@ export default function About() {
                     color: appleTheme.colors.primary[500],
                     marginBottom: "16px",
                     display: "flex",
-                    justifyContent: "center"
+                    justifyContent: "center",
+                    padding: appleTheme.spacing[2],
+                    backgroundColor: isDarkMode ? "rgba(0, 122, 255, 0.1)" : "rgba(0, 122, 255, 0.05)",
+                    borderRadius: appleTheme.borderRadius.md,
+                    width: "fit-content",
+                    margin: "0 auto 16px auto"
                   }}>
                     {feature.icon}
                   </Box>

@@ -107,7 +107,8 @@ const TagIcon = () => <Tag size={16} weight="regular" />;
 export default function Resources() {
   const { isDarkMode } = useTheme();
   const { t } = useLanguage();
-  const [selectedCategory, setSelectedCategory] = useState(t("resources.categoryAll"));
+  const allCategoryLabel = t("resources.categoryAll");
+  const [selectedCategory, setSelectedCategory] = useState(allCategoryLabel);
   
   const articles = [
     {
@@ -191,56 +192,57 @@ export default function Resources() {
 
   const tools = [
     {
-      name: "WebAIM Contrast Checker",
-      description: "Online tool for checking color contrast ratios",
+      name: t("resources.toolWebAIM"),
+      description: t("resources.toolWebAIMDesc"),
       url: "https://webaim.org/resources/contrastchecker/",
-      category: "Design",
+      category: t("resources.categoryDesign"),
       features: [
-        "Real-time contrast calculation",
-        "WCAG compliance checking", 
-        "Color blindness simulation"
+        t("resources.toolFeatureRealTime"),
+        t("resources.toolFeatureWCAGCheck"), 
+        t("resources.toolFeatureSimulation")
       ]
     },
     {
-      name: "Color Oracle",
-      description: "Desktop application for color blindness simulation",
+      name: t("resources.toolColorOracle"),
+      description: t("resources.toolColorOracleDesc"),
       url: "https://colororacle.org/",
-      category: "Design",
+      category: t("resources.categoryDesign"),
       features: [
-        "Real-time preview",
-        "Multiple color blindness types",
-        "Cross-platform support"
+        t("resources.toolFeaturePreview"),
+        t("resources.toolFeatureMultiple"),
+        t("resources.toolFeatureCrossPlatform")
       ]
     },
     {
-      name: "Stark Plugin",
-      description: "Design tool plugin for accessibility testing",
+      name: t("resources.toolStark"),
+      description: t("resources.toolStarkDesc"),
       url: "https://www.getstark.co/",
-      category: "Development",
+      category: t("resources.categoryDevelopment"),
       features: [
-        "Figma/Sketch integration",
-        "Contrast checking",
-        "Color blindness simulation"
+        t("resources.toolFeatureIntegration"),
+        t("resources.toolFeatureScanning"),
+        t("resources.toolFeatureSimulation")
       ]
     }
   ];
 
   const getCategoryColor = (category) => {
-    const colors = {
-      "Beginner": appleTheme.colors.primary[500],
-      "Advanced": appleTheme.colors.success,
-      "Development": appleTheme.colors.warning,
-      "Design": "#FF6B35",
-      "Testing": appleTheme.colors.primary[600]
+    // Map translated category names to colors
+    const categoryMap = {
+      [t("resources.categoryBeginner")]: appleTheme.colors.primary[500],
+      [t("resources.categoryAdvanced")]: appleTheme.colors.success,
+      [t("resources.categoryDevelopment")]: appleTheme.colors.warning,
+      [t("resources.categoryDesign")]: "#FF6B35",
+      [t("resources.categoryTesting")]: appleTheme.colors.primary[600]
     };
-    return colors[category] || appleTheme.colors.gray[500];
+    return categoryMap[category] || appleTheme.colors.gray[500];
   };
 
   // Get unique categories for filter
-  const categories = ["All", ...new Set(articles.map(article => article.category))];
+  const categories = [allCategoryLabel, ...new Set(articles.map(article => article.category))];
   
   // Filter articles based on selected category
-  const filteredArticles = selectedCategory === "All" 
+  const filteredArticles = selectedCategory === allCategoryLabel 
     ? articles 
     : articles.filter(article => article.category === selectedCategory);
 
@@ -289,7 +291,7 @@ export default function Resources() {
               color: isDarkMode ? "#FFFFFF" : "#000000",
               marginBottom: appleTheme.spacing[6]
             }}>
-              Articles & Guides
+              {t("resources.articlesAndGuides")}
             </Typography>
             
             {/* Filter Buttons */}
@@ -312,7 +314,7 @@ export default function Resources() {
                     cursor: "pointer",
                     transition: "all 0.2s ease-in-out",
                     backgroundColor: selectedCategory === category 
-                      ? (category === "All" ? appleTheme.colors.primary[500] : getCategoryColor(category))
+                      ? (category === allCategoryLabel ? appleTheme.colors.primary[500] : getCategoryColor(category))
                       : isDarkMode ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.05)",
                     color: selectedCategory === category 
                       ? "white" 
@@ -356,8 +358,8 @@ export default function Resources() {
             marginBottom: appleTheme.spacing[6],
             fontSize: "14px"
           }}>
-            {filteredArticles.length} {filteredArticles.length === 1 ? 'article' : 'articles'} 
-            {selectedCategory !== "All" && ` in ${selectedCategory}`}
+            {filteredArticles.length} {filteredArticles.length === 1 ? t("resources.article") : t("resources.articles")} 
+            {selectedCategory !== allCategoryLabel && ` ${t("resources.inCategory")} ${selectedCategory}`}
           </Typography>
           
           <div style={{
@@ -429,10 +431,17 @@ export default function Resources() {
                     
                     {/* Icon in top-left */}
                     <Box style={{ 
-                      color: article.color, 
+                      color: appleTheme.colors.primary[500], 
                       flexShrink: 0,
                       marginBottom: appleTheme.spacing[3],
-                      marginTop: "4px"
+                      marginTop: "4px",
+                      padding: appleTheme.spacing[2],
+                      backgroundColor: isDarkMode ? "rgba(0, 122, 255, 0.1)" : "rgba(0, 122, 255, 0.05)",
+                      borderRadius: appleTheme.borderRadius.md,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      width: "fit-content"
                     }}>
                       {article.icon}
                     </Box>
@@ -473,14 +482,14 @@ export default function Resources() {
                           color: isDarkMode ? "#007AFF" : appleTheme.colors.primary[500],
                           fontSize: "12px"
                         }}>
-                          Read Article →
+                          {t("resources.readArticle")}
         </Typography>
                       ) : (
                         <Typography variant="caption1" style={{
                           color: isDarkMode ? "#AEAEB2" : "#6D6D70",
                           fontSize: "12px"
                         }}>
-                          Coming Soon
+                          {t("resources.comingSoon")}
         </Typography>
                       )}
                     </HStack>
@@ -493,7 +502,7 @@ export default function Resources() {
         {/* Recommended Tools Section */}
         <Section padding="lg">
           <Typography variant="title2" style={{ marginBottom: appleTheme.spacing[8] }}>
-            Recommended Tools
+            {t("resources.recommendedTools")}
           </Typography>
           
           <div style={{
@@ -601,7 +610,7 @@ export default function Resources() {
                           fontWeight: appleTheme.typography.fontWeight.medium
                         }}
                       >
-                        Visit Tool
+                        {t("resources.visitTool")}
                       </Button>
                     </a>
                   </Flex>
@@ -624,18 +633,22 @@ export default function Resources() {
             <Typography variant="title1" style={{ 
               color: "white",
               fontWeight: appleTheme.typography.fontWeight.bold,
-              marginBottom: appleTheme.spacing[2]
+              marginBottom: appleTheme.spacing[2],
+              wordBreak: "break-word",
+              overflowWrap: "break-word"
             }}>
-              Stay Updated
+              {t("resources.stayUpdated")}
             </Typography>
             <Typography variant="headline" style={{ 
               color: "white",
               opacity: 0.95,
               maxWidth: "500px",
               fontWeight: appleTheme.typography.fontWeight.medium,
-              lineHeight: appleTheme.typography.lineHeight.relaxed
+              lineHeight: appleTheme.typography.lineHeight.relaxed,
+              wordBreak: "break-word",
+              overflowWrap: "break-word"
             }}>
-              Get the latest accessibility tips, guides, and industry news delivered to your inbox.
+              {t("resources.stayUpdatedDesc")}
             </Typography>
             <HStack spacing={4} wrap="wrap" justify="center" style={{ marginTop: appleTheme.spacing[4] }}>
               <button
@@ -674,8 +687,8 @@ export default function Resources() {
                   e.currentTarget.style.transform = "translateY(0)";
                   e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.15)";
                 }}
-              >
-                Subscribe to Newsletter
+                >
+                {t("resources.subscribeToNewsletter")}
               </button>
               <button
                 onClick={(e) => {

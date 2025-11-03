@@ -14,7 +14,11 @@ import {
   Play,
   Check,
   XCircle,
-  CaretDown
+  CaretDown,
+  CaretRight,
+  Key,
+  Globe,
+  ShieldCheck
 } from "phosphor-react";
 
 // Tooltip Component
@@ -94,19 +98,8 @@ const ChevronRightIcon = () => <CaretRight size={16} weight="bold" />;
 
 const KeyIcon = () => <Key size={20} weight="regular" />;
 
-const GlobeIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="12" cy="12" r="10"/>
-    <line x1="2" y1="12" x2="22" y2="12"/>
-    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-  </svg>
-);
-
-const ShieldIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-  </svg>
-);
+const GlobeIcon = () => <Globe size={20} weight="regular" />;
+const ShieldIcon = () => <ShieldCheck size={20} weight="regular" />;
 
 export default function ApiDocs() {
   const { isDarkMode } = useTheme();
@@ -120,7 +113,7 @@ export default function ApiDocs() {
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
-    setSnackbarMessage("Copied to clipboard!");
+    setSnackbarMessage(t("apiDocs.copiedToClipboard"));
     setSnackbarOpen(true);
   };
 
@@ -174,20 +167,20 @@ print(data)`
     {
       method: "GET",
       path: "/api/scan",
-      description: "Scan a website for accessibility issues",
+      description: t("apiDocs.endpointScanDesc"),
       parameters: [
-        { name: "url", type: "string", required: true, description: "The URL to scan" },
-        { name: "depth", type: "number", required: false, description: "Scan depth (1-3, default: 1)" },
-        { name: "include", type: "string", required: false, description: "Comma-separated list of issue types to include" }
+        { name: "url", type: "string", required: true, description: t("apiDocs.paramUrl") },
+        { name: "depth", type: "number", required: false, description: t("apiDocs.paramDepth") },
+        { name: "include", type: "string", required: false, description: t("apiDocs.paramInclude") }
       ]
     },
     {
       method: "POST",
       path: "/api/batch-scan",
-      description: "Scan multiple URLs in a single request",
+      description: t("apiDocs.endpointBatchDesc"),
       parameters: [
-        { name: "urls", type: "array", required: true, description: "Array of URLs to scan" },
-        { name: "options", type: "object", required: false, description: "Scan options for all URLs" }
+        { name: "urls", type: "array", required: true, description: t("apiDocs.paramUrls") },
+        { name: "options", type: "object", required: false, description: t("apiDocs.paramOptions") }
       ]
     }
   ];
@@ -209,17 +202,21 @@ print(data)`
             <Typography variant="display" style={{ 
               marginBottom: appleTheme.spacing[4],
               color: "#1C1C1E",
-              fontWeight: appleTheme.typography.fontWeight.bold
+              fontWeight: appleTheme.typography.fontWeight.bold,
+              wordBreak: "break-word",
+              overflowWrap: "break-word"
             }}>
-              API Documentation
+              {t("apiDocs.title")}
             </Typography>
             <Typography variant="headline" weight="regular" style={{ 
               color: "#2C2C2E",
               maxWidth: "600px",
               margin: `0 auto ${appleTheme.spacing[8]} auto`,
-              fontWeight: appleTheme.typography.fontWeight.medium
+              fontWeight: appleTheme.typography.fontWeight.medium,
+              wordBreak: "break-word",
+              overflowWrap: "break-word"
             }}>
-              Integrate accessibility scanning into your applications with our powerful REST API.
+              {t("apiDocs.subtitle")}
             </Typography>
           </Box>
         </Container>
@@ -233,20 +230,25 @@ print(data)`
               <Typography variant="title2" style={{
                 color: isDarkMode ? "#FFFFFF" : "#000000"
               }}>
-                Quick Start
+                {t("apiDocs.quickStart")}
               </Typography>
-              <Typography variant="body" color="secondary">
-                Get started with our API in minutes. All you need is an API key and a URL to scan.
+              <Typography variant="body" style={{
+                color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
+                wordBreak: "break-word",
+                overflowWrap: "break-word"
+              }}>
+                {t("apiDocs.quickStartDesc")}
               </Typography>
               
               <Box style={{
-                backgroundColor: appleTheme.colors.gray[50],
+                backgroundColor: isDarkMode ? "#2C2C2E" : "#FFFFFF",
                 padding: appleTheme.spacing[4],
                 borderRadius: appleTheme.borderRadius.md,
                 fontFamily: appleTheme.typography.fontFamily.mono,
                 fontSize: appleTheme.typography.fontSize.sm,
-                color: appleTheme.colors.text.secondary,
-                overflowX: "auto"
+                color: isDarkMode ? "#FFFFFF" : "#000000",
+                overflowX: "auto",
+                border: isDarkMode ? "1px solid #3A3A3C" : "1px solid #E5E5EA"
               }}>
                 <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
                   {codeExamples.curl}
@@ -254,16 +256,23 @@ print(data)`
               </Box>
               
               <HStack justify="space-between" align="center">
-                <Typography variant="footnote" color="tertiary">
-                  Replace YOUR_API_KEY with your actual API key
+                <Typography variant="footnote" style={{
+                  color: isDarkMode ? "#AEAEB2" : "#6D6D70",
+                  wordBreak: "break-word",
+                  overflowWrap: "break-word"
+                }}>
+                  {t("apiDocs.replaceApiKey")}
                 </Typography>
                 <Button
                   variant="ghost"
                   size="small"
                   startIcon={<CopyIcon />}
                   onClick={() => copyToClipboard(codeExamples.curl)}
+                  style={{
+                    color: isDarkMode ? "#007AFF" : appleTheme.colors.primary[500]
+                  }}
                 >
-                  Copy
+                  {t("apiDocs.copy")}
                 </Button>
               </HStack>
             </Stack>
@@ -277,16 +286,20 @@ print(data)`
               <Typography variant="title2" style={{
                 color: isDarkMode ? "#FFFFFF" : "#000000"
               }}>
-                Test the API
+                {t("apiDocs.testApi")}
               </Typography>
-              <Typography variant="body" color="secondary">
-                Try our API with a real URL to see how it works.
+              <Typography variant="body" style={{
+                color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
+                wordBreak: "break-word",
+                overflowWrap: "break-word"
+              }}>
+                {t("apiDocs.testApiDesc")}
               </Typography>
               
               <HStack spacing={3} align="flex-end">
                 <Box style={{ flex: 1 }}>
                   <Input
-                    label="Website URL"
+                    label={t("apiDocs.websiteUrl")}
                     placeholder="https://example.com"
                     value={testUrl}
                     onChange={setTestUrl}
@@ -300,7 +313,7 @@ print(data)`
                   disabled={!testUrl.trim()}
                   startIcon={<PlayIcon />}
                 >
-                  Test API
+                  {t("apiDocs.testApi")}
                 </Button>
               </HStack>
               
@@ -314,18 +327,19 @@ print(data)`
                   <Flex align="center" gap={2} style={{ marginBottom: appleTheme.spacing[3] }}>
                     {testResult.success ? <CheckIcon style={{ color: isDarkMode ? "#30D158" : appleTheme.colors.success }} /> : <ErrorIcon style={{ color: isDarkMode ? "#FF453A" : appleTheme.colors.error }} />}
                     <Typography variant="callout" weight="semibold" color={testResult.success ? "success" : "error"}>
-                      {testResult.success ? "Success!" : "Error"}
+                      {testResult.success ? t("apiDocs.success") : t("apiDocs.error")}
                     </Typography>
                   </Flex>
                   
                   <Box style={{
-                    backgroundColor: appleTheme.colors.background.primary,
+                    backgroundColor: isDarkMode ? "#2C2C2E" : "#FFFFFF",
                     padding: appleTheme.spacing[3],
                     borderRadius: appleTheme.borderRadius.sm,
                     fontFamily: appleTheme.typography.fontFamily.mono,
                     fontSize: appleTheme.typography.fontSize.sm,
-                    color: appleTheme.colors.text.secondary,
-                    overflowX: "auto"
+                    color: isDarkMode ? "#FFFFFF" : "#000000",
+                    overflowX: "auto",
+                    border: isDarkMode ? "1px solid #3A3A3C" : "1px solid #E5E5EA"
                   }}>
                     <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
                       {JSON.stringify(testResult.data || testResult.error, null, 2)}
@@ -343,7 +357,7 @@ print(data)`
             marginBottom: appleTheme.spacing[6],
             color: isDarkMode ? "#FFFFFF" : "#000000"
           }}>
-            API Endpoints
+            {t("apiDocs.apiEndpoints")}
           </Typography>
           
           <Stack spacing={4}>
@@ -402,7 +416,7 @@ print(data)`
                       onClick={() => toggleSection(`endpoint-${index}`)}
                       endIcon={expandedSections[`endpoint-${index}`] ? <ChevronDownIcon /> : <ChevronRightIcon />}
                     >
-                      {expandedSections[`endpoint-${index}`] ? "Hide Details" : "Show Details"}
+                      {expandedSections[`endpoint-${index}`] ? t("apiDocs.hideDetails") : t("apiDocs.showDetails")}
                     </Button>
                   </Flex>
                   
@@ -418,7 +432,7 @@ print(data)`
                         marginBottom: appleTheme.spacing[3],
                         color: isDarkMode ? "#FFFFFF" : "#000000"
                       }}>
-                        Parameters
+                        {t("apiDocs.parameters")}
                       </Typography>
                       <Stack spacing={2}>
                         {endpoint.parameters.map((param, paramIndex) => (
@@ -453,12 +467,14 @@ print(data)`
                                     fontSize: appleTheme.typography.fontSize.xs,
                                     fontWeight: appleTheme.typography.fontWeight.semibold
                                   }}>
-                                    Required
+                                    {t("apiDocs.required")}
                                   </Box>
                                 )}
                               </HStack>
                             </Flex>
-                            <Typography variant="caption1" color="tertiary">
+                            <Typography variant="caption1" style={{
+                              color: isDarkMode ? "#AEAEB2" : "#6D6D70"
+                            }}>
                               {param.description}
                             </Typography>
                           </Box>
@@ -478,7 +494,7 @@ print(data)`
             marginBottom: appleTheme.spacing[6],
             color: isDarkMode ? "#FFFFFF" : "#000000"
           }}>
-            Code Examples
+            {t("apiDocs.codeExamples")}
           </Typography>
           
           <div style={{
@@ -531,19 +547,23 @@ print(data)`
                       size="small"
                       startIcon={<CopyIcon />}
                       onClick={() => copyToClipboard(code)}
+                      style={{
+                        color: isDarkMode ? "#007AFF" : appleTheme.colors.primary[500]
+                      }}
                     >
-                      Copy
+                      {t("apiDocs.copy")}
                     </Button>
                   </Flex>
                   
                   <Box style={{
-                    backgroundColor: appleTheme.colors.gray[50],
+                    backgroundColor: isDarkMode ? "#2C2C2E" : "#FFFFFF",
                     padding: appleTheme.spacing[3],
                     borderRadius: appleTheme.borderRadius.sm,
                     fontFamily: appleTheme.typography.fontFamily.mono,
                     fontSize: appleTheme.typography.fontSize.sm,
-                    color: appleTheme.colors.text.secondary,
-                    overflowX: "auto"
+                    color: isDarkMode ? "#FFFFFF" : "#000000",
+                    overflowX: "auto",
+                    border: isDarkMode ? "1px solid #3A3A3C" : "1px solid #E5E5EA"
                   }}>
                     <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
                       {code}
@@ -564,27 +584,36 @@ print(data)`
                 <Typography variant="title2" style={{
                   color: isDarkMode ? "#FFFFFF" : "#000000"
                 }}>
-                  Authentication
+                  {t("apiDocs.authentication")}
                 </Typography>
               </HStack>
               
-              <Typography variant="body" color="secondary">
-                All API requests require authentication using an API key. Include your API key in the Authorization header.
+              <Typography variant="body" style={{
+                color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
+                wordBreak: "break-word",
+                overflowWrap: "break-word"
+              }}>
+                {t("apiDocs.authDesc")}
               </Typography>
               
               <Box style={{
-                backgroundColor: appleTheme.colors.gray[50],
+                backgroundColor: isDarkMode ? "#2C2C2E" : "#FFFFFF",
                 padding: appleTheme.spacing[4],
                 borderRadius: appleTheme.borderRadius.md,
                 fontFamily: appleTheme.typography.fontFamily.mono,
                 fontSize: appleTheme.typography.fontSize.sm,
-                color: appleTheme.colors.text.secondary
+                color: isDarkMode ? "#FFFFFF" : "#000000",
+                border: isDarkMode ? "1px solid #3A3A3C" : "1px solid #E5E5EA"
               }}>
                 <pre style={{ margin: 0 }}>Authorization: Bearer YOUR_API_KEY</pre>
               </Box>
               
-              <Typography variant="footnote" color="tertiary">
-                Get your API key from the dashboard after signing up for a Pro or Enterprise plan.
+              <Typography variant="footnote" style={{
+                color: isDarkMode ? "#AEAEB2" : "#6D6D70",
+                wordBreak: "break-word",
+                overflowWrap: "break-word"
+              }}>
+                {t("apiDocs.getApiKey")}
               </Typography>
             </Stack>
           </Card>

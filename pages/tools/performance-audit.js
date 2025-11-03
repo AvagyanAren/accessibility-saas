@@ -6,18 +6,18 @@ import Input from "../../components/apple/Input";
 import Card from "../../components/apple/Card";
 import { appleTheme } from "../../styles/apple-theme";
 import {
-  Speed,
+  Lightning,
   CheckCircle,
-  Error,
-  Warning,
+  XCircle,
+  WarningCircle,
   Info,
-  TrendingUp,
+  ChartLineUp,
   Memory,
-  NetworkCheck,
-  Timer,
+  Network,
+  Clock,
   Lightbulb,
   Rocket
-} from "@mui/icons-material";
+} from "phosphor-react";
 import Link from "next/link";
 
 import { Container, Section } from "../../components/apple/Layout";
@@ -134,10 +134,10 @@ export default function PerformanceAudit() {
 
   const getSeverityIcon = (severity) => {
     switch (severity) {
-      case "critical": return <Error />;
-      case "warning": return <Warning />;
-      case "info": return <Info />;
-      default: return <Info />;
+      case "critical": return <XCircle size={16} weight="fill" />;
+      case "warning": return <WarningCircle size={16} weight="fill" />;
+      case "info": return <Info size={16} weight="fill" />;
+      default: return <Info size={16} weight="fill" />;
     }
   };
 
@@ -196,7 +196,7 @@ export default function PerformanceAudit() {
                 onChange={setUrl}
                 size="large"
                 variant="filled"
-                startIcon={<Speed />}
+                startIcon={<Lightning size={20} weight="fill" />}
               />
             </Box>
             <Button
@@ -205,7 +205,7 @@ export default function PerformanceAudit() {
               onClick={handleAudit}
               disabled={auditing}
               loading={auditing}
-              startIcon={<TrendingUp />}
+              startIcon={<ChartLineUp size={16} weight="regular" />}
             >
               {auditing ? "Auditing..." : "Start Audit"}
             </Button>
@@ -372,7 +372,7 @@ export default function PerformanceAudit() {
                           marginBottom: appleTheme.spacing[2]
                         }}>
                           <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
-                            <strong><Lightbulb style={{ fontSize: "16px", marginRight: "4px", verticalAlign: "middle" }} /> Suggestion:</strong> {issue.suggestion}
+                            <strong><Lightbulb size={16} weight="fill" style={{ marginRight: "4px", verticalAlign: "middle" }} /> Suggestion:</strong> {issue.suggestion}
                           </Typography>
                         </Card>
                         <Card variant="outlined" padding="md" style={{ backgroundColor: appleTheme.colors.gray[50] }}>
@@ -410,7 +410,7 @@ export default function PerformanceAudit() {
               <VStack spacing={2}>
                 {results.recommendations.map((recommendation, index) => (
                   <HStack key={index} spacing={2} align="center">
-                    <CheckCircle style={{ color: appleTheme.colors.success, fontSize: "20px" }} />
+                        <CheckCircle size={20} weight="fill" color={appleTheme.colors.success} />
                     <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
                       {recommendation}
                     </Typography>
@@ -441,7 +441,7 @@ export default function PerformanceAudit() {
                 alignItems: "center",
                 gap: "8px"
               }}>
-                <CheckCircle style={{ fontSize: "24px" }} />
+                <CheckCircle size={24} weight="fill" />
                 Core Optimizations
               </Typography>
               <VStack spacing={2}>
@@ -455,7 +455,7 @@ export default function PerformanceAudit() {
                   "Analyze third-party script impact on performance"
                 ].map((item, index) => (
                   <HStack key={index} spacing={2} align="center">
-                    <CheckCircle style={{ color: appleTheme.colors.success, fontSize: "20px" }} />
+                        <CheckCircle size={20} weight="fill" color={appleTheme.colors.success} />
                     <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
                       {item}
                     </Typography>

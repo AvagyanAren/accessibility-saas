@@ -6,12 +6,13 @@ import AnimatedGradient from "../components/apple/AnimatedGradient";
 import { Container, Box, Flex, Stack, Section, HStack } from "../components/apple/Layout";
 import { appleTheme } from "../styles/apple-theme";
 import { useTheme } from "../contexts/ThemeContext";
+import { useLanguage } from "../contexts/LanguageContext";
 import Link from "next/link";
 import {
-  Contrast,
+  Eyedropper,
   Image,
   Keyboard,
-  TrendingUp,
+  ChartLineUp,
   Microphone,
   ArrowSquareOut
 } from "phosphor-react";
@@ -82,10 +83,10 @@ const Tooltip = memo(({ children, text, position = "top" }) => {
 });
 
 // Icons with Phosphor React
-const ContrastIcon = () => <Contrast size={24} weight="regular" />;
+const ContrastIcon = () => <Eyedropper size={24} weight="regular" />;
 const ImageIcon = () => <Image size={24} weight="regular" />;
 const KeyboardIcon = () => <Keyboard size={24} weight="regular" />;
-const TrendingUpIcon = () => <TrendingUp size={24} weight="regular" />;
+const TrendingUpIcon = () => <ChartLineUp size={24} weight="regular" />;
 const RecordVoiceOverIcon = () => <Microphone size={24} weight="regular" />;
 const ExternalLinkIcon = () => <ArrowSquareOut size={16} weight="regular" />;
 
@@ -233,11 +234,14 @@ export default function Tools() {
                       {/* Header */}
                       <Flex align="flex-start" justify="space-between" gap={3}>
                         <Box style={{ 
-                          color: tool.color, 
+                          color: appleTheme.colors.primary[500], 
                           flexShrink: 0,
-                          padding: appleTheme.spacing[3],
-                          backgroundColor: `${tool.color}15`,
-                          borderRadius: appleTheme.borderRadius.lg
+                          padding: appleTheme.spacing[2],
+                          backgroundColor: isDarkMode ? "rgba(0, 122, 255, 0.1)" : "rgba(0, 122, 255, 0.05)",
+                          borderRadius: appleTheme.borderRadius.md,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center"
                         }}>
                           {tool.icon}
                         </Box>

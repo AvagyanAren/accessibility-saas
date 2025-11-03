@@ -82,53 +82,14 @@ const Tooltip = memo(({ children, text, position = "top" }) => {
   );
 });
 
-// Icons
-const CheckIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polyline points="20,6 9,17 4,12"/>
-  </svg>
-);
-
-const StarIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26 12,2"/>
-  </svg>
-);
-
-const ZapIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polygon points="13,2 3,14 12,14 11,22 21,10 12,10 13,2"/>
-  </svg>
-);
-
-const ShieldIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-  </svg>
-);
-
-const UsersIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-    <circle cx="9" cy="7" r="4"/>
-    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-  </svg>
-);
-
-const HeadphonesIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M3 14v3a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z"/>
-    <path d="M21 14v3a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2z"/>
-    <path d="M12 2a5 5 0 0 0-5 5v6a5 5 0 0 0 10 0V7a5 5 0 0 0-5-5z"/>
-  </svg>
-);
-
-const ChevronDownIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polyline points="6,9 12,15 18,9"/>
-  </svg>
-);
+// Icons with Phosphor React
+const CheckIcon = () => <Check size={16} weight="bold" />;
+const StarIcon = () => <Star size={20} weight="fill" />;
+const ZapIcon = () => <Lightning size={20} weight="fill" />;
+const ShieldIcon = () => <ShieldCheck size={20} weight="regular" />;
+const UsersIcon = () => <Users size={20} weight="regular" />;
+const HeadphonesIcon = () => <Headphones size={20} weight="regular" />;
+const ChevronDownIcon = () => <CaretDown size={16} weight="bold" />;
 
 export default function Pricing() {
   const { isDarkMode } = useTheme();
@@ -262,7 +223,7 @@ export default function Pricing() {
             display: "grid",
             gridTemplateColumns: "repeat(3, 1fr)",
             gap: appleTheme.spacing[4],
-            alignItems: "center",
+            alignItems: "stretch",
             justifyItems: "center",
             maxWidth: "1200px",
             margin: "0 auto",
@@ -280,7 +241,6 @@ export default function Pricing() {
                   transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                   boxShadow: plan.popular ? "0 8px 25px rgba(0, 122, 255, 0.15)" : "0 1px 3px rgba(0, 0, 0, 0.1)",
                   overflow: "hidden",
-                  height: "610px",
                   width: "100%",
                   maxWidth: "320px",
                   display: "flex",
@@ -288,7 +248,9 @@ export default function Pricing() {
                   position: "relative",
                   zIndex: plan.popular ? 2 : 1,
                   contain: "layout style",
-                  transform: plan.popular ? "scale(1.05)" : "scale(1)"
+                  transform: plan.popular ? "scale(1.05)" : "scale(1)",
+                  minHeight: "610px",
+                  height: "100%"
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.15)";
@@ -319,11 +281,13 @@ export default function Pricing() {
                   </Box>
                 )}
                 
-                <Stack spacing={4} style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-                  <Box style={{ textAlign: "left" }}>
+                <Stack spacing={4} style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
+                  <Box style={{ textAlign: "left", flexShrink: 0 }}>
                     <Typography variant="title3" style={{ 
                       marginBottom: appleTheme.spacing[2],
-                      color: isDarkMode ? "#FFFFFF" : "#000000"
+                      color: isDarkMode ? "#FFFFFF" : "#000000",
+                      wordBreak: "break-word",
+                      overflowWrap: "break-word"
                     }}>
                 {plan.name}
               </Typography>
@@ -349,22 +313,29 @@ export default function Pricing() {
                       padding: "12px 16px",
                       backgroundColor: isDarkMode ? "#2C2C2E" : "#F8F9FA",
                       borderRadius: "8px",
-                      border: `1px solid ${isDarkMode ? "#3A3A3C" : "#E5E5EA"}`
+                      border: `1px solid ${isDarkMode ? "#3A3A3C" : "#E5E5EA"}`,
+                      wordBreak: "break-word",
+                      overflowWrap: "break-word"
                     }}>
                       {plan.description}
                     </Typography>
                   </Box>
 
-                  <Box style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-                    <Stack spacing={2} style={{ alignItems: "flex-start" }}>
+                  <Box style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0, overflow: "hidden" }}>
+                    <Stack spacing={2} style={{ alignItems: "flex-start", flex: 1 }}>
                       {plan.features.map((feature, featureIndex) => (
-                        <Flex key={featureIndex} align="center" gap={2} style={{ width: "100%" }}>
+                        <Flex key={featureIndex} align="flex-start" gap={2} style={{ width: "100%" }}>
                           <CheckIcon style={{ 
                             color: isDarkMode ? "#30D158" : "#30D158", 
-                            flexShrink: 0 
+                            flexShrink: 0,
+                            marginTop: "2px"
                           }} />
                           <Typography variant="footnote" style={{
-                            color: isDarkMode ? "#E5E5EA" : "#1C1C1E"
+                            color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
+                            wordBreak: "break-word",
+                            overflowWrap: "break-word",
+                            lineHeight: 1.5,
+                            flex: 1
                           }}>
                             {feature}
                           </Typography>
@@ -373,40 +344,40 @@ export default function Pricing() {
                     </Stack>
                   </Box>
 
-                  <Button
-                    variant="primary"
-                    fullWidth
-                    size="large"
-                    onClick={(e) => {
-                      console.log("Pricing button clicked:", plan.buttonText);
-                      e.preventDefault();
-                      e.stopPropagation();
-                      if (plan.buttonText === t("pricing.buttonStartFree")) {
-                        window.location.href = "/";
-                      } else if (plan.buttonText === t("pricing.buttonStartPro")) {
-                        window.location.href = "/";
-                      } else if (plan.buttonText === t("pricing.buttonContactSales")) {
-                        window.location.href = "mailto:sales@accessibility-saas.com";
-                      }
-                    }}
-                    style={{
-                      marginTop: "auto",
-                      marginBottom: "16px",
-                      backgroundColor: "#007AFF",
-                      color: "#FFFFFF",
-                      border: "none",
-                      borderRadius: "8px",
-                      padding: "12px 20px",
-                      minHeight: "44px",
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      transition: "all 0.2s ease-in-out",
-                      cursor: "pointer",
-                      width: "100%"
-                    }}
-                  >
-                    {plan.buttonText}
-                  </Button>
+                  <Box style={{ marginTop: "auto", flexShrink: 0, paddingTop: appleTheme.spacing[4] }}>
+                    <Button
+                      variant="primary"
+                      fullWidth
+                      size="large"
+                      onClick={(e) => {
+                        console.log("Pricing button clicked:", plan.buttonText);
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (plan.buttonText === t("pricing.buttonStartFree")) {
+                          window.location.href = "/";
+                        } else if (plan.buttonText === t("pricing.buttonStartPro")) {
+                          window.location.href = "/";
+                        } else if (plan.buttonText === t("pricing.buttonContactSales")) {
+                          window.location.href = "mailto:sales@accessibility-saas.com";
+                        }
+                      }}
+                      style={{
+                        backgroundColor: "#007AFF",
+                        color: "#FFFFFF",
+                        border: "none",
+                        borderRadius: "8px",
+                        padding: "12px 20px",
+                        minHeight: "44px",
+                        fontSize: "14px",
+                        fontWeight: "600",
+                        transition: "all 0.2s ease-in-out",
+                        cursor: "pointer",
+                        width: "100%"
+                      }}
+                    >
+                      {plan.buttonText}
+                    </Button>
+                  </Box>
                 </Stack>
               </div>
             ))}
@@ -459,7 +430,16 @@ export default function Pricing() {
                   e.currentTarget.style.backgroundColor = "#FFFFFF";
                 }}>
                   <Stack spacing={3} align="center">
-                    <Box style={{ color: isDarkMode ? "#007AFF" : appleTheme.colors.primary[500] }}>
+                    <Box style={{ 
+                      color: isDarkMode ? "#007AFF" : appleTheme.colors.primary[500],
+                      padding: appleTheme.spacing[2],
+                      backgroundColor: isDarkMode ? "rgba(0, 122, 255, 0.1)" : "rgba(0, 122, 255, 0.05)",
+                      borderRadius: appleTheme.borderRadius.md,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      width: "fit-content"
+                    }}>
                       {feature.icon}
                     </Box>
                     <Typography variant="callout" weight="bold" align="center" style={{

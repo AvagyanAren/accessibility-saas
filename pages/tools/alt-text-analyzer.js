@@ -6,38 +6,14 @@ import Input from "../../components/apple/Input";
 import { Container, Box, Flex, Stack, Section, HStack } from "../../components/apple/Layout";
 import { appleTheme } from "../../styles/apple-theme";
 import { useTheme } from "../../contexts/ThemeContext";
-import { CheckCircle, Cancel } from "@mui/icons-material";
 import AnimatedGradient from "../../components/apple/AnimatedGradient";
+import { Image, Check, XCircle, MagnifyingGlass, CheckCircle, X } from "phosphor-react";
 
 // Icons
-const ImageIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-    <circle cx="8.5" cy="8.5" r="1.5"/>
-    <polyline points="21,15 16,10 5,21"/>
-  </svg>
-);
-
-const CheckIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polyline points="20,6 9,17 4,12"/>
-  </svg>
-);
-
-const ErrorIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="12" cy="12" r="10"/>
-    <line x1="15" y1="9" x2="9" y2="15"/>
-    <line x1="9" y1="9" x2="15" y2="15"/>
-  </svg>
-);
-
-const SearchIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="11" cy="11" r="8"/>
-    <path d="m21 21-4.35-4.35"/>
-  </svg>
-);
+const ImageIcon = () => <Image size={24} weight="regular" />;
+const CheckIcon = () => <Check size={16} weight="bold" />;
+const ErrorIcon = () => <XCircle size={16} weight="fill" />;
+const SearchIcon = () => <MagnifyingGlass size={20} weight="regular" />;
 
 export default function AltTextAnalyzer() {
   const { isDarkMode } = useTheme();
@@ -388,7 +364,7 @@ export default function AltTextAnalyzer() {
                     alignItems: "center",
                     gap: "8px"
                   }}>
-                    <Cancel style={{ fontSize: "20px" }} />
+                    <X size={20} weight="bold" />
                     Don'ts
                   </Typography>
                   <Stack spacing={2}>

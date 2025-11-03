@@ -1,14 +1,16 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
-import { appleTheme } from '../../styles/apple-theme';
-import { CaretDown } from 'phosphor-react';
 
 export default function LanguageSwitcher() {
   const { language, changeLanguage, isClient } = useLanguage();
   const { isDarkMode } = useTheme();
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef(null);
+
+  const isEnglish = language === 'en';
+
+  const handleToggle = () => {
+    changeLanguage(isEnglish ? 'ru' : 'en');
+  };
 
   // Don't render until client-side is ready
   if (!isClient) {
@@ -16,162 +18,103 @@ export default function LanguageSwitcher() {
       <div style={{
         display: 'flex',
         alignItems: 'center',
-        gap: '6px',
-        padding: '6px 10px',
-        backgroundColor: 'transparent',
-        border: '1px solid rgba(0, 0, 0, 0.1)',
-        borderRadius: '8px',
-        minWidth: '70px',
-        height: '32px'
+        gap: '8px',
+        height: '24px',
+        minWidth: '80px'
       }} />
     );
   }
 
-  const languages = [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'ru', name: 'Русский', flag: '🇷🇺' }
-  ];
-
-  const currentLanguage = languages.find(lang => lang.code === language) || languages[0];
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen]);
-
-  const handleLanguageChange = (langCode) => {
-    changeLanguage(langCode);
-    setIsOpen(false);
-  };
-
-  const themeColors = isDarkMode ? appleTheme.colors.dark : appleTheme.colors;
-
   return (
-    <div ref={dropdownRef} style={{ position: 'relative' }}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
+    <div style={{ 
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px',
+      flexShrink: 0
+    }}>
+      {/* Left Label - RU */}
+      <span
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-          padding: '6px 10px',
-          backgroundColor: isOpen 
-            ? (isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)')
-            : 'transparent',
-          border: `1px solid ${isDarkMode ? appleTheme.colors.dark.gray[400] : appleTheme.colors.gray[300]}`,
-          borderRadius: appleTheme.borderRadius.medium,
-          color: isDarkMode ? '#FFFFFF' : appleTheme.colors.text.primary,
-          fontSize: appleTheme.typography.fontSize.sm,
-          fontWeight: appleTheme.typography.fontWeight.medium,
+          fontSize: '12px',
+          fontWeight: 500,
+          color: isEnglish 
+            ? (isDarkMode ? '#AEAEB2' : '#8E8E93') 
+            : (isDarkMode ? '#FFFFFF' : '#000000'),
+          transition: 'color 0.3s ease',
+          userSelect: 'none',
           cursor: 'pointer',
-          transition: 'all 0.2s ease',
-          outline: 'none',
-          fontFamily: 'inherit',
-          whiteSpace: 'nowrap',
-          flexShrink: 0,
-          minWidth: 'auto'
+          minWidth: '24px'
         }}
+        onClick={handleToggle}
+      >
+        RU
+      </span>
+
+      {/* Toggle Switch */}
+      <button
+        onClick={handleToggle}
+        style={{
+          position: 'relative',
+          width: '44px',
+          height: '24px',
+          borderRadius: '12px',
+          backgroundColor: isEnglish ? '#007AFF' : '#007AFF',
+          border: 'none',
+          cursor: 'pointer',
+          padding: '2px',
+          outline: 'none',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          boxShadow: isDarkMode 
+            ? '0 2px 6px rgba(0, 122, 255, 0.3)' 
+            : '0 2px 6px rgba(0, 122, 255, 0.2)',
+          display: 'flex',
+          alignItems: 'center'
+        }}
+        aria-label={`Switch to ${isEnglish ? 'Russian' : 'English'}`}
         onMouseEnter={(e) => {
-          e.target.style.backgroundColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)';
+          e.currentTarget.style.boxShadow = isDarkMode 
+            ? '0 3px 10px rgba(0, 122, 255, 0.4)' 
+            : '0 3px 10px rgba(0, 122, 255, 0.3)';
         }}
         onMouseLeave={(e) => {
-          if (!isOpen) {
-            e.target.style.backgroundColor = 'transparent';
-          }
+          e.currentTarget.style.boxShadow = isDarkMode 
+            ? '0 2px 6px rgba(0, 122, 255, 0.3)' 
+            : '0 2px 6px rgba(0, 122, 255, 0.2)';
         }}
-        aria-label="Change language"
-        aria-expanded={isOpen}
       >
-        <span style={{ fontSize: '16px', flexShrink: 0 }}>{currentLanguage.flag}</span>
-        <span style={{ whiteSpace: 'nowrap' }}>{currentLanguage.code.toUpperCase()}</span>
-        <CaretDown
-          size={12}
-          weight="bold"
+        {/* White Knob */}
+        <div
           style={{
-            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-            transition: 'transform 0.2s ease'
+            position: 'absolute',
+            width: '20px',
+            height: '20px',
+            borderRadius: '50%',
+            backgroundColor: '#FFFFFF',
+            transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            transform: isEnglish ? 'translateX(20px)' : 'translateX(0px)',
+            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.2)',
+            left: '2px'
           }}
         />
       </button>
 
-      {isOpen && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '100%',
-            right: 0,
-            marginTop: '8px',
-            backgroundColor: isDarkMode ? appleTheme.colors.dark.background.primary : '#FFFFFF',
-            border: `1px solid ${isDarkMode ? appleTheme.colors.dark.gray[400] : appleTheme.colors.gray[300]}`,
-            borderRadius: appleTheme.borderRadius.medium,
-            boxShadow: isDarkMode 
-              ? '0 4px 12px rgba(0, 0, 0, 0.3)' 
-              : '0 4px 12px rgba(0, 0, 0, 0.1)',
-            minWidth: '150px',
-            zIndex: 1000,
-            overflow: 'hidden'
-          }}
-        >
-          {languages.map((lang) => (
-            <button
-              key={lang.code}
-              onClick={() => handleLanguageChange(lang.code)}
-              style={{
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                padding: '12px 16px',
-                backgroundColor: language === lang.code
-                  ? (isDarkMode ? 'rgba(0, 122, 255, 0.2)' : 'rgba(0, 122, 255, 0.1)')
-                  : 'transparent',
-                border: 'none',
-                color: isDarkMode ? '#FFFFFF' : appleTheme.colors.text.primary,
-                fontSize: appleTheme.typography.fontSize.base,
-                fontWeight: language === lang.code
-                  ? appleTheme.typography.fontWeight.semibold
-                  : appleTheme.typography.fontWeight.regular,
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                outline: 'none',
-                fontFamily: 'inherit',
-                textAlign: 'left'
-              }}
-              onMouseEnter={(e) => {
-                if (language !== lang.code) {
-                  e.target.style.backgroundColor = isDarkMode 
-                    ? 'rgba(255, 255, 255, 0.05)' 
-                    : 'rgba(0, 0, 0, 0.03)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (language !== lang.code) {
-                  e.target.style.backgroundColor = 'transparent';
-                }
-              }}
-            >
-              <span style={{ fontSize: '20px' }}>{lang.flag}</span>
-              <span>{lang.name}</span>
-              {language === lang.code && (
-                <span style={{ marginLeft: 'auto', color: appleTheme.colors.primary[500] }}>✓</span>
-              )}
-            </button>
-          ))}
-        </div>
-      )}
+      {/* Right Label - ENG */}
+      <span
+        style={{
+          fontSize: '12px',
+          fontWeight: 500,
+          color: isEnglish 
+            ? (isDarkMode ? '#FFFFFF' : '#000000') 
+            : (isDarkMode ? '#AEAEB2' : '#8E8E93'),
+          transition: 'color 0.3s ease',
+          userSelect: 'none',
+          cursor: 'pointer',
+          minWidth: '28px'
+        }}
+        onClick={handleToggle}
+      >
+        ENG
+      </span>
     </div>
   );
 }
-

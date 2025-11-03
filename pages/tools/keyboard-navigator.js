@@ -8,16 +8,16 @@ import { appleTheme } from "../../styles/apple-theme";
 import {
   Keyboard,
   CheckCircle,
-  Error,
-  Warning,
+  XCircle,
+  WarningCircle,
   Info,
-  PlayArrow,
+  Play,
   Stop,
-  Refresh,
-  NavigateNext,
+  ArrowsClockwise,
+  CaretRight,
   Lightbulb,
   Rocket
-} from "@mui/icons-material";
+} from "phosphor-react";
 import Link from "next/link";
 
 import { Container, Section } from "../../components/apple/Layout";
@@ -132,10 +132,10 @@ export default function KeyboardNavigator() {
 
   const getSeverityIcon = (severity) => {
     switch (severity) {
-      case "critical": return <Error />;
-      case "warning": return <Warning />;
-      case "info": return <Info />;
-      default: return <Info />;
+      case "critical": return <XCircle size={16} weight="fill" />;
+      case "warning": return <WarningCircle size={16} weight="fill" />;
+      case "info": return <Info size={16} weight="fill" />;
+      default: return <Info size={16} weight="fill" />;
     }
   };
 
@@ -211,7 +211,7 @@ export default function KeyboardNavigator() {
               onClick={handleTest}
               disabled={testing}
               loading={testing}
-              startIcon={testing ? <Refresh /> : <PlayArrow />}
+              startIcon={testing ? <ArrowsClockwise size={16} weight="regular" /> : <Play size={16} weight="fill" />}
             >
               {testing ? "Testing..." : "Test Navigation"}
             </Button>
@@ -386,7 +386,7 @@ export default function KeyboardNavigator() {
                             marginBottom: appleTheme.spacing[2]
                           }}>
                             <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
-                              <strong><Lightbulb style={{ fontSize: "16px", marginRight: "4px", verticalAlign: "middle" }} /> Suggestion:</strong> {problem.suggestion}
+                              <strong><Lightbulb size={16} weight="fill" style={{ marginRight: "4px", verticalAlign: "middle" }} /> Suggestion:</strong> {problem.suggestion}
                             </Typography>
                           </Card>
                           <Card variant="outlined" padding="md" style={{ backgroundColor: appleTheme.colors.gray[50] }}>
@@ -435,7 +435,7 @@ export default function KeyboardNavigator() {
                 alignItems: "center",
                 gap: "8px"
               }}>
-                <CheckCircle style={{ fontSize: "24px" }} />
+                <CheckCircle size={24} weight="fill" />
                 Essential Requirements
               </Typography>
               <VStack spacing={2}>
@@ -449,7 +449,7 @@ export default function KeyboardNavigator() {
                   "Test keyboard shortcuts don't conflict with browser defaults"
                 ].map((item, index) => (
                   <HStack key={index} spacing={2} align="center">
-                    <CheckCircle style={{ color: appleTheme.colors.success, fontSize: "20px" }} />
+                    <CheckCircle size={20} weight="fill" color={appleTheme.colors.success} />
                     <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
                       {item}
                     </Typography>
