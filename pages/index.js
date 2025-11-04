@@ -612,22 +612,30 @@ export default function Home() {
       >
         <Container size="lg">
           <Box style={{ textAlign: "center" }}>
-            <Typography variant="display" style={{ 
-              marginBottom: isMobile ? appleTheme.spacing[6] : appleTheme.spacing[8],
-              color: themeColors.text.primary,
-              fontWeight: appleTheme.typography.fontWeight.bold,
-              fontSize: isMobile ? "28px" : "42px",
-              lineHeight: 1.2,
-              padding: isMobile ? "0 20px" : "0",
-              background: isDarkMode 
-                ? "linear-gradient(135deg, #FFFFFF 0%, #E5E5EA 100%)"
-                : "linear-gradient(135deg, #1C1C1E 0%, #007AFF 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text"
-            }}>
-              {t("home.title")}
-  </Typography>
+            <div key={`title-wrapper-${isDarkMode}`} style={{ width: "100%" }}>
+              <Typography 
+                variant="display" 
+                style={{ 
+                  marginBottom: isMobile ? appleTheme.spacing[6] : appleTheme.spacing[8],
+                  color: themeColors.text.primary,
+                  fontWeight: appleTheme.typography.fontWeight.bold,
+                  fontSize: isMobile ? "28px" : "42px",
+                  lineHeight: 1.2,
+                  padding: isMobile ? "0 20px" : "0",
+                  background: isDarkMode 
+                    ? "linear-gradient(135deg, #FFFFFF 0%, #E5E5EA 100%)"
+                    : "linear-gradient(135deg, #1C1C1E 0%, #007AFF 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                  willChange: "background",
+                  WebkitBackfaceVisibility: "hidden",
+                  backfaceVisibility: "hidden"
+                }}
+              >
+                {t("home.title")}
+              </Typography>
+            </div>
             <Typography variant="headline" weight="regular" style={{ 
               color: themeColors.text.secondary,
               marginBottom: isMobile ? appleTheme.spacing[8] : appleTheme.spacing[10],
