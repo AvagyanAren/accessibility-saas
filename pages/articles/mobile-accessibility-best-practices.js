@@ -133,9 +133,11 @@ export default function MobileAccessibilityBestPractices() {
     }
   ];
 
+  const themeColors = isDarkMode ? appleTheme.colors.dark : appleTheme.colors;
+
   return (
     <div style={{ 
-      backgroundColor: appleTheme.colors.background.secondary, 
+      backgroundColor: themeColors.background.secondary, 
       minHeight: "100vh",
       position: "relative",
       overflow: "hidden"
@@ -144,7 +146,7 @@ export default function MobileAccessibilityBestPractices() {
       <AnimatedGradient variant="subtle" intensity="medium" />
       
       {/* Hero Section */}
-      <Section background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
+      <Section background={isDarkMode ? "linear-gradient(135deg, rgba(28, 28, 30, 0.9) 0%, rgba(44, 44, 46, 0.9) 100%)" : "linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)"} padding="xl">
         <Container size="lg">
           <Box style={{ textAlign: "center" }}>
             <Link href="/resources" style={{ textDecoration: "none", display: "inline-block", marginBottom: appleTheme.spacing[4] }}>
@@ -164,14 +166,14 @@ export default function MobileAccessibilityBestPractices() {
             
             <Typography variant="display" style={{ 
               marginBottom: appleTheme.spacing[6],
-              color: "#1C1C1E",
+              color: themeColors.text.primary,
               fontWeight: appleTheme.typography.fontWeight.bold
             }}>
               Mobile Accessibility: Complete Best Practices Guide
             </Typography>
             
             <Typography variant="headline" weight="regular" style={{ 
-              color: "#2C2C2E",
+              color: themeColors.text.secondary,
               marginBottom: appleTheme.spacing[8],
               maxWidth: "800px",
               margin: `0 auto ${appleTheme.spacing[8]} auto`,
@@ -270,7 +272,7 @@ export default function MobileAccessibilityBestPractices() {
           {touchTargets.map((target, index) => (
             <Card key={index} variant="elevated" padding="xl" style={{ 
               marginBottom: appleTheme.spacing[4],
-              backgroundColor: isDarkMode ? "rgba(28, 28, 30, 0.8)" : "#FFFFFF"
+              backgroundColor: isDarkMode ? themeColors.background.tertiary : "#FFFFFF"
             }}>
               <Flex align="center" gap={3} style={{ marginBottom: appleTheme.spacing[4] }}>
                 <Box style={{
@@ -370,7 +372,7 @@ export default function MobileAccessibilityBestPractices() {
           {responsiveDesign.map((principle, index) => (
             <Card key={index} variant="elevated" padding="xl" style={{ 
               marginBottom: appleTheme.spacing[4],
-              backgroundColor: isDarkMode ? "rgba(28, 28, 30, 0.8)" : "#FFFFFF"
+              backgroundColor: isDarkMode ? themeColors.background.tertiary : "#FFFFFF"
             }}>
               <Flex align="center" gap={3} style={{ marginBottom: appleTheme.spacing[4] }}>
                 <Box style={{
@@ -460,7 +462,7 @@ export default function MobileAccessibilityBestPractices() {
           {commonMobileIssues.map((issue, index) => (
             <Card key={index} variant="elevated" padding="xl" style={{ 
               marginBottom: appleTheme.spacing[4],
-              backgroundColor: isDarkMode ? "rgba(28, 28, 30, 0.8)" : "#FFFFFF"
+              backgroundColor: isDarkMode ? themeColors.background.tertiary : "#FFFFFF"
             }}>
               <Stack spacing={3}>
                 <Box>

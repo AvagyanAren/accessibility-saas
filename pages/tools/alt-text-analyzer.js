@@ -7,7 +7,8 @@ import { Container, Box, Flex, Stack, Section, HStack } from "../../components/a
 import { appleTheme } from "../../styles/apple-theme";
 import { useTheme } from "../../contexts/ThemeContext";
 import AnimatedGradient from "../../components/apple/AnimatedGradient";
-import { Image, Check, XCircle, MagnifyingGlass, CheckCircle, X } from "phosphor-react";
+import { Image, Check, XCircle, MagnifyingGlass, CheckCircle, X, WarningCircle, Info } from "phosphor-react";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 // Icons
 const ImageIcon = () => <Image size={24} weight="regular" />;
@@ -17,6 +18,7 @@ const SearchIcon = () => <MagnifyingGlass size={20} weight="regular" />;
 
 export default function AltTextAnalyzer() {
   const { isDarkMode } = useTheme();
+  const { t } = useLanguage();
   const [url, setUrl] = useState("");
   const [analyzing, setAnalyzing] = useState(false);
   const [results, setResults] = useState(null);
@@ -136,12 +138,24 @@ export default function AltTextAnalyzer() {
   };
 
   const getSeverityIcon = (severity) => {
-    return severity === "error" ? <ErrorIcon /> : <ErrorIcon />;
+    switch (severity) {
+      case "error":
+      case "critical":
+        return <XCircle size={16} weight="fill" />;
+      case "warning":
+        return <WarningCircle size={16} weight="fill" />;
+      case "info":
+        return <Info size={16} weight="fill" />;
+      default:
+        return <XCircle size={16} weight="fill" />;
+    }
   };
+
+  const themeColors = isDarkMode ? appleTheme.colors.dark : appleTheme.colors;
 
   return (
     <div style={{ 
-      backgroundColor: appleTheme.colors.background.secondary, 
+      backgroundColor: themeColors.background.secondary, 
       minHeight: "100vh",
       position: "relative",
       overflow: "hidden"
@@ -150,26 +164,25 @@ export default function AltTextAnalyzer() {
       <AnimatedGradient variant="subtle" intensity="medium" />
       
       {/* Hero Section */}
-      <Section background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
+      <Section background={isDarkMode ? "linear-gradient(135deg, rgba(28, 28, 30, 0.9) 0%, rgba(44, 44, 46, 0.9) 100%)" : "linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)"} padding="xl">
         <Container size="lg">
           <Box style={{ textAlign: "center" }}>
             <Typography variant="display" style={{ 
               marginBottom: appleTheme.spacing[6],
-              color: "#1C1C1E",
+              color: themeColors.text.primary,
               fontWeight: appleTheme.typography.fontWeight.bold
             }}>
-              Alt Text Analyzer
+              {t("altTextAnalyzer.title")}
             </Typography>
             <Typography variant="headline" weight="regular" style={{ 
-              color: "#2C2C2E",
+              color: themeColors.text.secondary,
               marginBottom: appleTheme.spacing[8],
               maxWidth: "800px",
               margin: `0 auto ${appleTheme.spacing[8]} auto`,
               lineHeight: appleTheme.typography.lineHeight.relaxed,
               fontWeight: appleTheme.typography.fontWeight.medium
             }}>
-              Analyze and improve alt text for images on your website to ensure accessibility for screen readers. 
-              Make your visual content accessible to everyone.
+              {t("altTextAnalyzer.subtitle")}
             </Typography>
           </Box>
         </Container>
@@ -181,31 +194,34 @@ export default function AltTextAnalyzer() {
           <Card variant="elevated" padding="large" style={{ marginBottom: appleTheme.spacing[8] }}>
             <Stack spacing={4}>
               <Typography variant="title2">
-                Analyze Website Images
+                {t("altTextAnalyzer.analyzeTitle")}
               </Typography>
               <Typography variant="body" color="secondary">
-                Enter a website URL to analyze all images for proper alt text implementation.
+                {t("altTextAnalyzer.analyzeDesc")}
               </Typography>
               
-              <HStack spacing={3} align="flex-end">
-                <Box style={{ flex: 1 }}>
+              <HStack spacing={3} align="center">
+                <Box style={{ flex: 1, maxWidth: '600px' }}>
                   <Input
                     label="Website URL"
                     placeholder="https://example.com"
                     value={url}
                     onChange={setUrl}
                     size="large"
+                    variant="filled"
                     startIcon={<SearchIcon />}
                   />
                 </Box>
                 <Button
                   variant="primary"
+                  size="large"
                   onClick={handleAnalysis}
                   loading={analyzing}
                   disabled={!url.trim()}
                   startIcon={<ImageIcon />}
+                  style={{ height: '54px', flexShrink: 0 }}
                 >
-                  {analyzing ? "Analyzing..." : "Analyze Images"}
+                  {analyzing ? t("altTextAnalyzer.analyzing") : t("altTextAnalyzer.analyzeImages")}
                 </Button>
               </HStack>
             </Stack>
@@ -299,7 +315,7 @@ export default function AltTextAnalyzer() {
                                   borderRadius: appleTheme.borderRadius.sm,
                                   fontFamily: appleTheme.typography.fontFamily.mono,
                                   fontSize: appleTheme.typography.fontSize.sm,
-                                  color: appleTheme.colors.text.secondary,
+                                  color: themeColors.text.secondary,
                                   overflowX: "auto"
                                 }}>
                                   <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>

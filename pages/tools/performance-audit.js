@@ -5,6 +5,7 @@ import Button from "../../components/apple/Button";
 import Input from "../../components/apple/Input";
 import Card from "../../components/apple/Card";
 import { appleTheme } from "../../styles/apple-theme";
+import { useTheme } from "../../contexts/ThemeContext";
 import {
   Lightning,
   CheckCircle,
@@ -22,8 +23,11 @@ import Link from "next/link";
 
 import { Container, Section } from "../../components/apple/Layout";
 import AnimatedGradient from "../../components/apple/AnimatedGradient";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 export default function PerformanceAudit() {
+  const { isDarkMode } = useTheme();
+  const { t } = useLanguage();
   const [url, setUrl] = useState("");
   const [auditing, setAuditing] = useState(false);
   const [results, setResults] = useState(null);
@@ -141,9 +145,11 @@ export default function PerformanceAudit() {
     }
   };
 
+  const themeColors = isDarkMode ? appleTheme.colors.dark : appleTheme.colors;
+
   return (
     <div style={{ 
-      backgroundColor: appleTheme.colors.background.secondary, 
+      backgroundColor: themeColors.background.secondary, 
       minHeight: "100vh",
       position: "relative",
       overflow: "hidden"
@@ -152,26 +158,25 @@ export default function PerformanceAudit() {
       <AnimatedGradient variant="subtle" intensity="medium" />
       
       {/* Hero Section */}
-      <Section background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
+      <Section background={isDarkMode ? "linear-gradient(135deg, rgba(28, 28, 30, 0.9) 0%, rgba(44, 44, 46, 0.9) 100%)" : "linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)"} padding="xl">
         <Container size="lg">
           <Box style={{ textAlign: "center" }}>
             <Typography variant="display" style={{ 
               marginBottom: appleTheme.spacing[6],
-              color: "#1C1C1E",
+              color: themeColors.text.primary,
               fontWeight: appleTheme.typography.fontWeight.bold
             }}>
-              Performance Audit
+              {t("performanceAudit.title")}
             </Typography>
             <Typography variant="headline" weight="regular" style={{ 
-              color: "#2C2C2E",
+              color: themeColors.text.secondary,
               marginBottom: appleTheme.spacing[8],
               maxWidth: "800px",
               margin: `0 auto ${appleTheme.spacing[8]} auto`,
               lineHeight: appleTheme.typography.lineHeight.relaxed,
               fontWeight: appleTheme.typography.fontWeight.medium
             }}>
-              Analyze your website's performance and get actionable insights to improve loading speed and user experience. 
-              Create lightning-fast websites that users love.
+              {t("performanceAudit.subtitle")}
             </Typography>
           </Box>
         </Container>
@@ -182,13 +187,13 @@ export default function PerformanceAudit() {
         <Card variant="elevated" padding="xl" style={{ marginBottom: appleTheme.spacing[6] }}>
           <Typography variant="title1" style={{ 
             marginBottom: appleTheme.spacing[4],
-            color: appleTheme.colors.text.primary,
+            color: themeColors.text.primary,
             fontWeight: appleTheme.typography.fontWeight.semibold
           }}>
-            Audit Website Performance
+            {t("performanceAudit.auditTitle")}
           </Typography>
           
-          <HStack spacing={3} align="stretch" style={{ marginBottom: appleTheme.spacing[4] }}>
+          <HStack spacing={3} align="center" style={{ marginBottom: 0 }}>
             <Box style={{ flex: 1 }}>
               <Input
                 placeholder="https://example.com"
@@ -206,20 +211,27 @@ export default function PerformanceAudit() {
               disabled={auditing}
               loading={auditing}
               startIcon={<ChartLineUp size={16} weight="regular" />}
+              style={{ height: '54px', flexShrink: 0 }}
             >
-              {auditing ? "Auditing..." : "Start Audit"}
+              {auditing ? t("performanceAudit.auditing") : t("performanceAudit.startAudit")}
             </Button>
           </HStack>
+        </Card>
 
-          <Card variant="outlined" padding="md" style={{ 
-            backgroundColor: appleTheme.colors.info + "10",
-            borderColor: appleTheme.colors.info + "30"
+        <Card variant="outlined" padding="md" style={{ 
+          backgroundColor: isDarkMode ? themeColors.background.tertiary : '#F5F5F7',
+          border: `1px solid ${isDarkMode ? 'rgba(255, 255, 255, 0.15)' : '#E5E5EA'}`,
+          borderRadius: appleTheme.borderRadius.lg,
+          marginTop: appleTheme.spacing[4],
+          marginBottom: appleTheme.spacing[6],
+          boxShadow: isDarkMode ? '0 2px 8px rgba(0, 0, 0, 0.2)' : '0 1px 3px rgba(0, 0, 0, 0.1)',
+          width: '100%'
+        }}>
+          <Typography variant="body" style={{ 
+            color: themeColors.text.secondary
           }}>
-            <Typography variant="body" style={{ color: appleTheme.colors.text.secondary }}>
-              <strong>What we analyze:</strong> Core Web Vitals, loading performance, resource optimization, 
-              caching strategies, and accessibility impact on performance.
-            </Typography>
-          </Card>
+            <strong>{t("performanceAudit.whatWeAnalyze")}</strong> {t("performanceAudit.whatWeAnalyzeDesc")}
+          </Typography>
         </Card>
 
         {/* Results Section */}
@@ -229,7 +241,7 @@ export default function PerformanceAudit() {
             <Card variant="elevated" padding="xl" style={{ marginBottom: appleTheme.spacing[6], textAlign: "center" }}>
               <Typography variant="title1" style={{ 
                 marginBottom: appleTheme.spacing[2],
-                color: appleTheme.colors.text.primary,
+                color: themeColors.text.primary,
                 fontWeight: appleTheme.typography.fontWeight.semibold
               }}>
                 Performance Score
@@ -253,7 +265,7 @@ export default function PerformanceAudit() {
                   {results.overallScore}
                 </Typography>
               </Box>
-              <Typography variant="body" style={{ color: appleTheme.colors.text.secondary }}>
+              <Typography variant="body" style={{ color: themeColors.text.secondary }}>
                 {results.overallScore >= 90 ? "Excellent performance!" : 
                  results.overallScore >= 70 ? "Good performance with room for improvement" : 
                  "Performance needs significant improvement"}
@@ -264,7 +276,7 @@ export default function PerformanceAudit() {
             <Card variant="elevated" padding="xl" style={{ marginBottom: appleTheme.spacing[6] }}>
               <Typography variant="title1" style={{ 
                 marginBottom: appleTheme.spacing[4],
-                color: appleTheme.colors.text.primary,
+                color: themeColors.text.primary,
                 fontWeight: appleTheme.typography.fontWeight.semibold
               }}>
                 Core Web Vitals
@@ -285,7 +297,7 @@ export default function PerformanceAudit() {
                       {metric.value}{metric.unit}
                     </Typography>
                     <Typography variant="caption" style={{ 
-                      color: appleTheme.colors.text.tertiary,
+                      color: themeColors.text.tertiary,
                       textTransform: "uppercase",
                       letterSpacing: "0.5px"
                     }}>
@@ -311,7 +323,7 @@ export default function PerformanceAudit() {
             <Card variant="elevated" padding="xl" style={{ marginBottom: appleTheme.spacing[6] }}>
               <Typography variant="title1" style={{ 
                 marginBottom: appleTheme.spacing[4],
-                color: appleTheme.colors.text.primary,
+                color: themeColors.text.primary,
                 fontWeight: appleTheme.typography.fontWeight.semibold
               }}>
                 Performance Issues
@@ -327,7 +339,7 @@ export default function PerformanceAudit() {
                       <Box style={{ flex: 1 }}>
                         <HStack spacing={2} align="center" style={{ marginBottom: appleTheme.spacing[2] }}>
                           <Typography variant="title2" style={{ 
-                            color: appleTheme.colors.text.primary,
+                            color: themeColors.text.primary,
                             fontWeight: appleTheme.typography.fontWeight.semibold
                           }}>
                             {issue.title}
@@ -345,7 +357,7 @@ export default function PerformanceAudit() {
                           <Box style={{
                             padding: `${appleTheme.spacing[1]} ${appleTheme.spacing[2]}`,
                             backgroundColor: appleTheme.colors.gray[100],
-                            color: appleTheme.colors.text.secondary,
+                            color: themeColors.text.secondary,
                             borderRadius: appleTheme.borderRadius.base,
                             fontSize: appleTheme.typography.fontSize.xs,
                             fontWeight: appleTheme.typography.fontWeight.medium
@@ -355,13 +367,13 @@ export default function PerformanceAudit() {
                         </HStack>
                         <Typography variant="body" style={{ 
                           marginBottom: appleTheme.spacing[2],
-                          color: appleTheme.colors.text.secondary
+                          color: themeColors.text.secondary
                         }}>
                           {issue.description}
                         </Typography>
                         <Typography variant="body" style={{ 
                           marginBottom: appleTheme.spacing[2],
-                          color: appleTheme.colors.text.primary,
+                          color: themeColors.text.primary,
                           fontWeight: appleTheme.typography.fontWeight.medium
                         }}>
                           <strong>Impact:</strong> {issue.impact}
@@ -371,13 +383,13 @@ export default function PerformanceAudit() {
                           borderColor: appleTheme.colors.info + "30",
                           marginBottom: appleTheme.spacing[2]
                         }}>
-                          <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
+                          <Typography variant="body" style={{ color: themeColors.text.primary }}>
                             <strong><Lightbulb size={16} weight="fill" style={{ marginRight: "4px", verticalAlign: "middle" }} /> Suggestion:</strong> {issue.suggestion}
                           </Typography>
                         </Card>
                         <Card variant="outlined" padding="md" style={{ backgroundColor: appleTheme.colors.gray[50] }}>
                           <Typography variant="caption" style={{ 
-                            color: appleTheme.colors.text.tertiary,
+                            color: themeColors.text.tertiary,
                             display: "block",
                             marginBottom: appleTheme.spacing[1]
                           }}>
@@ -386,7 +398,7 @@ export default function PerformanceAudit() {
                           <Typography variant="body" style={{ 
                             fontFamily: "SF Mono, Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace",
                             fontSize: appleTheme.typography.fontSize.sm,
-                            color: appleTheme.colors.text.primary
+                            color: themeColors.text.primary
                           }}>
                             {issue.code}
                           </Typography>
@@ -402,7 +414,7 @@ export default function PerformanceAudit() {
             <Card variant="elevated" padding="xl">
               <Typography variant="title1" style={{ 
                 marginBottom: appleTheme.spacing[4],
-                color: appleTheme.colors.text.primary,
+                color: themeColors.text.primary,
                 fontWeight: appleTheme.typography.fontWeight.semibold
               }}>
                 Quick Recommendations
@@ -411,7 +423,7 @@ export default function PerformanceAudit() {
                 {results.recommendations.map((recommendation, index) => (
                   <HStack key={index} spacing={2} align="center">
                         <CheckCircle size={20} weight="fill" color={appleTheme.colors.success} />
-                    <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
+                    <Typography variant="body" style={{ color: themeColors.text.primary }}>
                       {recommendation}
                     </Typography>
                   </HStack>
@@ -425,7 +437,7 @@ export default function PerformanceAudit() {
         <Card variant="elevated" padding="xl" style={{ marginBottom: appleTheme.spacing[6] }}>
           <Typography variant="title1" style={{ 
             marginBottom: appleTheme.spacing[4],
-            color: appleTheme.colors.text.primary,
+            color: themeColors.text.primary,
             fontWeight: appleTheme.typography.fontWeight.semibold
           }}>
             Performance Best Practices
@@ -456,7 +468,7 @@ export default function PerformanceAudit() {
                 ].map((item, index) => (
                   <HStack key={index} spacing={2} align="center">
                         <CheckCircle size={20} weight="fill" color={appleTheme.colors.success} />
-                    <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
+                    <Typography variant="body" style={{ color: themeColors.text.primary }}>
                       {item}
                     </Typography>
                   </HStack>
@@ -488,7 +500,7 @@ export default function PerformanceAudit() {
                 ].map((item, index) => (
                   <HStack key={index} spacing={2} align="center">
                     <Info style={{ color: appleTheme.colors.info, fontSize: "20px" }} />
-                    <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
+                    <Typography variant="body" style={{ color: themeColors.text.primary }}>
                       {item}
                     </Typography>
                   </HStack>

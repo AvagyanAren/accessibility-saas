@@ -5,6 +5,7 @@ import Button from "../../components/apple/Button";
 import Input from "../../components/apple/Input";
 import Card from "../../components/apple/Card";
 import { appleTheme } from "../../styles/apple-theme";
+import { useTheme } from "../../contexts/ThemeContext";
 import {
   Keyboard,
   CheckCircle,
@@ -22,8 +23,11 @@ import Link from "next/link";
 
 import { Container, Section } from "../../components/apple/Layout";
 import AnimatedGradient from "../../components/apple/AnimatedGradient";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 export default function KeyboardNavigator() {
+  const { isDarkMode } = useTheme();
+  const { t } = useLanguage();
   const [url, setUrl] = useState("");
   const [testing, setTesting] = useState(false);
   const [results, setResults] = useState(null);
@@ -147,9 +151,11 @@ export default function KeyboardNavigator() {
     "Generating accessibility report..."
   ];
 
+  const themeColors = isDarkMode ? appleTheme.colors.dark : appleTheme.colors;
+
   return (
     <div style={{ 
-      backgroundColor: appleTheme.colors.background.secondary, 
+      backgroundColor: themeColors.background.secondary, 
       minHeight: "100vh",
       position: "relative",
       overflow: "hidden"
@@ -158,85 +164,93 @@ export default function KeyboardNavigator() {
       <AnimatedGradient variant="subtle" intensity="medium" />
       
       {/* Hero Section */}
-      <Section background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
+      <Section background={isDarkMode ? "linear-gradient(135deg, rgba(28, 28, 30, 0.9) 0%, rgba(44, 44, 46, 0.9) 100%)" : "linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)"} padding="xl">
         <Container size="lg">
-          <Box style={{ textAlign: "center" }}>
+          <Box style={{ textAlign: "center", display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Typography variant="display" style={{ 
               marginBottom: appleTheme.spacing[6],
-              color: "#1C1C1E",
+              color: themeColors.text.primary,
               fontWeight: appleTheme.typography.fontWeight.bold
             }}>
-              Keyboard Navigator
+              {t("keyboardNavigator.title")}
             </Typography>
             <Typography variant="headline" weight="regular" style={{ 
-              color: "#2C2C2E",
+              color: themeColors.text.secondary,
               marginBottom: appleTheme.spacing[8],
               maxWidth: "800px",
-              margin: `0 auto ${appleTheme.spacing[8]} auto`,
               lineHeight: appleTheme.typography.lineHeight.relaxed,
               fontWeight: appleTheme.typography.fontWeight.medium
             }}>
-              Test and improve keyboard navigation on your website. Ensure all interactive elements are accessible via keyboard, 
-              making your site usable for everyone regardless of their input method.
+              {t("keyboardNavigator.subtitle")}
             </Typography>
+            
+            {/* Input and Button Section */}
+            <HStack spacing={3} align="center" style={{ 
+              marginBottom: appleTheme.spacing[4],
+              width: '100%',
+              maxWidth: '800px',
+              justifyContent: 'center'
+            }}>
+              <Box style={{ flex: 1, maxWidth: '600px' }}>
+                <Input
+                  placeholder="https://example.com"
+                  value={url}
+                  onChange={setUrl}
+                  size="large"
+                  variant="filled"
+                  startIcon={<Keyboard size={20} weight="regular" />}
+                />
+              </Box>
+              <Button
+                variant="primary"
+                size="large"
+                onClick={handleTest}
+                disabled={testing}
+                loading={testing}
+                startIcon={testing ? <ArrowsClockwise size={16} weight="regular" /> : <Play size={16} weight="fill" />}
+                style={{ 
+                  height: '54px', 
+                  flexShrink: 0,
+                  minWidth: '140px'
+                }}
+              >
+                {testing ? t("keyboardNavigator.testing") : t("keyboardNavigator.testButton")}
+              </Button>
+            </HStack>
+
+            {/* What we test card */}
+            <Card variant="outlined" padding="md" style={{ 
+              backgroundColor: isDarkMode ? themeColors.background.tertiary : '#F5F5F7',
+              border: `1px solid ${isDarkMode ? 'rgba(255, 255, 255, 0.15)' : '#E5E5EA'}`,
+              borderRadius: appleTheme.borderRadius.lg,
+              boxShadow: isDarkMode ? '0 1px 3px rgba(0, 0, 0, 0.2)' : '0 1px 3px rgba(0, 0, 0, 0.1)',
+              width: '100%',
+              maxWidth: '800px',
+              textAlign: 'left'
+            }}>
+              <Typography variant="body" style={{ 
+                color: themeColors.text.secondary,
+                fontSize: appleTheme.typography.fontSize.base,
+                lineHeight: appleTheme.typography.lineHeight.relaxed
+              }}>
+                <strong>{t("keyboardNavigator.whatWeTest")}</strong> {t("keyboardNavigator.whatWeTestDesc")}
+              </Typography>
+            </Card>
           </Box>
         </Container>
       </Section>
 
       <Container size="lg" style={{ padding: appleTheme.spacing[6] }}>
-        {/* Input Section */}
-        <Card variant="elevated" padding="xl" style={{ marginBottom: appleTheme.spacing[6] }}>
-          <Typography variant="title1" style={{ 
-            marginBottom: appleTheme.spacing[4],
-            color: appleTheme.colors.text.primary,
-            fontWeight: appleTheme.typography.fontWeight.semibold
-          }}>
-            Test Keyboard Navigation
-          </Typography>
-          
-          <HStack spacing={3} align="stretch" style={{ marginBottom: appleTheme.spacing[4] }}>
-            <Box style={{ flex: 1 }}>
-              <Input
-                placeholder="https://example.com"
-                value={url}
-                onChange={setUrl}
-                size="large"
-                variant="filled"
-                startIcon={<Keyboard />}
-              />
-            </Box>
-            <Button
-              variant="primary"
-              size="large"
-              onClick={handleTest}
-              disabled={testing}
-              loading={testing}
-              startIcon={testing ? <ArrowsClockwise size={16} weight="regular" /> : <Play size={16} weight="fill" />}
-            >
-              {testing ? "Testing..." : "Test Navigation"}
-            </Button>
-          </HStack>
-
-          <Card variant="outlined" padding="md" style={{ 
-            backgroundColor: appleTheme.colors.info + "10",
-            borderColor: appleTheme.colors.info + "30"
-          }}>
-            <Typography variant="body" style={{ color: appleTheme.colors.text.secondary }}>
-              <strong>What we test:</strong> Tab order, focus management, keyboard shortcuts, 
-              ARIA labels, focus indicators, and skip links.
-            </Typography>
-          </Card>
-        </Card>
 
         {/* Testing Progress */}
         {testing && (
           <Card variant="elevated" padding="xl" style={{ marginBottom: appleTheme.spacing[6] }}>
             <Typography variant="title1" style={{ 
               marginBottom: appleTheme.spacing[4],
-              color: appleTheme.colors.text.primary,
+              color: themeColors.text.primary,
               fontWeight: appleTheme.typography.fontWeight.semibold
             }}>
-              Testing in Progress...
+              {t("keyboardNavigator.testingInProgress")}
             </Typography>
             <VStack spacing={3}>
               {testSteps.map((step, index) => (
@@ -256,7 +270,7 @@ export default function KeyboardNavigator() {
                     {index < activeStep ? "✓" : index + 1}
                   </Box>
                   <Typography variant="body" style={{ 
-                    color: index <= activeStep ? appleTheme.colors.text.primary : appleTheme.colors.text.tertiary
+                    color: index <= activeStep ? themeColors.text.primary : themeColors.text.tertiary
                   }}>
                     {step}
                   </Typography>
@@ -279,7 +293,7 @@ export default function KeyboardNavigator() {
                 }}>
                   {results.totalElements}
                 </Typography>
-                <Typography variant="body" style={{ color: appleTheme.colors.text.secondary }}>
+                <Typography variant="body" style={{ color: themeColors.text.secondary }}>
                   Interactive Elements
                 </Typography>
               </Card>
@@ -291,7 +305,7 @@ export default function KeyboardNavigator() {
                 }}>
                   {results.keyboardAccessible}
                 </Typography>
-                <Typography variant="body" style={{ color: appleTheme.colors.text.secondary }}>
+                <Typography variant="body" style={{ color: themeColors.text.secondary }}>
                   Keyboard Accessible
                 </Typography>
               </Card>
@@ -303,7 +317,7 @@ export default function KeyboardNavigator() {
                 }}>
                   {results.issues}
                 </Typography>
-                <Typography variant="body" style={{ color: appleTheme.colors.text.secondary }}>
+                <Typography variant="body" style={{ color: themeColors.text.secondary }}>
                   Issues Found
                 </Typography>
               </Card>
@@ -315,7 +329,7 @@ export default function KeyboardNavigator() {
                 }}>
                   {results.score}%
                 </Typography>
-                <Typography variant="body" style={{ color: appleTheme.colors.text.secondary }}>
+                <Typography variant="body" style={{ color: themeColors.text.secondary }}>
                   Navigation Score
                 </Typography>
               </Card>
@@ -325,10 +339,10 @@ export default function KeyboardNavigator() {
             <Card variant="elevated" padding="xl">
               <Typography variant="title1" style={{ 
                 marginBottom: appleTheme.spacing[4],
-                color: appleTheme.colors.text.primary,
+                color: themeColors.text.primary,
                 fontWeight: appleTheme.typography.fontWeight.semibold
               }}>
-                Keyboard Navigation Issues
+                {t("keyboardNavigator.keyboardNavigationIssues")}
               </Typography>
               
               {results.problems.length === 0 ? (
@@ -341,10 +355,10 @@ export default function KeyboardNavigator() {
                     marginBottom: appleTheme.spacing[2],
                     fontWeight: appleTheme.typography.fontWeight.semibold
                   }}>
-                    Excellent! No keyboard navigation issues found.
+                    {t("keyboardNavigator.excellent")}
                   </Typography>
-                  <Typography variant="body" style={{ color: appleTheme.colors.text.secondary }}>
-                    All interactive elements are properly accessible via keyboard.
+                  <Typography variant="body" style={{ color: themeColors.text.secondary }}>
+                    {t("keyboardNavigator.excellentDesc")}
                   </Typography>
                 </Card>
               ) : (
@@ -358,7 +372,7 @@ export default function KeyboardNavigator() {
                         <Box style={{ flex: 1 }}>
                           <HStack spacing={2} align="center" style={{ marginBottom: appleTheme.spacing[2] }}>
                             <Typography variant="title2" style={{ 
-                              color: appleTheme.colors.text.primary,
+                              color: themeColors.text.primary,
                               fontWeight: appleTheme.typography.fontWeight.semibold
                             }}>
                               {problem.description}
@@ -376,7 +390,7 @@ export default function KeyboardNavigator() {
                           </HStack>
                           <Typography variant="body" style={{ 
                             marginBottom: appleTheme.spacing[2],
-                            color: appleTheme.colors.text.secondary
+                            color: themeColors.text.secondary
                           }}>
                             <strong>Element:</strong> {problem.element}
                           </Typography>
@@ -385,13 +399,13 @@ export default function KeyboardNavigator() {
                             borderColor: appleTheme.colors.info + "30",
                             marginBottom: appleTheme.spacing[2]
                           }}>
-                            <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
+                            <Typography variant="body" style={{ color: themeColors.text.primary }}>
                               <strong><Lightbulb size={16} weight="fill" style={{ marginRight: "4px", verticalAlign: "middle" }} /> Suggestion:</strong> {problem.suggestion}
                             </Typography>
                           </Card>
                           <Card variant="outlined" padding="md" style={{ backgroundColor: appleTheme.colors.gray[50] }}>
                             <Typography variant="caption" style={{ 
-                              color: appleTheme.colors.text.tertiary,
+                              color: themeColors.text.tertiary,
                               display: "block",
                               marginBottom: appleTheme.spacing[1]
                             }}>
@@ -400,7 +414,7 @@ export default function KeyboardNavigator() {
                             <Typography variant="body" style={{ 
                               fontFamily: "SF Mono, Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace",
                               fontSize: appleTheme.typography.fontSize.sm,
-                              color: appleTheme.colors.text.primary
+                              color: themeColors.text.primary
                             }}>
                               {problem.code}
                             </Typography>
@@ -419,10 +433,10 @@ export default function KeyboardNavigator() {
         <Card variant="elevated" padding="xl" style={{ marginBottom: appleTheme.spacing[6] }}>
           <Typography variant="title1" style={{ 
             marginBottom: appleTheme.spacing[4],
-            color: appleTheme.colors.text.primary,
+            color: themeColors.text.primary,
             fontWeight: appleTheme.typography.fontWeight.semibold
           }}>
-            Keyboard Navigation Best Practices
+            {t("keyboardNavigator.bestPracticesTitle")}
           </Typography>
           
           <HStack spacing={6} align="flex-start" wrap="wrap">
@@ -436,7 +450,7 @@ export default function KeyboardNavigator() {
                 gap: "8px"
               }}>
                 <CheckCircle size={24} weight="fill" />
-                Essential Requirements
+                {t("keyboardNavigator.essentialRequirements")}
               </Typography>
               <VStack spacing={2}>
                 {[
@@ -450,7 +464,7 @@ export default function KeyboardNavigator() {
                 ].map((item, index) => (
                   <HStack key={index} spacing={2} align="center">
                     <CheckCircle size={20} weight="fill" color={appleTheme.colors.success} />
-                    <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
+                    <Typography variant="body" style={{ color: themeColors.text.primary }}>
                       {item}
                     </Typography>
                   </HStack>
@@ -468,7 +482,7 @@ export default function KeyboardNavigator() {
                 gap: "8px"
               }}>
                 <Rocket style={{ fontSize: "24px" }} />
-                Advanced Features
+                {t("keyboardNavigator.advancedFeatures")}
               </Typography>
               <VStack spacing={2}>
                 {[
@@ -482,7 +496,7 @@ export default function KeyboardNavigator() {
                 ].map((item, index) => (
                   <HStack key={index} spacing={2} align="center">
                     <Info style={{ color: appleTheme.colors.info, fontSize: "20px" }} />
-                    <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
+                    <Typography variant="body" style={{ color: themeColors.text.primary }}>
                       {item}
                     </Typography>
                   </HStack>
@@ -502,14 +516,14 @@ export default function KeyboardNavigator() {
             color: "white",
             fontWeight: appleTheme.typography.fontWeight.semibold
           }}>
-            Need More Accessibility Tools?
+            {t("keyboardNavigator.needMoreTools")}
           </Typography>
           <Typography variant="body" style={{ 
             marginBottom: appleTheme.spacing[4],
             color: "white",
             opacity: 0.9
           }}>
-            Explore our full suite of accessibility testing tools.
+            {t("keyboardNavigator.needMoreToolsDesc")}
           </Typography>
           <Link href="/tools" passHref legacyBehavior>
             <a style={{ textDecoration: "none" }}>
@@ -522,7 +536,7 @@ export default function KeyboardNavigator() {
                   fontWeight: appleTheme.typography.fontWeight.semibold
                 }}
               >
-                View All Tools
+                {t("keyboardNavigator.viewAllTools")}
               </Button>
             </a>
           </Link>

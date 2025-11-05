@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { appleTheme } from '../../styles/apple-theme';
+import { useTheme } from '../../contexts/ThemeContext';
 
 const Input = ({
   label,
@@ -19,6 +20,8 @@ const Input = ({
   ...props
 }) => {
   const [focused, setFocused] = useState(false);
+  const { isDarkMode } = useTheme();
+  const themeColors = isDarkMode ? appleTheme.colors.dark : appleTheme.colors;
 
   const getContainerStyles = () => {
     return {
@@ -96,8 +99,8 @@ const Input = ({
     const variants = {
       default: {},
       filled: {
-        backgroundColor: appleTheme.colors.gray[100],
-        border: `1px solid ${appleTheme.colors.gray[200]}`
+        backgroundColor: isDarkMode ? themeColors.background.tertiary : appleTheme.colors.gray[100],
+        border: `1px solid ${isDarkMode ? 'rgba(255, 255, 255, 0.1)' : appleTheme.colors.gray[200]}`
       },
       outlined: {
         backgroundColor: 'transparent',
@@ -187,9 +190,47 @@ const Input = ({
           onBlur={handleBlur}
           placeholder={placeholder}
           disabled={disabled}
-          style={getInputStyles()}
+          style={{
+            ...getInputStyles(),
+            '--placeholder-color': themeColors.text.tertiary
+          }}
+          className={`input-placeholder-${isDarkMode ? 'dark' : 'light'}`}
           {...props}
         />
+        <style dangerouslySetInnerHTML={{__html: `
+          .input-placeholder-dark::placeholder {
+            color: ${themeColors.text.tertiary} !important;
+            opacity: 1 !important;
+          }
+          .input-placeholder-dark::-webkit-input-placeholder {
+            color: ${themeColors.text.tertiary} !important;
+            opacity: 1 !important;
+          }
+          .input-placeholder-dark::-moz-placeholder {
+            color: ${themeColors.text.tertiary} !important;
+            opacity: 1 !important;
+          }
+          .input-placeholder-dark:-ms-input-placeholder {
+            color: ${themeColors.text.tertiary} !important;
+            opacity: 1 !important;
+          }
+          .input-placeholder-light::placeholder {
+            color: ${themeColors.text.tertiary} !important;
+            opacity: 1 !important;
+          }
+          .input-placeholder-light::-webkit-input-placeholder {
+            color: ${themeColors.text.tertiary} !important;
+            opacity: 1 !important;
+          }
+          .input-placeholder-light::-moz-placeholder {
+            color: ${themeColors.text.tertiary} !important;
+            opacity: 1 !important;
+          }
+          .input-placeholder-light:-ms-input-placeholder {
+            color: ${themeColors.text.tertiary} !important;
+            opacity: 1 !important;
+          }
+        `}} />
         
         {endIcon && (
           <span style={getIconStyles('right')}>

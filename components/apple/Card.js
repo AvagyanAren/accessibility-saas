@@ -16,7 +16,7 @@ const Card = ({
     const themeColors = isDarkMode ? appleTheme.colors.dark : appleTheme.colors;
     
     const baseStyles = {
-      backgroundColor: isDarkMode ? themeColors.background.elevated : appleTheme.colors.background.primary,
+      backgroundColor: isDarkMode ? themeColors.background.tertiary : appleTheme.colors.background.primary,
       borderRadius: appleTheme.borderRadius.xl,
       border: `1px solid ${isDarkMode ? themeColors.gray[300] : appleTheme.colors.gray[200]}`,
       transition: `all ${appleTheme.transition.duration.base} ${appleTheme.transition.timing.ease}`,

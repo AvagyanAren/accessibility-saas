@@ -1,8 +1,12 @@
 // Shared utility functions for accessibility tools
+import React from 'react';
+import { XCircle, WarningCircle, Info } from 'phosphor-react';
 
 export const getSeverityColor = (severity) => {
   switch (severity) {
-    case "critical": return "#dc3545";
+    case "critical": 
+    case "error": 
+      return "#dc3545";
     case "warning": return "#ffc107";
     case "info": return "#17a2b8";
     default: return "#6c757d";
@@ -11,10 +15,12 @@ export const getSeverityColor = (severity) => {
 
 export const getSeverityIcon = (severity) => {
   switch (severity) {
-    case "critical": return "Error";
-    case "warning": return "Warning";
-    case "info": return "Info";
-    default: return "Info";
+    case "critical":
+    case "error":
+      return <XCircle size={24} weight="fill" />;
+    case "warning": return <WarningCircle size={24} weight="fill" />;
+    case "info": return <Info size={24} weight="fill" />;
+    default: return <Info size={24} weight="fill" />;
   }
 };
 

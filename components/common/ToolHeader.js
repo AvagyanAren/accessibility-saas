@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography, Button } from '@mui/material';
-import { PlayArrow } from '@mui/icons-material';
+import { Play } from 'phosphor-react';
 import Link from 'next/link';
 
 export default function ToolHeader({ 
@@ -10,7 +10,7 @@ export default function ToolHeader({
   icon,
   onAction,
   actionText = "Start Analysis",
-  actionIcon = <PlayArrow />,
+  actionIcon = <Play size={20} weight="fill" />,
   actionLoading = false,
   showBackButton = true
 }) {

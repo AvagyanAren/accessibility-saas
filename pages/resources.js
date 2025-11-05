@@ -246,9 +246,11 @@ export default function Resources() {
     ? articles 
     : articles.filter(article => article.category === selectedCategory);
 
+  const themeColors = isDarkMode ? appleTheme.colors.dark : appleTheme.colors;
+
   return (
     <div style={{ 
-      backgroundColor: appleTheme.colors.background.secondary, 
+      backgroundColor: themeColors.background.secondary, 
         minHeight: "100vh",
       position: "relative",
       overflow: "hidden"
@@ -257,12 +259,12 @@ export default function Resources() {
       <AnimatedGradient variant="subtle" intensity="medium" />
       
       {/* Hero Section */}
-      <Section background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
+      <Section background={isDarkMode ? "linear-gradient(135deg, rgba(28, 28, 30, 0.9) 0%, rgba(44, 44, 46, 0.9) 100%)" : "linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)"} padding="xl">
         <Container size="lg">
           <Box style={{ textAlign: "center" }}>
             <Typography variant="display" style={{ 
               marginBottom: appleTheme.spacing[4],
-              color: "#1C1C1E",
+              color: themeColors.text.primary,
               fontWeight: appleTheme.typography.fontWeight.bold,
               wordBreak: "break-word",
               overflowWrap: "break-word"
@@ -270,7 +272,7 @@ export default function Resources() {
               {t("resources.title")}
             </Typography>
             <Typography variant="headline" weight="regular" style={{ 
-              color: "#2C2C2E",
+              color: themeColors.text.secondary,
               maxWidth: "600px",
               margin: `0 auto ${appleTheme.spacing[8]} auto`,
               fontWeight: appleTheme.typography.fontWeight.medium,
@@ -372,12 +374,12 @@ export default function Resources() {
               <Link key={index} href={article.href} style={{ textDecoration: "none", display: "block" }}>
                 <div 
                   style={{
-                    backgroundColor: "#FFFFFF",
-                    border: "1px solid #E5E5EA",
+                    backgroundColor: isDarkMode ? themeColors.background.tertiary : "#FFFFFF",
+                    border: `1px solid ${isDarkMode ? "rgba(255, 255, 255, 0.1)" : "#E5E5EA"}`,
                     borderRadius: "12px",
                     padding: "16px",
                     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+                    boxShadow: isDarkMode ? "0 1px 3px rgba(0, 0, 0, 0.3)" : "0 1px 3px rgba(0, 0, 0, 0.1)",
                     overflow: "hidden",
                     height: "160px",
                     display: "flex",
@@ -397,18 +399,18 @@ export default function Resources() {
                   }}
                   onMouseEnter={(e) => {
                     if (article.available) {
-                      e.currentTarget.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.15)";
+                      e.currentTarget.style.boxShadow = isDarkMode ? "0 8px 25px rgba(0, 0, 0, 0.5)" : "0 8px 25px rgba(0, 0, 0, 0.15)";
                       e.currentTarget.style.transform = "translateY(-3px)";
                       e.currentTarget.style.borderColor = "#007AFF";
-                      e.currentTarget.style.backgroundColor = "#F8F9FA";
+                      e.currentTarget.style.backgroundColor = isDarkMode ? themeColors.gray[200] : "#F8F9FA";
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (article.available) {
-                      e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
+                      e.currentTarget.style.boxShadow = isDarkMode ? "0 1px 3px rgba(0, 0, 0, 0.3)" : "0 1px 3px rgba(0, 0, 0, 0.1)";
                       e.currentTarget.style.transform = "translateY(0)";
-                      e.currentTarget.style.borderColor = "#E5E5EA";
-                      e.currentTarget.style.backgroundColor = "#FFFFFF";
+                      e.currentTarget.style.borderColor = isDarkMode ? "rgba(255, 255, 255, 0.1)" : "#E5E5EA";
+                      e.currentTarget.style.backgroundColor = isDarkMode ? themeColors.background.tertiary : "#FFFFFF";
                     }
                   }}
                 >

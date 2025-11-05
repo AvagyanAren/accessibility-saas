@@ -31,7 +31,7 @@ export default function IssueList({
 
   const renderIssue = (issue, index) => {
     const severityColor = getSeverityColor(issue.severity);
-    const SeverityIcon = getSeverityIcon(issue.severity);
+    const SeverityIconComponent = getSeverityIcon(issue.severity);
     
     const issueContent = (
       <Box>
@@ -100,7 +100,7 @@ export default function IssueList({
         <ListItem key={index} sx={{ px: 0, py: 1 }}>
           <ListItemIcon>
             <Box sx={{ color: severityColor }}>
-              <SeverityIcon />
+              {SeverityIconComponent}
             </Box>
           </ListItemIcon>
           <ListItemText
@@ -116,7 +116,7 @@ export default function IssueList({
         <ListItem sx={{ px: 0, py: 2 }}>
           <ListItemIcon>
             <Box sx={{ color: severityColor }}>
-              <SeverityIcon />
+              {SeverityIconComponent}
             </Box>
           </ListItemIcon>
           <ListItemText

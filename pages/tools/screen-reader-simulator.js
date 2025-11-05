@@ -5,6 +5,7 @@ import Button from "../../components/apple/Button";
 import Input from "../../components/apple/Input";
 import Card from "../../components/apple/Card";
 import { appleTheme } from "../../styles/apple-theme";
+import { useTheme } from "../../contexts/ThemeContext";
 import {
   Microphone,
   CheckCircle,
@@ -22,8 +23,11 @@ import Link from "next/link";
 
 import { Container, Section } from "../../components/apple/Layout";
 import AnimatedGradient from "../../components/apple/AnimatedGradient";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 export default function ScreenReaderSimulator() {
+  const { isDarkMode } = useTheme();
+  const { t } = useLanguage();
   const [url, setUrl] = useState("");
   const [simulating, setSimulating] = useState(false);
   const [results, setResults] = useState(null);
@@ -180,9 +184,11 @@ export default function ScreenReaderSimulator() {
     { label: "Recommendations", icon: <CheckCircle size={20} weight="fill" /> }
   ];
 
+  const themeColors = isDarkMode ? appleTheme.colors.dark : appleTheme.colors;
+
   return (
     <div style={{ 
-      backgroundColor: appleTheme.colors.background.secondary, 
+      backgroundColor: themeColors.background.secondary, 
       minHeight: "100vh",
       position: "relative",
       overflow: "hidden"
@@ -191,26 +197,25 @@ export default function ScreenReaderSimulator() {
       <AnimatedGradient variant="subtle" intensity="medium" />
       
       {/* Hero Section */}
-      <Section background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
+      <Section background={isDarkMode ? "linear-gradient(135deg, rgba(28, 28, 30, 0.9) 0%, rgba(44, 44, 46, 0.9) 100%)" : "linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)"} padding="xl">
         <Container size="lg">
           <Box style={{ textAlign: "center" }}>
             <Typography variant="display" style={{ 
               marginBottom: appleTheme.spacing[6],
-              color: "#1C1C1E",
+              color: themeColors.text.primary,
               fontWeight: appleTheme.typography.fontWeight.bold
             }}>
-              Screen Reader Simulator
+              {t("screenReaderSimulator.title")}
             </Typography>
             <Typography variant="headline" weight="regular" style={{ 
-              color: "#2C2C2E",
+              color: themeColors.text.secondary,
               marginBottom: appleTheme.spacing[8],
               maxWidth: "800px",
               margin: `0 auto ${appleTheme.spacing[8]} auto`,
               lineHeight: appleTheme.typography.lineHeight.relaxed,
               fontWeight: appleTheme.typography.fontWeight.medium
             }}>
-              Experience your website as screen reader users do. Test accessibility and improve the experience for all users, 
-              ensuring your content is truly inclusive and accessible.
+              {t("screenReaderSimulator.subtitle")}
             </Typography>
           </Box>
         </Container>
@@ -221,13 +226,13 @@ export default function ScreenReaderSimulator() {
         <Card variant="elevated" padding="xl" style={{ marginBottom: appleTheme.spacing[6] }}>
           <Typography variant="title1" style={{ 
             marginBottom: appleTheme.spacing[4],
-            color: appleTheme.colors.text.primary,
+            color: themeColors.text.primary,
             fontWeight: appleTheme.typography.fontWeight.semibold
           }}>
-            Simulate Screen Reader Experience
+            {t("screenReaderSimulator.simulateTitle")}
           </Typography>
           
-          <HStack spacing={3} align="stretch" style={{ marginBottom: appleTheme.spacing[4] }}>
+          <HStack spacing={3} align="center" style={{ marginBottom: 0 }}>
             <Box style={{ flex: 1 }}>
               <Input
                 placeholder="https://example.com"
@@ -245,20 +250,27 @@ export default function ScreenReaderSimulator() {
               disabled={simulating}
               loading={simulating}
               startIcon={<Play size={16} weight="fill" />}
+              style={{ height: '54px', flexShrink: 0 }}
             >
-              {simulating ? "Simulating..." : "Start Simulation"}
+              {simulating ? t("screenReaderSimulator.simulating") : t("screenReaderSimulator.startSimulation")}
             </Button>
           </HStack>
+        </Card>
 
-          <Card variant="outlined" padding="md" style={{ 
-            backgroundColor: appleTheme.colors.info + "10",
-            borderColor: appleTheme.colors.info + "30"
+        <Card variant="outlined" padding="md" style={{ 
+          backgroundColor: isDarkMode ? themeColors.background.tertiary : '#F5F5F7',
+          border: `1px solid ${isDarkMode ? 'rgba(255, 255, 255, 0.15)' : '#E5E5EA'}`,
+          borderRadius: appleTheme.borderRadius.lg,
+          marginTop: appleTheme.spacing[4],
+          marginBottom: appleTheme.spacing[6],
+          boxShadow: isDarkMode ? '0 2px 8px rgba(0, 0, 0, 0.2)' : '0 1px 3px rgba(0, 0, 0, 0.1)',
+          width: '100%'
+        }}>
+          <Typography variant="body" style={{ 
+            color: themeColors.text.secondary
           }}>
-            <Typography variant="body" style={{ color: appleTheme.colors.text.secondary }}>
-              <strong>What we simulate:</strong> Screen reader navigation, ARIA announcements, 
-              heading structure, form labels, and landmark identification.
-            </Typography>
-          </Card>
+            <strong>{t("screenReaderSimulator.whatWeSimulate")}</strong> {t("screenReaderSimulator.whatWeSimulateDesc")}
+          </Typography>
         </Card>
 
         {/* Results Section */}
@@ -274,7 +286,7 @@ export default function ScreenReaderSimulator() {
                 }}>
                   {results.overallScore}%
                 </Typography>
-                <Typography variant="body" style={{ color: appleTheme.colors.text.secondary }}>
+                <Typography variant="body" style={{ color: themeColors.text.secondary }}>
                   Accessibility Score
                 </Typography>
               </Card>
@@ -286,7 +298,7 @@ export default function ScreenReaderSimulator() {
                 }}>
                   {results.accessibleElements}
                 </Typography>
-                <Typography variant="body" style={{ color: appleTheme.colors.text.secondary }}>
+                <Typography variant="body" style={{ color: themeColors.text.secondary }}>
                   Accessible Elements
                 </Typography>
               </Card>
@@ -298,7 +310,7 @@ export default function ScreenReaderSimulator() {
                 }}>
                   {results.issueCount}
                 </Typography>
-                <Typography variant="body" style={{ color: appleTheme.colors.text.secondary }}>
+                <Typography variant="body" style={{ color: themeColors.text.secondary }}>
                   Issues Found
                 </Typography>
               </Card>
@@ -310,7 +322,7 @@ export default function ScreenReaderSimulator() {
                 }}>
                   {results.totalElements}
                 </Typography>
-                <Typography variant="body" style={{ color: appleTheme.colors.text.secondary }}>
+                <Typography variant="body" style={{ color: themeColors.text.secondary }}>
                   Total Elements
                 </Typography>
               </Card>
@@ -328,7 +340,7 @@ export default function ScreenReaderSimulator() {
                     startIcon={tab.icon}
                     style={{
                       backgroundColor: activeTab === index ? appleTheme.colors.primary[500] : "transparent",
-                      color: activeTab === index ? "white" : appleTheme.colors.text.primary
+                      color: activeTab === index ? "white" : themeColors.text.primary
                     }}
                   >
                     {tab.label}
@@ -343,7 +355,7 @@ export default function ScreenReaderSimulator() {
                 <Box>
                   <Typography variant="title1" style={{ 
                     marginBottom: appleTheme.spacing[4],
-                    color: appleTheme.colors.text.primary,
+                    color: themeColors.text.primary,
                     fontWeight: appleTheme.typography.fontWeight.semibold
                   }}>
                     Screen Reader Output
@@ -355,7 +367,7 @@ export default function ScreenReaderSimulator() {
                     <VStack spacing={1}>
                       {results.screenReaderOutput.map((line, index) => (
                         <Typography key={index} variant="body" style={{ 
-                          color: appleTheme.colors.text.primary,
+                          color: themeColors.text.primary,
                           fontSize: appleTheme.typography.fontSize.sm,
                           lineHeight: 1.6
                         }}>
@@ -371,7 +383,7 @@ export default function ScreenReaderSimulator() {
                 <Box>
                   <Typography variant="title1" style={{ 
                     marginBottom: appleTheme.spacing[4],
-                    color: appleTheme.colors.text.primary,
+                    color: themeColors.text.primary,
                     fontWeight: appleTheme.typography.fontWeight.semibold
                   }}>
                     Accessibility Issues
@@ -387,7 +399,7 @@ export default function ScreenReaderSimulator() {
                           <Box style={{ flex: 1 }}>
                             <HStack spacing={2} align="center" style={{ marginBottom: appleTheme.spacing[2] }}>
                               <Typography variant="title2" style={{ 
-                                color: appleTheme.colors.text.primary,
+                                color: themeColors.text.primary,
                                 fontWeight: appleTheme.typography.fontWeight.semibold
                               }}>
                                 {issue.description}
@@ -405,7 +417,7 @@ export default function ScreenReaderSimulator() {
                             </HStack>
                             <Typography variant="body" style={{ 
                               marginBottom: appleTheme.spacing[2],
-                              color: appleTheme.colors.text.secondary
+                              color: themeColors.text.secondary
                             }}>
                               <strong>Element:</strong> {issue.element}
                             </Typography>
@@ -414,13 +426,13 @@ export default function ScreenReaderSimulator() {
                               borderColor: appleTheme.colors.info + "30",
                               marginBottom: appleTheme.spacing[2]
                             }}>
-                              <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
+                              <Typography variant="body" style={{ color: themeColors.text.primary }}>
                                 <strong><Lightbulb style={{ fontSize: "16px", marginRight: "4px", verticalAlign: "middle" }} /> Suggestion:</strong> {issue.suggestion}
                               </Typography>
                             </Card>
                             <Card variant="outlined" padding="md" style={{ backgroundColor: appleTheme.colors.gray[50] }}>
                               <Typography variant="caption" style={{ 
-                                color: appleTheme.colors.text.tertiary,
+                                color: themeColors.text.tertiary,
                                 display: "block",
                                 marginBottom: appleTheme.spacing[1]
                               }}>
@@ -429,7 +441,7 @@ export default function ScreenReaderSimulator() {
                               <Typography variant="body" style={{ 
                                 fontFamily: "SF Mono, Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace",
                                 fontSize: appleTheme.typography.fontSize.sm,
-                                color: appleTheme.colors.text.primary
+                                color: themeColors.text.primary
                               }}>
                                 {issue.code}
                               </Typography>
@@ -446,7 +458,7 @@ export default function ScreenReaderSimulator() {
                 <Box>
                   <Typography variant="title1" style={{ 
                     marginBottom: appleTheme.spacing[4],
-                    color: appleTheme.colors.text.primary,
+                    color: themeColors.text.primary,
                     fontWeight: appleTheme.typography.fontWeight.semibold
                   }}>
                     Recommendations
@@ -455,7 +467,7 @@ export default function ScreenReaderSimulator() {
                     {results.recommendations.map((recommendation, index) => (
                       <HStack key={index} spacing={2} align="center">
                         <CheckCircle size={20} weight="fill" color={appleTheme.colors.success} />
-                        <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
+                        <Typography variant="body" style={{ color: themeColors.text.primary }}>
                           {recommendation}
                         </Typography>
                       </HStack>
@@ -471,7 +483,7 @@ export default function ScreenReaderSimulator() {
         <Card variant="elevated" padding="xl" style={{ marginBottom: appleTheme.spacing[6] }}>
           <Typography variant="title1" style={{ 
             marginBottom: appleTheme.spacing[4],
-            color: appleTheme.colors.text.primary,
+            color: themeColors.text.primary,
             fontWeight: appleTheme.typography.fontWeight.semibold
           }}>
             Screen Reader Best Practices
@@ -502,7 +514,7 @@ export default function ScreenReaderSimulator() {
                 ].map((item, index) => (
                   <HStack key={index} spacing={2} align="center">
                     <CheckCircle style={{ color: appleTheme.colors.success, fontSize: "20px" }} />
-                    <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
+                    <Typography variant="body" style={{ color: themeColors.text.primary }}>
                       {item}
                     </Typography>
                   </HStack>
@@ -534,7 +546,7 @@ export default function ScreenReaderSimulator() {
                 ].map((item, index) => (
                   <HStack key={index} spacing={2} align="center">
                     <Info style={{ color: appleTheme.colors.info, fontSize: "20px" }} />
-                    <Typography variant="body" style={{ color: appleTheme.colors.text.primary }}>
+                    <Typography variant="body" style={{ color: themeColors.text.primary }}>
                       {item}
                     </Typography>
                   </HStack>

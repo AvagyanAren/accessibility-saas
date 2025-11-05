@@ -63,7 +63,7 @@ export default function NavbarApple() {
         border: "none",
         padding: "4px",
         color: isDarkMode ? '#FFFFFF' : appleTheme.colors.text.primary,
-        transition: "all 0.3s ease",
+          transition: "all 0.3s ease",
       }}
       aria-label="Toggle menu"
       aria-expanded={isMobileMenuOpen}

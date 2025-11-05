@@ -186,11 +186,11 @@ export default function Pricing() {
     }}>
       {/* Animated Background Elements */}
       <div className="pricing-background">
-        <AnimatedGradient variant="subtle" intensity="low" />
+        <AnimatedGradient variant="subtle" intensity="medium" />
       </div>
       
       {/* Hero Section */}
-      <Section className="pricing-hero" background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
+      <Section className="pricing-hero" background={isDarkMode ? "linear-gradient(135deg, rgba(28, 28, 30, 0.9) 0%, rgba(44, 44, 46, 0.9) 100%)" : "linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)"} padding="xl">
         <Container size="lg">
           <Box className="pricing-hero__content" style={{ textAlign: "center" }}>
             <Typography variant="display" className="pricing-hero__title" style={{ 
@@ -234,12 +234,12 @@ export default function Pricing() {
               <div 
                 key={index} 
                 style={{
-                  backgroundColor: "#FFFFFF",
-                  border: plan.popular ? "2px solid #007AFF" : "1px solid #E5E5EA",
+                  backgroundColor: isDarkMode ? themeColors.background.tertiary : "#FFFFFF",
+                  border: plan.popular ? "2px solid #007AFF" : `1px solid ${isDarkMode ? "rgba(255, 255, 255, 0.1)" : "#E5E5EA"}`,
                   borderRadius: "16px",
                   padding: "24px 20px",
                   transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                  boxShadow: plan.popular ? "0 8px 25px rgba(0, 122, 255, 0.15)" : "0 1px 3px rgba(0, 0, 0, 0.1)",
+                  boxShadow: plan.popular ? "0 8px 25px rgba(0, 122, 255, 0.15)" : (isDarkMode ? "0 1px 3px rgba(0, 0, 0, 0.3)" : "0 1px 3px rgba(0, 0, 0, 0.1)"),
                   overflow: "hidden",
                   width: "100%",
                   maxWidth: "320px",
@@ -253,16 +253,16 @@ export default function Pricing() {
                   height: "100%"
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.15)";
+                  e.currentTarget.style.boxShadow = isDarkMode ? "0 8px 25px rgba(0, 0, 0, 0.5)" : "0 8px 25px rgba(0, 0, 0, 0.15)";
                   e.currentTarget.style.transform = plan.popular ? "scale(1.05) translateY(-3px)" : "translateY(-3px)";
                   e.currentTarget.style.borderColor = "#007AFF";
-                  e.currentTarget.style.backgroundColor = "#F8F9FA";
+                      e.currentTarget.style.backgroundColor = isDarkMode ? themeColors.gray[200] : "#F8F9FA";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = plan.popular ? "0 8px 25px rgba(0, 122, 255, 0.15)" : "0 1px 3px rgba(0, 0, 0, 0.1)";
+                  e.currentTarget.style.boxShadow = plan.popular ? "0 8px 25px rgba(0, 122, 255, 0.15)" : (isDarkMode ? "0 1px 3px rgba(0, 0, 0, 0.3)" : "0 1px 3px rgba(0, 0, 0, 0.1)");
                   e.currentTarget.style.transform = plan.popular ? "scale(1.05)" : "translateY(0)";
-                  e.currentTarget.style.borderColor = plan.popular ? "#007AFF" : "#E5E5EA";
-                  e.currentTarget.style.backgroundColor = "#FFFFFF";
+                  e.currentTarget.style.borderColor = plan.popular ? "#007AFF" : (isDarkMode ? "rgba(255, 255, 255, 0.1)" : "#E5E5EA");
+                  e.currentTarget.style.backgroundColor = isDarkMode ? themeColors.background.tertiary : "#FFFFFF";
                 }}
               >
                 {plan.popular && (
@@ -401,12 +401,12 @@ export default function Pricing() {
             }}>
               {features.map((feature, index) => (
                 <div key={index} style={{
-                  backgroundColor: "#FFFFFF",
-                  border: "1px solid #E5E5EA",
+                  backgroundColor: isDarkMode ? themeColors.background.tertiary : "#FFFFFF",
+                  border: `1px solid ${isDarkMode ? "rgba(255, 255, 255, 0.1)" : "#E5E5EA"}`,
                   borderRadius: "16px",
                   padding: "24px",
                   transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+                  boxShadow: isDarkMode ? "0 1px 3px rgba(0, 0, 0, 0.3)" : "0 1px 3px rgba(0, 0, 0, 0.1)",
                   overflow: "hidden",
                   // Make all feature cards the same height
                   height: "200px",
@@ -418,16 +418,16 @@ export default function Pricing() {
                   textAlign: "center"
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.15)";
+                  e.currentTarget.style.boxShadow = isDarkMode ? "0 8px 25px rgba(0, 0, 0, 0.5)" : "0 8px 25px rgba(0, 0, 0, 0.15)";
                   e.currentTarget.style.transform = "translateY(-3px)";
                   e.currentTarget.style.borderColor = "#007AFF";
-                  e.currentTarget.style.backgroundColor = "#F8F9FA";
+                      e.currentTarget.style.backgroundColor = isDarkMode ? themeColors.gray[200] : "#F8F9FA";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
+                  e.currentTarget.style.boxShadow = isDarkMode ? "0 1px 3px rgba(0, 0, 0, 0.3)" : "0 1px 3px rgba(0, 0, 0, 0.1)";
                   e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.borderColor = "#E5E5EA";
-                  e.currentTarget.style.backgroundColor = "#FFFFFF";
+                  e.currentTarget.style.borderColor = isDarkMode ? "rgba(255, 255, 255, 0.1)" : "#E5E5EA";
+                  e.currentTarget.style.backgroundColor = isDarkMode ? themeColors.background.tertiary : "#FFFFFF";
                 }}>
                   <Stack spacing={3} align="center">
                     <Box style={{ 
@@ -464,12 +464,12 @@ export default function Pricing() {
 
           {/* FAQ Section */}
           <div style={{
-            backgroundColor: "#FFFFFF",
-            border: "1px solid #E5E5EA",
+            backgroundColor: isDarkMode ? themeColors.background.tertiary : "#FFFFFF",
+            border: `1px solid ${isDarkMode ? "rgba(255, 255, 255, 0.1)" : "#E5E5EA"}`,
             borderRadius: "16px",
             padding: "32px",
             transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+            boxShadow: isDarkMode ? "0 1px 3px rgba(0, 0, 0, 0.3)" : "0 1px 3px rgba(0, 0, 0, 0.1)",
             overflow: "hidden",
             minHeight: "120px",
             display: "flex",
@@ -508,12 +508,12 @@ export default function Pricing() {
                   const isExpanded = expandedFAQ === index;
                   return (
                     <div key={index} style={{
-                      backgroundColor: "#FFFFFF",
-                      border: "1px solid #E5E5EA",
+                      backgroundColor: isDarkMode ? themeColors.background.tertiary : "#FFFFFF",
+                      border: `1px solid ${isDarkMode ? "rgba(255, 255, 255, 0.1)" : "#E5E5EA"}`,
                       borderRadius: "16px",
                       padding: "16px 16px",
                       transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                      boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+                      boxShadow: isDarkMode ? "0 1px 3px rgba(0, 0, 0, 0.3)" : "0 1px 3px rgba(0, 0, 0, 0.1)",
                       overflow: "hidden",
                       minHeight: "56px",
                       display: "flex",
@@ -526,16 +526,16 @@ export default function Pricing() {
                     }}
                     onClick={() => setExpandedFAQ(isExpanded ? null : index)}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.15)";
+                      e.currentTarget.style.boxShadow = isDarkMode ? "0 8px 25px rgba(0, 0, 0, 0.5)" : "0 8px 25px rgba(0, 0, 0, 0.15)";
                       e.currentTarget.style.transform = "translateY(-3px)";
                       e.currentTarget.style.borderColor = "#007AFF";
-                      e.currentTarget.style.backgroundColor = "#F8F9FA";
+                      e.currentTarget.style.backgroundColor = isDarkMode ? themeColors.background.primary : "#F8F9FA";
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
+                      e.currentTarget.style.boxShadow = isDarkMode ? "0 1px 3px rgba(0, 0, 0, 0.3)" : "0 1px 3px rgba(0, 0, 0, 0.1)";
                       e.currentTarget.style.transform = "translateY(0)";
-                      e.currentTarget.style.borderColor = "#E5E5EA";
-                      e.currentTarget.style.backgroundColor = "#FFFFFF";
+                      e.currentTarget.style.borderColor = isDarkMode ? "rgba(255, 255, 255, 0.1)" : "#E5E5EA";
+                      e.currentTarget.style.backgroundColor = isDarkMode ? themeColors.background.tertiary : "#FFFFFF";
                     }}>
                       <Box style={{ 
                         display: "flex", 

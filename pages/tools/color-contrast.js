@@ -120,13 +120,13 @@ export default function ColorContrastChecker() {
           <Box style={{ textAlign: "center" }}>
             <Typography variant="display" style={{ 
               marginBottom: appleTheme.spacing[4],
-              color: isDarkMode ? '#FFFFFF' : "#1C1C1E",
+              color: themeColors.text.primary,
               fontWeight: appleTheme.typography.fontWeight.bold
             }}>
               Color Contrast Checker
             </Typography>
             <Typography variant="headline" weight="regular" style={{ 
-              color: isDarkMode ? '#FFFFFF' : "#2C2C2E",
+              color: themeColors.text.secondary,
               maxWidth: "600px",
               margin: `0 auto ${appleTheme.spacing[8]} auto`,
               fontWeight: appleTheme.typography.fontWeight.medium
@@ -143,7 +143,7 @@ export default function ColorContrastChecker() {
           <Card variant="elevated" padding="large" style={{ marginBottom: appleTheme.spacing[8] }}>
             <Stack spacing={6}>
               <Typography variant="title2" style={{
-                color: isDarkMode ? '#FFFFFF' : '#000000'
+                color: themeColors.text.primary
               }}>
                 Choose Your Colors
               </Typography>
@@ -189,7 +189,7 @@ export default function ColorContrastChecker() {
           <Card variant="outlined" padding="large" style={{ marginBottom: appleTheme.spacing[8] }}>
             <Stack spacing={4}>
               <Typography variant="title3" style={{
-                color: isDarkMode ? '#FFFFFF' : '#000000'
+                color: themeColors.text.primary
               }}>
                 Preview
               </Typography>
@@ -227,7 +227,7 @@ export default function ColorContrastChecker() {
           <Card variant="elevated" padding="large">
             <Stack spacing={6}>
               <Typography variant="title2" style={{
-                color: isDarkMode ? '#FFFFFF' : '#000000'
+                color: themeColors.text.primary
               }}>
                 Contrast Analysis
               </Typography>
@@ -236,7 +236,7 @@ export default function ColorContrastChecker() {
               <Box style={{ textAlign: "center" }}>
                 <Typography variant="display" weight="bold" style={{ 
                   marginBottom: appleTheme.spacing[2],
-                  color: isDarkMode ? '#FFFFFF' : appleTheme.colors.primary[500]
+                  color: themeColors.text.primary
                 }}>
                   {contrastRatio.toFixed(2)}:1
                 </Typography>

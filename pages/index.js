@@ -585,6 +585,7 @@ export default function Home() {
 
   return (
     <div className="page-container" style={{ 
+      backgroundColor: themeColors.background.secondary,
       minHeight: "100vh",
       position: "relative",
       overflow: "hidden"
@@ -598,7 +599,7 @@ export default function Home() {
         height: "100%", 
         zIndex: -1 
       }}>
-        <AnimatedGradient variant="default" intensity="medium" />
+        <AnimatedGradient variant="subtle" intensity="medium" />
       </div>
       {/* Hero Section */}
       <Section 
@@ -941,7 +942,7 @@ export default function Home() {
                     <button 
                       style={{
                         height: isMobile ? "32px" : "36px",
-                        backgroundColor: themeColors.background.primary,
+                        backgroundColor: isDarkMode ? themeColors.background.tertiary : themeColors.background.primary,
                         color: appleTheme.colors.primary[500],
                         border: `1px solid ${appleTheme.colors.primary[500]}`,
                         borderRadius: "8px",
@@ -977,7 +978,7 @@ export default function Home() {
                       onClick={() => setEmailDialogOpen(true)}
                       style={{
                         height: isMobile ? "32px" : "36px",
-                        backgroundColor: themeColors.background.primary,
+                        backgroundColor: isDarkMode ? themeColors.background.tertiary : themeColors.background.primary,
                         color: appleTheme.colors.primary[500],
                         border: `1px solid ${appleTheme.colors.primary[500]}`,
                         borderRadius: "8px",
@@ -1434,22 +1435,25 @@ export default function Home() {
               marginTop: isMobile ? appleTheme.spacing[12] : appleTheme.spacing[16],
               textAlign: "center"
             }}>
-              <Typography variant="title3" style={{
-                color: isDarkMode ? '#E5E5EA' : '#1C1C1E',
+              <Typography variant="title2" style={{
+                color: themeColors.text.primary,
                 marginBottom: isMobile ? appleTheme.spacing[6] : appleTheme.spacing[8],
-                fontSize: isMobile ? "16px" : "18px",
-                fontWeight: "500"
+                fontSize: isMobile ? "20px" : "24px",
+                fontWeight: appleTheme.typography.fontWeight.semibold,
+                wordBreak: "break-word",
+                overflowWrap: "break-word"
               }}>
                 {t("index.trustedBy")}
-  </Typography>
+              </Typography>
 
               <div style={{
-                  display: "flex",
+                display: "flex",
                 flexWrap: "wrap",
                 justifyContent: "center",
-                  alignItems: "center",
+                alignItems: "center",
                 gap: isMobile ? appleTheme.spacing[4] : appleTheme.spacing[6],
-                opacity: 0.7
+                maxWidth: "900px",
+                margin: "0 auto"
               }}>
                 {[
                   t("index.orgFortune500"),
@@ -1459,25 +1463,43 @@ export default function Home() {
                   t("index.orgEcommerce"),
                   t("index.orgFinancial")
                 ].map((indicator, index) => (
-                  <Box key={index} style={{
-                    padding: `${appleTheme.spacing[2]} ${appleTheme.spacing[4]}`,
-                    backgroundColor: isDarkMode ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.03)",
-                    borderRadius: appleTheme.borderRadius.full,
-                    border: isDarkMode ? "1px solid rgba(255, 255, 255, 0.1)" : "1px solid rgba(0, 0, 0, 0.08)"
-                  }}>
-                    <Typography variant="footnote" style={{
-                      color: isDarkMode ? '#E5E5EA' : '#1C1C1E',
-                      fontSize: "12px",
-                      fontWeight: "500",
+                  <Box 
+                    key={index} 
+                    style={{
+                      padding: `${appleTheme.spacing[3]} ${appleTheme.spacing[5]}`,
+                      backgroundColor: isDarkMode ? themeColors.background.tertiary : "#FFFFFF",
+                      borderRadius: appleTheme.borderRadius.lg,
+                      border: isDarkMode ? "1px solid rgba(255, 255, 255, 0.15)" : "1px solid #E5E5EA",
+                      boxShadow: isDarkMode ? "0 2px 8px rgba(0, 0, 0, 0.2)" : "0 2px 8px rgba(0, 0, 0, 0.05)",
+                      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                      cursor: "default",
+                      minWidth: "120px",
+                      textAlign: "center"
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = "translateY(-2px)";
+                      e.currentTarget.style.boxShadow = isDarkMode ? "0 4px 12px rgba(0, 0, 0, 0.3)" : "0 4px 12px rgba(0, 0, 0, 0.1)";
+                      e.currentTarget.style.borderColor = isDarkMode ? "rgba(0, 122, 255, 0.3)" : "#007AFF";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = "translateY(0)";
+                      e.currentTarget.style.boxShadow = isDarkMode ? "0 2px 8px rgba(0, 0, 0, 0.2)" : "0 2px 8px rgba(0, 0, 0, 0.05)";
+                      e.currentTarget.style.borderColor = isDarkMode ? "rgba(255, 255, 255, 0.15)" : "#E5E5EA";
+                    }}
+                  >
+                    <Typography variant="callout" style={{
+                      color: themeColors.text.primary,
+                      fontSize: "14px",
+                      fontWeight: appleTheme.typography.fontWeight.semibold,
                       wordBreak: "break-word",
                       overflowWrap: "break-word"
                     }}>
                       {indicator}
-                </Typography>
-                </Box>
+                    </Typography>
+                  </Box>
                 ))}
               </div>
-              </Box>
+            </Box>
 
             {/* Technical Specifications */}
             <Box style={{ 
@@ -1628,7 +1650,7 @@ export default function Home() {
                   textAlign: "left",
                   transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                   border: `1px solid ${themeColors.gray[200]}`,
-                  backgroundColor: themeColors.background.primary,
+                  backgroundColor: isDarkMode ? themeColors.background.tertiary : themeColors.background.primary,
                   borderRadius: appleTheme.borderRadius.xl,
                   padding: `24px 16px`,
                   boxShadow: isDarkMode ? "0 4px 12px rgba(0, 0, 0, 0.3)" : "0 4px 12px rgba(0, 0, 0, 0.08)",
