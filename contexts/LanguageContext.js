@@ -405,6 +405,8 @@ const translations = {
       analyzeDesc: "Enter a website URL to analyze all images for proper alt text implementation.",
       analyzeImages: "Analyze images",
       analyzing: "Analyzing...",
+      successMessage: "Alt text analysis completed successfully",
+      errorAnalyzeFailed: "Error analyzing images. Please try again.",
       websiteUrl: "Website URL",
       totalImages: "Total Images",
       withAltText: "With Alt Text",
