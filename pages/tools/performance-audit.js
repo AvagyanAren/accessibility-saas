@@ -22,7 +22,6 @@ import {
 import Link from "next/link";
 
 import { Container, Section } from "../../components/apple/Layout";
-import AnimatedGradient from "../../components/apple/AnimatedGradient";
 import { useLanguage } from "../../contexts/LanguageContext";
 
 export default function PerformanceAudit() {
@@ -36,7 +35,7 @@ export default function PerformanceAudit() {
 
   const handleAudit = async () => {
     if (!url.trim()) {
-      setSnackbarMessage("Please enter a URL to audit");
+      setSnackbarMessage(t("performanceAudit.errorEnterUrl"));
       setSnackbarOpen(true);
       return;
     }
@@ -114,7 +113,7 @@ export default function PerformanceAudit() {
       
       setResults(mockResults);
     } catch (error) {
-      setSnackbarMessage("Error auditing performance. Please try again.");
+      setSnackbarMessage(t("performanceAudit.errorAuditFailed"));
       setSnackbarOpen(true);
     } finally {
       setAuditing(false);
@@ -154,9 +153,6 @@ export default function PerformanceAudit() {
       position: "relative",
       overflow: "hidden"
     }}>
-      {/* Animated Background Elements */}
-      <AnimatedGradient variant="subtle" intensity="medium" />
-      
       {/* Hero Section */}
       <Section background={isDarkMode ? "linear-gradient(135deg, rgba(28, 28, 30, 0.9) 0%, rgba(44, 44, 46, 0.9) 100%)" : "linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)"} padding="xl">
         <Container size="lg">
@@ -244,7 +240,7 @@ export default function PerformanceAudit() {
                 color: themeColors.text.primary,
                 fontWeight: appleTheme.typography.fontWeight.semibold
               }}>
-                Performance Score
+                {t("performanceAudit.performanceScore")}
               </Typography>
               <Box style={{
                 width: "120px",
@@ -266,9 +262,9 @@ export default function PerformanceAudit() {
                 </Typography>
               </Box>
               <Typography variant="body" style={{ color: themeColors.text.secondary }}>
-                {results.overallScore >= 90 ? "Excellent performance!" : 
-                 results.overallScore >= 70 ? "Good performance with room for improvement" : 
-                 "Performance needs significant improvement"}
+                {results.overallScore >= 90 ? t("performanceAudit.excellentPerformance") : 
+                 results.overallScore >= 70 ? t("performanceAudit.goodPerformance") : 
+                 t("performanceAudit.needsImprovement")}
               </Typography>
             </Card>
 
@@ -440,7 +436,7 @@ export default function PerformanceAudit() {
             color: themeColors.text.primary,
             fontWeight: appleTheme.typography.fontWeight.semibold
           }}>
-            Performance Best Practices
+            {t("performanceAudit.bestPracticesTitle")}
           </Typography>
           
           <HStack spacing={6} align="flex-start" wrap="wrap">
@@ -454,17 +450,17 @@ export default function PerformanceAudit() {
                 gap: "8px"
               }}>
                 <CheckCircle size={24} weight="fill" />
-                Core Optimizations
+                {t("performanceAudit.coreOptimizations")}
               </Typography>
               <VStack spacing={2}>
                 {[
-                  "Test page load speed and Core Web Vitals",
-                  "Analyze image optimization and format usage",
-                  "Check JavaScript bundle size and loading performance",
-                  "Verify CSS optimization and critical path",
-                  "Test mobile performance and responsive loading",
-                  "Check server response times and caching headers",
-                  "Analyze third-party script impact on performance"
+                  t("performanceAudit.coreItem1"),
+                  t("performanceAudit.coreItem2"),
+                  t("performanceAudit.coreItem3"),
+                  t("performanceAudit.coreItem4"),
+                  t("performanceAudit.coreItem5"),
+                  t("performanceAudit.coreItem6"),
+                  t("performanceAudit.coreItem7")
                 ].map((item, index) => (
                   <HStack key={index} spacing={2} align="center">
                         <CheckCircle size={20} weight="fill" color={appleTheme.colors.success} />
@@ -486,17 +482,17 @@ export default function PerformanceAudit() {
                 gap: "8px"
               }}>
                 <Rocket style={{ fontSize: "24px" }} />
-                Advanced Techniques
+                {t("performanceAudit.advancedTechniques")}
               </Typography>
               <VStack spacing={2}>
                 {[
-                  "Test code splitting and dynamic imports",
-                  "Analyze service worker implementation and caching",
-                  "Check critical CSS extraction and inlining",
-                  "Test resource hints (preload, prefetch, preconnect)",
-                  "Verify HTTP/2 and HTTP/3 optimization",
-                  "Test progressive web app performance features",
-                  "Analyze performance budgets and monitoring"
+                  t("performanceAudit.advancedItem1"),
+                  t("performanceAudit.advancedItem2"),
+                  t("performanceAudit.advancedItem3"),
+                  t("performanceAudit.advancedItem4"),
+                  t("performanceAudit.advancedItem5"),
+                  t("performanceAudit.advancedItem6"),
+                  t("performanceAudit.advancedItem7")
                 ].map((item, index) => (
                   <HStack key={index} spacing={2} align="center">
                     <Info style={{ color: appleTheme.colors.info, fontSize: "20px" }} />
@@ -520,14 +516,14 @@ export default function PerformanceAudit() {
             color: "white",
             fontWeight: appleTheme.typography.fontWeight.semibold
           }}>
-            Need More Performance Tools?
+            {t("performanceAudit.needMoreTools")}
           </Typography>
           <Typography variant="body" style={{ 
             marginBottom: appleTheme.spacing[4],
             color: "white",
             opacity: 0.9
           }}>
-            Explore our full suite of performance and accessibility testing tools.
+            {t("performanceAudit.needMoreToolsDesc")}
           </Typography>
           <Link href="/tools" passHref legacyBehavior>
             <a style={{ textDecoration: "none" }}>
@@ -540,7 +536,7 @@ export default function PerformanceAudit() {
                   fontWeight: appleTheme.typography.fontWeight.semibold
                 }}
               >
-                View All Tools
+                {t("keyboardNavigator.viewAllTools")}
               </Button>
             </a>
           </Link>

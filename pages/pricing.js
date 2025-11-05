@@ -2,7 +2,6 @@ import React, { useState, memo } from "react";
 import Typography from "../components/apple/Typography";
 import Button from "../components/apple/Button";
 import Card from "../components/apple/Card";
-import AnimatedGradient from "../components/apple/AnimatedGradient";
 import { Container, Box, Flex, Stack, Section } from "../components/apple/Layout";
 import { appleTheme } from "../styles/apple-theme";
 import { useTheme } from "../contexts/ThemeContext";
@@ -184,11 +183,6 @@ export default function Pricing() {
       position: "relative",
       overflow: "hidden"
     }}>
-      {/* Animated Background Elements */}
-      <div className="pricing-background">
-        <AnimatedGradient variant="subtle" intensity="medium" />
-      </div>
-      
       {/* Hero Section */}
       <Section className="pricing-hero" background={isDarkMode ? "linear-gradient(135deg, rgba(28, 28, 30, 0.9) 0%, rgba(44, 44, 46, 0.9) 100%)" : "linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)"} padding="xl">
         <Container size="lg">
@@ -350,7 +344,6 @@ export default function Pricing() {
                       fullWidth
                       size="large"
                       onClick={(e) => {
-                        console.log("Pricing button clicked:", plan.buttonText);
                         e.preventDefault();
                         e.stopPropagation();
                         if (plan.buttonText === t("pricing.buttonStartFree")) {

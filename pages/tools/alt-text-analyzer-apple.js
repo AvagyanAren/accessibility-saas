@@ -6,7 +6,6 @@ import Input from "../../components/apple/Input";
 import { Container, Box, Flex, Stack, Section, HStack } from "../../components/apple/Layout";
 import { appleTheme } from "../../styles/apple-theme";
 import { useTheme } from "../../contexts/ThemeContext";
-import AnimatedGradient from "../../components/apple/AnimatedGradient";
 import { Image, Check, XCircle, MagnifyingGlass, CheckCircle, X, WarningCircle, Info } from "phosphor-react";
 import { useLanguage } from "../../contexts/LanguageContext";
 
@@ -76,10 +75,10 @@ export default function AltTextAnalyzer() {
       
       const analysisResults = await mockAnalysis(scanUrl);
       setResults(analysisResults);
-      setSnackbarMessage("Alt text analysis completed successfully");
+      setSnackbarMessage(t("altTextAnalyzer.successMessage"));
       setSnackbarOpen(true);
     } catch (error) {
-      setSnackbarMessage("Error analyzing images. Please try again.");
+      setSnackbarMessage(t("altTextAnalyzer.errorAnalyzeFailed"));
       setSnackbarOpen(true);
     }
     
@@ -89,43 +88,43 @@ export default function AltTextAnalyzer() {
   const bestPractices = [
     {
       type: "do",
-      text: "Test alt text with screen readers",
-      description: "Verify how alt text sounds when read aloud by assistive technology"
+      text: t("altTextAnalyzer.do1"),
+      description: t("altTextAnalyzer.do1Desc")
     },
     {
       type: "do",
-      text: "Check for missing alt attributes",
-      description: "Scan all images to ensure they have proper alt text or empty alt attributes"
+      text: t("altTextAnalyzer.do2"),
+      description: t("altTextAnalyzer.do2Desc")
     },
     {
       type: "do",
-      text: "Verify decorative images have alt=''",
-      description: "Decorative images should have empty alt text to be skipped by screen readers"
+      text: t("altTextAnalyzer.do3"),
+      description: t("altTextAnalyzer.do3Desc")
     },
     {
       type: "do",
-      text: "Test alt text length and clarity",
-      description: "Ensure alt text is concise but descriptive enough to convey meaning"
+      text: t("altTextAnalyzer.do4"),
+      description: t("altTextAnalyzer.do4Desc")
     },
     {
       type: "dont",
-      text: "Ignore images without alt attributes",
-      description: "Missing alt text makes images completely inaccessible to screen reader users"
+      text: t("altTextAnalyzer.dont1"),
+      description: t("altTextAnalyzer.dont1Desc")
     },
     {
       type: "dont",
-      text: "Use placeholder or generic alt text",
-      description: "Text like 'image' or 'photo' provides no meaningful information"
+      text: t("altTextAnalyzer.dont2"),
+      description: t("altTextAnalyzer.dont2Desc")
     },
     {
       type: "dont",
-      text: "Skip testing with actual screen readers",
-      description: "Always test how alt text sounds when read by assistive technology"
+      text: t("altTextAnalyzer.dont3"),
+      description: t("altTextAnalyzer.dont3Desc")
     },
     {
       type: "dont",
-      text: "Forget to test different image types",
-      description: "Test decorative, informative, and functional images differently"
+      text: t("altTextAnalyzer.dont4"),
+      description: t("altTextAnalyzer.dont4Desc")
     }
   ];
 
@@ -160,9 +159,6 @@ export default function AltTextAnalyzer() {
       position: "relative",
       overflow: "hidden"
     }}>
-      {/* Animated Background Elements */}
-      <AnimatedGradient variant="subtle" intensity="medium" />
-      
       {/* Hero Section */}
       <Section background={isDarkMode ? "linear-gradient(135deg, rgba(28, 28, 30, 0.9) 0%, rgba(44, 44, 46, 0.9) 100%)" : "linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)"} padding="xl">
         <Container size="lg">
@@ -203,7 +199,7 @@ export default function AltTextAnalyzer() {
               <HStack spacing={3} align="center">
                 <Box style={{ flex: 1, maxWidth: '600px' }}>
                   <Input
-                    label="Website URL"
+                    label={t("altTextAnalyzer.websiteUrl")}
                     placeholder="https://example.com"
                     value={url}
                     onChange={setUrl}
@@ -242,7 +238,7 @@ export default function AltTextAnalyzer() {
                       {results.totalImages}
                     </Typography>
                     <Typography variant="footnote" color="secondary">
-                      Total Images
+                      {t("altTextAnalyzer.totalImages")}
                     </Typography>
                   </Stack>
                 </Card>
@@ -253,7 +249,7 @@ export default function AltTextAnalyzer() {
                       {results.imagesWithAlt}
                     </Typography>
                     <Typography variant="footnote" color="secondary">
-                      With Alt Text
+                      {t("altTextAnalyzer.withAltText")}
                     </Typography>
                   </Stack>
                 </Card>
@@ -264,7 +260,7 @@ export default function AltTextAnalyzer() {
                       {results.imagesWithoutAlt}
                     </Typography>
                     <Typography variant="footnote" color="secondary">
-                      Missing Alt
+                      {t("altTextAnalyzer.missingAlt")}
                     </Typography>
                   </Stack>
                 </Card>
@@ -275,7 +271,7 @@ export default function AltTextAnalyzer() {
                       {results.imagesWithEmptyAlt}
                     </Typography>
                     <Typography variant="footnote" color="secondary">
-                      Empty Alt
+                      {t("altTextAnalyzer.emptyAlt")}
                     </Typography>
                   </Stack>
                 </Card>
@@ -286,7 +282,7 @@ export default function AltTextAnalyzer() {
                 <Card variant="outlined" padding="large">
                   <Stack spacing={4}>
                     <Typography variant="title3">
-                      Issues Found ({results.issues.length})
+                      {t("altTextAnalyzer.issuesFound")} ({results.issues.length})
                     </Typography>
                     
                     <Stack spacing={3}>
@@ -338,7 +334,7 @@ export default function AltTextAnalyzer() {
           <Card variant="elevated" padding="large" style={{ marginTop: appleTheme.spacing[8] }}>
             <Stack spacing={6}>
               <Typography variant="title2">
-                Alt Text Best Practices
+                {t("altTextAnalyzer.bestPracticesTitle")}
               </Typography>
               
               <div style={{
@@ -354,7 +350,7 @@ export default function AltTextAnalyzer() {
                     gap: "8px"
                   }}>
                     <CheckCircle size={20} weight="fill" />
-                    Do's
+                    {t("altTextAnalyzer.dos")}
                   </Typography>
                   <Stack spacing={2}>
                     {bestPractices.filter(p => p.type === "do").map((practice, index) => (
@@ -381,7 +377,7 @@ export default function AltTextAnalyzer() {
                     gap: "8px"
                   }}>
                     <X size={20} weight="bold" />
-                    Don'ts
+                    {t("altTextAnalyzer.donts")}
                   </Typography>
                   <Stack spacing={2}>
                     {bestPractices.filter(p => p.type === "dont").map((practice, index) => (

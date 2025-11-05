@@ -140,15 +140,24 @@ body {
   letter-spacing: -0.022em;
 }
 
-/* Improved focus styles */
+/* Remove focus outline for all elements */
 *:focus {
-  outline: 2px solid #007AFF;
-  outline-offset: 2px;
+  outline: none !important;
 }
 
-/* Remove focus outline for mouse users */
-.js-focus-visible *:focus:not(.focus-visible) {
-  outline: none;
+/* Remove focus outline for links and buttons */
+a:focus,
+button:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none !important;
+}
+
+/* Remove focus outline for clickable elements */
+[onClick]:focus,
+[role="button"]:focus {
+  outline: none !important;
 }
 
 /* Typography Base Styles */

@@ -2,7 +2,6 @@ import React, { useState, memo } from "react";
 import Typography from "../components/apple/Typography";
 import Button from "../components/apple/Button";
 import Card from "../components/apple/Card";
-import AnimatedGradient from "../components/apple/AnimatedGradient";
 import { Container, Box, Flex, Stack, Section, HStack } from "../components/apple/Layout";
 import { appleTheme } from "../styles/apple-theme";
 import { useTheme } from "../contexts/ThemeContext";
@@ -151,8 +150,6 @@ export default function Tools() {
       position: "relative",
       overflow: "hidden"
     }}>
-      {/* Animated Background Elements */}
-      <AnimatedGradient variant="subtle" intensity="medium" />
       {/* Hero Section */}
       <Section background={isDarkMode ? "linear-gradient(135deg, #1C1C1E 0%, #2C2C2E 100%)" : "linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)"} padding="xl">
         <Container size="lg">
@@ -200,7 +197,7 @@ export default function Tools() {
           }}>
             {tools.map((tool) => (
               <Link key={tool.id} href={`/tools/${tool.id}`} passHref legacyBehavior>
-                <a style={{ textDecoration: "none" }}>
+                <a style={{ textDecoration: "none", outline: "none" }}>
                   <div 
                     style={{
                       backgroundColor: isDarkMode ? themeColors.background.tertiary : "#FFFFFF",
@@ -217,7 +214,14 @@ export default function Tools() {
                       zIndex: 1,
                       height: "100%",
                       contain: "layout style",
-                      cursor: "pointer"
+                      cursor: "pointer",
+                      outline: "none"
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.outline = "none";
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.outline = "none";
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.boxShadow = isDarkMode ? "0 8px 25px rgba(0, 0, 0, 0.5)" : "0 8px 25px rgba(0, 0, 0, 0.15)";

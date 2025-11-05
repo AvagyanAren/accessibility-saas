@@ -22,7 +22,6 @@ import {
 import Link from "next/link";
 
 import { Container, Section } from "../../components/apple/Layout";
-import AnimatedGradient from "../../components/apple/AnimatedGradient";
 import { useLanguage } from "../../contexts/LanguageContext";
 
 export default function ScreenReaderSimulator() {
@@ -37,7 +36,7 @@ export default function ScreenReaderSimulator() {
 
   const handleSimulate = async () => {
     if (!url.trim()) {
-      setSnackbarMessage("Please enter a URL to simulate");
+      setSnackbarMessage(t("screenReaderSimulator.errorEnterUrl"));
       setSnackbarOpen(true);
       return;
     }
@@ -153,7 +152,7 @@ export default function ScreenReaderSimulator() {
       
       setResults(mockResults);
     } catch (error) {
-      setSnackbarMessage("Error simulating screen reader. Please try again.");
+      setSnackbarMessage(t("screenReaderSimulator.errorSimulationFailed"));
       setSnackbarOpen(true);
     } finally {
       setSimulating(false);
@@ -193,9 +192,6 @@ export default function ScreenReaderSimulator() {
       position: "relative",
       overflow: "hidden"
     }}>
-      {/* Animated Background Elements */}
-      <AnimatedGradient variant="subtle" intensity="medium" />
-      
       {/* Hero Section */}
       <Section background={isDarkMode ? "linear-gradient(135deg, rgba(28, 28, 30, 0.9) 0%, rgba(44, 44, 46, 0.9) 100%)" : "linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)"} padding="xl">
         <Container size="lg">
@@ -287,7 +283,7 @@ export default function ScreenReaderSimulator() {
                   {results.overallScore}%
                 </Typography>
                 <Typography variant="body" style={{ color: themeColors.text.secondary }}>
-                  Accessibility Score
+                  {t("screenReaderSimulator.accessibilityScore")}
                 </Typography>
               </Card>
               <Card variant="elevated" padding="lg" style={{ flex: 1, minWidth: "200px", textAlign: "center" }}>
@@ -299,7 +295,7 @@ export default function ScreenReaderSimulator() {
                   {results.accessibleElements}
                 </Typography>
                 <Typography variant="body" style={{ color: themeColors.text.secondary }}>
-                  Accessible Elements
+                  {t("screenReaderSimulator.accessibleElements")}
                 </Typography>
               </Card>
               <Card variant="elevated" padding="lg" style={{ flex: 1, minWidth: "200px", textAlign: "center" }}>
@@ -311,7 +307,7 @@ export default function ScreenReaderSimulator() {
                   {results.issueCount}
                 </Typography>
                 <Typography variant="body" style={{ color: themeColors.text.secondary }}>
-                  Issues Found
+                  {t("screenReaderSimulator.issuesFound")}
                 </Typography>
               </Card>
               <Card variant="elevated" padding="lg" style={{ flex: 1, minWidth: "200px", textAlign: "center" }}>
@@ -323,7 +319,7 @@ export default function ScreenReaderSimulator() {
                   {results.totalElements}
                 </Typography>
                 <Typography variant="body" style={{ color: themeColors.text.secondary }}>
-                  Total Elements
+                  {t("screenReaderSimulator.totalElements")}
                 </Typography>
               </Card>
             </HStack>
@@ -486,7 +482,7 @@ export default function ScreenReaderSimulator() {
             color: themeColors.text.primary,
             fontWeight: appleTheme.typography.fontWeight.semibold
           }}>
-            Screen Reader Best Practices
+            {t("screenReaderSimulator.bestPracticesTitle")}
           </Typography>
           
           <HStack spacing={6} align="flex-start" wrap="wrap">
@@ -500,17 +496,17 @@ export default function ScreenReaderSimulator() {
                 gap: "8px"
               }}>
                 <CheckCircle size={24} weight="fill" />
-                Essential Requirements
+                {t("screenReaderSimulator.essentialRequirements")}
               </Typography>
               <VStack spacing={2}>
                 {[
-                  "Test how screen readers announce page content",
-                  "Verify alt text is descriptive and meaningful",
-                  "Check heading hierarchy and document structure",
-                  "Test form labels and error announcements",
-                  "Verify ARIA labels and descriptions are announced",
-                  "Test landmark navigation and page regions",
-                  "Check live regions for dynamic content updates"
+                  t("screenReaderSimulator.essentialItem1"),
+                  t("screenReaderSimulator.essentialItem2"),
+                  t("screenReaderSimulator.essentialItem3"),
+                  t("screenReaderSimulator.essentialItem4"),
+                  t("screenReaderSimulator.essentialItem5"),
+                  t("screenReaderSimulator.essentialItem6"),
+                  t("screenReaderSimulator.essentialItem7")
                 ].map((item, index) => (
                   <HStack key={index} spacing={2} align="center">
                     <CheckCircle style={{ color: appleTheme.colors.success, fontSize: "20px" }} />
@@ -532,17 +528,17 @@ export default function ScreenReaderSimulator() {
                 gap: "8px"
               }}>
                 <Rocket style={{ fontSize: "24px" }} />
-                Advanced Features
+                {t("screenReaderSimulator.advancedFeatures")}
               </Typography>
               <VStack spacing={2}>
                 {[
-                  "Test live regions for real-time content updates",
-                  "Verify focus management in modal dialogs",
-                  "Test skip links and landmark navigation",
-                  "Check descriptive link text and context",
-                  "Test with multiple screen reader software",
-                  "Verify ARIA announcements and state changes",
-                  "Test complex interactions and custom components"
+                  t("screenReaderSimulator.advancedItem1"),
+                  t("screenReaderSimulator.advancedItem2"),
+                  t("screenReaderSimulator.advancedItem3"),
+                  t("screenReaderSimulator.advancedItem4"),
+                  t("screenReaderSimulator.advancedItem5"),
+                  t("screenReaderSimulator.advancedItem6"),
+                  t("screenReaderSimulator.advancedItem7")
                 ].map((item, index) => (
                   <HStack key={index} spacing={2} align="center">
                     <Info style={{ color: appleTheme.colors.info, fontSize: "20px" }} />
@@ -566,14 +562,14 @@ export default function ScreenReaderSimulator() {
             color: "white",
             fontWeight: appleTheme.typography.fontWeight.semibold
           }}>
-            Need More Accessibility Tools?
+            {t("screenReaderSimulator.needMoreTools")}
           </Typography>
           <Typography variant="body" style={{ 
             marginBottom: appleTheme.spacing[4],
             color: "white",
             opacity: 0.9
           }}>
-            Explore our full suite of accessibility testing and simulation tools.
+            {t("screenReaderSimulator.needMoreToolsDesc")}
           </Typography>
           <Link href="/tools" passHref legacyBehavior>
             <a style={{ textDecoration: "none" }}>
@@ -586,7 +582,7 @@ export default function ScreenReaderSimulator() {
                   fontWeight: appleTheme.typography.fontWeight.semibold
                 }}
               >
-                View All Tools
+                {t("keyboardNavigator.viewAllTools")}
               </Button>
             </a>
           </Link>

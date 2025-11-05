@@ -92,7 +92,7 @@ export default function NavbarApple() {
           <HStack spacing={8} align="center">
             {/* Logo */}
             <Link href="/" passHref legacyBehavior>
-              <a style={{ textDecoration: "none" }}>
+              <a style={{ textDecoration: "none", outline: "none" }}>
                 <Typography variant="title2" weight="bold" style={{
                   color: isDarkMode ? '#FFFFFF' : appleTheme.colors.primary[500]
                 }}>
@@ -108,7 +108,7 @@ export default function NavbarApple() {
                   const isActive = router.pathname === item.href;
                   return (
                     <Link key={item.key} href={item.href} passHref legacyBehavior>
-                      <a style={{ textDecoration: "none" }}>
+                      <a style={{ textDecoration: "none", outline: "none" }}>
                         <Button
                           variant="ghost"
                           size="small"
@@ -118,6 +118,7 @@ export default function NavbarApple() {
                             fontSize: appleTheme.typography.fontSize.base,
                             borderBottom: isActive ? `2px solid ${appleTheme.colors.primary[500]}` : '2px solid transparent',
                             borderRadius: 0,
+                            paddingTop: "4px",
                             paddingBottom: appleTheme.spacing[1],
                             outline: 'none',
                             boxShadow: 'none',
@@ -125,11 +126,13 @@ export default function NavbarApple() {
                             minHeight: "auto",
                             display: "flex",
                             alignItems: "center",
+                            justifyContent: "center",
                             whiteSpace: "nowrap",
                             wordBreak: "keep-all",
                             overflow: "hidden",
                             textOverflow: "ellipsis",
-                            maxWidth: "100%"
+                            maxWidth: "100%",
+                            textAlign: "center"
                           }}
                         >
                           {item.name}
@@ -141,7 +144,7 @@ export default function NavbarApple() {
 
                 {/* All Tools Link */}
                 <Link href="/tools" passHref legacyBehavior>
-                  <a style={{ textDecoration: "none" }}>
+                  <a style={{ textDecoration: "none", outline: "none" }}>
                     <Button
                       variant="ghost"
                       size="small"
@@ -151,13 +154,16 @@ export default function NavbarApple() {
                         fontSize: appleTheme.typography.fontSize.base,
                         borderBottom: router.pathname === "/tools" ? `2px solid ${appleTheme.colors.primary[500]}` : '2px solid transparent',
                         borderRadius: 0,
+                        paddingTop: "4px",
                         paddingBottom: appleTheme.spacing[1],
                         outline: 'none',
                         boxShadow: 'none',
                         height: "auto",
                         minHeight: "auto",
                         display: "flex",
-                        alignItems: "center"
+                        alignItems: "center",
+                        justifyContent: "center",
+                        textAlign: "center"
                       }}
                     >
                       {t("nav.allTools")}
@@ -196,7 +202,7 @@ export default function NavbarApple() {
                   const isActive = router.pathname === item.href;
                   return (
                     <Link key={item.key} href={item.href} passHref legacyBehavior>
-                      <a style={{ textDecoration: "none" }}>
+                      <a style={{ textDecoration: "none", outline: "none" }}>
                         <Button
                           variant="ghost"
                           size="medium"
@@ -224,7 +230,7 @@ export default function NavbarApple() {
 
                 {/* All Tools Link */}
                 <Link href="/tools" passHref legacyBehavior>
-                  <a style={{ textDecoration: "none" }}>
+                  <a style={{ textDecoration: "none", outline: "none" }}>
                     <Button
                       variant="ghost"
                       size="medium"

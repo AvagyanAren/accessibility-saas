@@ -2,7 +2,6 @@ import React, { useState, memo } from "react";
 import Typography from "../components/apple/Typography";
 import Button from "../components/apple/Button";
 import Card from "../components/apple/Card";
-import AnimatedGradient from "../components/apple/AnimatedGradient";
 import { Container, Box, Flex, Stack, Section } from "../components/apple/Layout";
 import { appleTheme } from "../styles/apple-theme";
 import { useTheme } from "../contexts/ThemeContext";
@@ -162,11 +161,6 @@ export default function About() {
       position: "relative",
       overflow: "hidden"
     }}>
-      {/* Animated Background Elements */}
-      <div className="about-background">
-        <AnimatedGradient variant="subtle" intensity="medium" />
-      </div>
-      
       {/* Hero Section */}
       <Section className="about-hero" background="linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)" padding="xl">
         <Container size="lg">
@@ -176,7 +170,7 @@ export default function About() {
               color: themeColors.text.primary,
               fontWeight: appleTheme.typography.fontWeight.bold
             }}>
-              Making the Web Accessible, One Scan at a Time
+              {t("about.title")}
             </Typography>
             <Typography variant="headline" weight="regular" className="about-hero__subtitle" style={{ 
               color: themeColors.text.secondary,
@@ -186,8 +180,7 @@ export default function About() {
               lineHeight: appleTheme.typography.lineHeight.relaxed,
               fontWeight: appleTheme.typography.fontWeight.medium
             }}>
-              We're on a mission to make digital accessibility testing as simple as checking your email. 
-              Because everyone deserves to access the web, regardless of their abilities.
+              {t("about.subtitle")}
             </Typography>
             <button
               className="about-hero__cta-button"
@@ -232,7 +225,7 @@ export default function About() {
                 e.target.style.boxShadow = "0 4px 12px rgba(0, 122, 255, 0.15)";
               }}
             >
-              Start Your First Scan
+              {t("about.startFirstScan")}
             </button>
           </Box>
         </Container>

@@ -2,7 +2,6 @@ import React, { useState, memo } from "react";
 import Typography from "../components/apple/Typography";
 import Button from "../components/apple/Button";
 import Card from "../components/apple/Card";
-import AnimatedGradient from "../components/apple/AnimatedGradient";
 import { Container, Box, Flex, Stack, Section, HStack } from "../components/apple/Layout";
 import { appleTheme } from "../styles/apple-theme";
 import { useTheme } from "../contexts/ThemeContext";
@@ -255,9 +254,6 @@ export default function Resources() {
       position: "relative",
       overflow: "hidden"
     }}>
-      {/* Animated Background Elements */}
-      <AnimatedGradient variant="subtle" intensity="medium" />
-      
       {/* Hero Section */}
       <Section background={isDarkMode ? "linear-gradient(135deg, rgba(28, 28, 30, 0.9) 0%, rgba(44, 44, 46, 0.9) 100%)" : "linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)"} padding="xl">
         <Container size="lg">
@@ -391,9 +387,7 @@ export default function Resources() {
                     opacity: article.available ? 1 : 0.6
                   }}
                   onClick={(e) => {
-                    if (article.available) {
-                      console.log("Article clicked:", article.href);
-                    } else {
+                    if (!article.available) {
                       e.preventDefault();
                     }
                   }}
@@ -655,7 +649,6 @@ export default function Resources() {
             <HStack spacing={4} wrap="wrap" justify="center" style={{ marginTop: appleTheme.spacing[4] }}>
               <button
                 onClick={(e) => {
-                  console.log("Newsletter button clicked");
                   e.preventDefault();
                   e.stopPropagation();
                   // In a real app, this would open a newsletter signup modal or redirect to a signup page
@@ -694,7 +687,6 @@ export default function Resources() {
               </button>
               <button
                 onClick={(e) => {
-                  console.log("Twitter button clicked");
                   e.preventDefault();
                   e.stopPropagation();
                   window.open("https://twitter.com/accessibility_saas", "_blank");

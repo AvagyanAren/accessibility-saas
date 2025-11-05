@@ -3,7 +3,6 @@ import Button from "../components/apple/Button";
 import Card from "../components/apple/Card";
 import Input from "../components/apple/Input";
 import Typography from "../components/apple/Typography";
-import AnimatedGradient from "../components/apple/AnimatedGradient";
 import { Container, Box, Flex, Stack, Section } from "../components/apple/Layout";
 import { appleTheme } from "../styles/apple-theme";
 import { useTheme } from "../contexts/ThemeContext";
@@ -125,8 +124,18 @@ const Tooltip = memo(({ children, text, position = "top", delay = 3000 }) => {
 });
 
 // Violation Card Component with Apple-style Accordion functionality
-const ViolationCard = ({ violation, isDarkMode, getStatusColor }) => {
+const ViolationCard = ({ violation, isDarkMode, getStatusColor, t }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  
+  const getImpactTranslation = (impact) => {
+    switch (impact?.toLowerCase()) {
+      case 'critical': return t("home.violationImpactCritical");
+      case 'serious': return t("home.violationImpactSerious");
+      case 'moderate': return t("home.violationImpactModerate");
+      case 'minor': return t("home.violationImpactMinor");
+      default: return impact;
+    }
+  };
 
   // Style constants for better performance and maintainability
   const cardStyles = {
@@ -282,7 +291,7 @@ const ViolationCard = ({ violation, isDarkMode, getStatusColor }) => {
               backgroundColor: "white",
               borderRadius: "50%"
             }} />
-            {violation.impact}
+            {getImpactTranslation(violation.impact)}
           </div>
           
           {/* Chevron Icon */}
@@ -309,7 +318,7 @@ const ViolationCard = ({ violation, isDarkMode, getStatusColor }) => {
               {violation.nodes && violation.nodes.length > 0 && (
                 <div>
                   <Typography variant="footnote" weight="semibold" style={codeTitleStyles}>
-                    Code
+                    {t("home.violationCode")}
                   </Typography>
                   <div 
                     style={{
@@ -370,7 +379,7 @@ const ViolationCard = ({ violation, isDarkMode, getStatusColor }) => {
                   </div>
                   <div style={{ flex: 1 }}>
                     <Typography variant="footnote" weight="semibold" style={codeTitleStyles}>
-                      How to fix
+                      {t("home.violationHowToFix")}
                     </Typography>
                     <Typography variant="footnote" style={{
                       color: "#1C1C1E",
@@ -378,8 +387,7 @@ const ViolationCard = ({ violation, isDarkMode, getStatusColor }) => {
                       lineHeight: 1.5,
                       textAlign: "left"
                     }}>
-                      Review the element and ensure it follows accessibility best practices. 
-                      Check WCAG guidelines for specific requirements.
+                      {t("home.violationFixDescription")}
                     </Typography>
                   </div>
                 </div>
@@ -448,11 +456,15 @@ export default function Home() {
           const parsedUxAudit = JSON.parse(savedUxAudit);
           setUxAudit(parsedUxAudit);
         } catch (e) {
-          console.error('Error loading UX audit:', e);
+          if (process.env.NODE_ENV === 'development') {
+            console.error('Error loading UX audit:', e);
+          }
         }
       }
     } catch (error) {
-      console.error('Error loading saved data:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error loading saved data:', error);
+      }
       // Clear corrupted data
       localStorage.removeItem('scanUrl');
       localStorage.removeItem('scanViolations');
@@ -523,13 +535,17 @@ export default function Home() {
       setViolations(newViolations);
       setUxAudit(newUxAudit);
       
-      // Performance logging
-      const endTime = performance.now();
-      console.log(`Scan completed in ${(endTime - startTime).toFixed(2)}ms`);
+      // Performance logging (only in development)
+      if (process.env.NODE_ENV === 'development') {
+        const endTime = performance.now();
+        console.log(`Scan completed in ${(endTime - startTime).toFixed(2)}ms`);
+      }
       
     } catch (err) {
-      console.error("Scan error:", err);
-      setError(err.message || "Failed to scan website. Please try again.");
+      if (process.env.NODE_ENV === 'development') {
+        console.error("Scan error:", err);
+      }
+      setError(err.message || t("common.errorScanFailed"));
     }
 
     setScanning(false);
@@ -590,17 +606,6 @@ export default function Home() {
       position: "relative",
       overflow: "hidden"
     }}>
-      {/* Animated Background Elements - Behind all content */}
-      <div className="animated-background" style={{ 
-        position: "fixed", 
-        top: 0, 
-        left: 0, 
-        width: "100%", 
-        height: "100%", 
-        zIndex: -1 
-      }}>
-        <AnimatedGradient variant="subtle" intensity="medium" />
-      </div>
       {/* Hero Section */}
       <Section 
         className="hero-section"
@@ -1079,6 +1084,7 @@ export default function Home() {
                           violation={violation} 
                           isDarkMode={isDarkMode}
                           getStatusColor={getStatusColor}
+                          t={t}
                         />
                       ))}
                     </div>

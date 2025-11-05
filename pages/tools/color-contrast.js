@@ -6,6 +6,7 @@ import Input from "../../components/apple/Input";
 import { Container, Box, Flex, Stack, Section, HStack } from "../../components/apple/Layout";
 import { appleTheme } from "../../styles/apple-theme";
 import { useTheme } from "../../contexts/ThemeContext";
+import { useLanguage } from "../../contexts/LanguageContext";
 import { Eyedropper, Check, XCircle, ArrowsClockwise } from "phosphor-react";
 
 // Icons
@@ -16,6 +17,7 @@ const RefreshIcon = () => <ArrowsClockwise size={16} weight="regular" />;
 
 export default function ColorContrastChecker() {
   const { isDarkMode } = useTheme();
+  const { t } = useLanguage();
   const [foreground, setForeground] = useState("#000000");
   const [background, setBackground] = useState("#ffffff");
   const [contrastRatio, setContrastRatio] = useState(21);
@@ -123,7 +125,7 @@ export default function ColorContrastChecker() {
               color: themeColors.text.primary,
               fontWeight: appleTheme.typography.fontWeight.bold
             }}>
-              Color Contrast Checker
+              {t("colorContrastChecker.title")}
             </Typography>
             <Typography variant="headline" weight="regular" style={{ 
               color: themeColors.text.secondary,
@@ -131,7 +133,7 @@ export default function ColorContrastChecker() {
               margin: `0 auto ${appleTheme.spacing[8]} auto`,
               fontWeight: appleTheme.typography.fontWeight.medium
             }}>
-              Test color combinations to ensure they meet WCAG accessibility standards.
+              {t("colorContrastChecker.subtitle")}
             </Typography>
           </Box>
         </Container>
@@ -145,7 +147,7 @@ export default function ColorContrastChecker() {
               <Typography variant="title2" style={{
                 color: themeColors.text.primary
               }}>
-                Choose Your Colors
+                {t("colorContrastChecker.chooseColors")}
               </Typography>
               
               <div style={{
@@ -155,7 +157,7 @@ export default function ColorContrastChecker() {
               }}>
                 <Box>
                   <Input
-                    label="Foreground Color"
+                    label={t("colorContrastChecker.foregroundColor")}
                     type="color"
                     value={foreground}
                     onChange={handleForegroundChange}
@@ -164,7 +166,7 @@ export default function ColorContrastChecker() {
                 </Box>
                 <Box>
                   <Input
-                    label="Background Color"
+                    label={t("colorContrastChecker.backgroundColor")}
                     type="color"
                     value={background}
                     onChange={handleBackgroundChange}
@@ -179,7 +181,7 @@ export default function ColorContrastChecker() {
                   onClick={randomizeColors}
                   startIcon={<RefreshIcon />}
                 >
-                  Randomize Colors
+                  {t("colorContrastChecker.randomizeColors")}
                 </Button>
               </HStack>
             </Stack>
@@ -191,7 +193,7 @@ export default function ColorContrastChecker() {
               <Typography variant="title3" style={{
                 color: themeColors.text.primary
               }}>
-                Preview
+                {t("colorContrastChecker.preview")}
               </Typography>
               
               <Box style={{
@@ -208,7 +210,7 @@ export default function ColorContrastChecker() {
                     fontWeight: appleTheme.typography.fontWeight.bold
                   }}
                 >
-                  Sample Text
+                  {t("colorContrastChecker.sampleText")}
                 </Typography>
                 <Typography 
                   variant="body" 
@@ -217,7 +219,7 @@ export default function ColorContrastChecker() {
                     marginTop: appleTheme.spacing[2]
                   }}
                 >
-                  This is how your text will look with these colors.
+                  {t("colorContrastChecker.previewDescription")}
                 </Typography>
               </Box>
             </Stack>
@@ -229,7 +231,7 @@ export default function ColorContrastChecker() {
               <Typography variant="title2" style={{
                 color: themeColors.text.primary
               }}>
-                Contrast Analysis
+                {t("colorContrastChecker.contrastAnalysis")}
               </Typography>
               
               {/* Contrast Ratio */}
@@ -243,7 +245,7 @@ export default function ColorContrastChecker() {
                 <Typography variant="body" style={{
                   color: isDarkMode ? '#AEAEB2' : '#6D6D70' 
                 }}>
-                  Contrast Ratio
+                  {t("colorContrastChecker.contrastRatio")}
                 </Typography>
               </Box>
               
@@ -258,18 +260,18 @@ export default function ColorContrastChecker() {
                     <Flex align="center" gap={2}>
                       {getComplianceIcon(aaCompliant)}
                       <Typography variant="callout" weight="semibold" color={getComplianceColor(aaCompliant)}>
-                        WCAG AA
+                        {t("colorContrastChecker.wcagAA")}
                       </Typography>
                     </Flex>
                     <Typography variant="footnote" align="center" style={{
                       color: isDarkMode ? '#AEAEB2' : '#6D6D70'
                     }}>
-                      Normal text (4.5:1 minimum)
+                      {t("colorContrastChecker.normalText")} (4.5:1 minimum)
                     </Typography>
                     <Typography variant="caption1" weight="semibold" style={{
                       color: getComplianceColor(aaCompliant)
                     }}>
-                      {aaCompliant ? "PASS" : "FAIL"}
+                      {aaCompliant ? t("colorContrastChecker.pass") : t("colorContrastChecker.fail")}
                     </Typography>
                   </Stack>
                 </Card>
@@ -279,18 +281,18 @@ export default function ColorContrastChecker() {
                     <Flex align="center" gap={2}>
                       {getComplianceIcon(aaaCompliant)}
                       <Typography variant="callout" weight="semibold" color={getComplianceColor(aaaCompliant)}>
-                        WCAG AAA
+                        {t("colorContrastChecker.wcagAAA")}
                       </Typography>
                     </Flex>
                     <Typography variant="footnote" align="center" style={{
                       color: isDarkMode ? '#AEAEB2' : '#6D6D70'
                     }}>
-                      Normal text (7:1 minimum)
+                      {t("colorContrastChecker.normalText")} (7:1 minimum)
                     </Typography>
                     <Typography variant="caption1" weight="semibold" style={{
                       color: getComplianceColor(aaaCompliant)
                     }}>
-                      {aaaCompliant ? "PASS" : "FAIL"}
+                      {aaaCompliant ? t("colorContrastChecker.pass") : t("colorContrastChecker.fail")}
                     </Typography>
                   </Stack>
                 </Card>
@@ -300,18 +302,18 @@ export default function ColorContrastChecker() {
                     <Flex align="center" gap={2}>
                       {getComplianceIcon(aaLargeCompliant)}
                       <Typography variant="callout" weight="semibold" color={getComplianceColor(aaLargeCompliant)}>
-                        WCAG AA Large
+                        {t("colorContrastChecker.wcagAALarge")}
                       </Typography>
                     </Flex>
                     <Typography variant="footnote" align="center" style={{
                       color: isDarkMode ? '#AEAEB2' : '#6D6D70'
                     }}>
-                      Large text (3:1 minimum)
+                      {t("colorContrastChecker.largeText")} (3:1 minimum)
                     </Typography>
                     <Typography variant="caption1" weight="semibold" style={{
                       color: getComplianceColor(aaLargeCompliant)
                     }}>
-                      {aaLargeCompliant ? "PASS" : "FAIL"}
+                      {aaLargeCompliant ? t("colorContrastChecker.pass") : t("colorContrastChecker.fail")}
                     </Typography>
                   </Stack>
                 </Card>

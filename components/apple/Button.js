@@ -29,18 +29,10 @@ const Button = ({
       textDecoration: 'none',
       whiteSpace: 'nowrap',
       userSelect: 'none',
-      outline: 'none',
+      outline: 'none !important',
       position: 'relative',
       overflow: 'hidden',
       boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-      ':focus': {
-        outline: 'none',
-        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-      },
-      ':focus-visible': {
-        outline: 'none',
-        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-      },
     };
 
     const variants = {
@@ -119,6 +111,12 @@ const Button = ({
       disabled={disabled || loading}
       className={className}
       style={buttonStyle}
+      onFocus={(e) => {
+        e.currentTarget.style.outline = 'none';
+      }}
+      onBlur={(e) => {
+        e.currentTarget.style.outline = 'none';
+      }}
       {...props}
     >
       {loading && (

@@ -22,7 +22,6 @@ import {
 import Link from "next/link";
 
 import { Container, Section } from "../../components/apple/Layout";
-import AnimatedGradient from "../../components/apple/AnimatedGradient";
 import { useLanguage } from "../../contexts/LanguageContext";
 
 export default function KeyboardNavigator() {
@@ -37,7 +36,7 @@ export default function KeyboardNavigator() {
 
   const handleTest = async () => {
     if (!url.trim()) {
-      setSnackbarMessage("Please enter a URL to test");
+      setSnackbarMessage(t("keyboardNavigator.errorEnterUrl"));
       setSnackbarOpen(true);
       return;
     }
@@ -160,9 +159,6 @@ export default function KeyboardNavigator() {
       position: "relative",
       overflow: "hidden"
     }}>
-      {/* Animated Background Elements */}
-      <AnimatedGradient variant="subtle" intensity="medium" />
-      
       {/* Hero Section */}
       <Section background={isDarkMode ? "linear-gradient(135deg, rgba(28, 28, 30, 0.9) 0%, rgba(44, 44, 46, 0.9) 100%)" : "linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)"} padding="xl">
         <Container size="lg">
@@ -318,7 +314,7 @@ export default function KeyboardNavigator() {
                   {results.issues}
                 </Typography>
                 <Typography variant="body" style={{ color: themeColors.text.secondary }}>
-                  Issues Found
+                  {t("keyboardNavigator.issuesFound")}
                 </Typography>
               </Card>
               <Card variant="elevated" padding="lg" style={{ flex: 1, minWidth: "200px", textAlign: "center" }}>
@@ -330,7 +326,7 @@ export default function KeyboardNavigator() {
                   {results.score}%
                 </Typography>
                 <Typography variant="body" style={{ color: themeColors.text.secondary }}>
-                  Navigation Score
+                  {t("keyboardNavigator.navigationScore")}
                 </Typography>
               </Card>
             </HStack>
@@ -454,13 +450,13 @@ export default function KeyboardNavigator() {
               </Typography>
               <VStack spacing={2}>
                 {[
-                  "Test Tab key navigation through all interactive elements",
-                  "Verify logical tab order matches visual layout",
-                  "Ensure focus indicators are clearly visible",
-                  "Check that Escape key closes all modals and dropdowns",
-                  "Test skip links bypass repetitive navigation",
-                  "Verify arrow keys work in custom components",
-                  "Test keyboard shortcuts don't conflict with browser defaults"
+                  t("keyboardNavigator.essentialItem1"),
+                  t("keyboardNavigator.essentialItem2"),
+                  t("keyboardNavigator.essentialItem3"),
+                  t("keyboardNavigator.essentialItem4"),
+                  t("keyboardNavigator.essentialItem5"),
+                  t("keyboardNavigator.essentialItem6"),
+                  t("keyboardNavigator.essentialItem7")
                 ].map((item, index) => (
                   <HStack key={index} spacing={2} align="center">
                     <CheckCircle size={20} weight="fill" color={appleTheme.colors.success} />
@@ -486,13 +482,13 @@ export default function KeyboardNavigator() {
               </Typography>
               <VStack spacing={2}>
                 {[
-                  "Test custom keyboard shortcuts (Ctrl+S, Alt+N, etc.)",
-                  "Verify arrow key navigation in dropdowns and menus",
-                  "Test focus trapping in modal dialogs",
-                  "Check focus restoration after closing modals",
-                  "Test keyboard navigation in single-page applications",
-                  "Verify focus management during dynamic content updates",
-                  "Test keyboard navigation with screen readers"
+                  t("keyboardNavigator.advancedItem1"),
+                  t("keyboardNavigator.advancedItem2"),
+                  t("keyboardNavigator.advancedItem3"),
+                  t("keyboardNavigator.advancedItem4"),
+                  t("keyboardNavigator.advancedItem5"),
+                  t("keyboardNavigator.advancedItem6"),
+                  t("keyboardNavigator.advancedItem7")
                 ].map((item, index) => (
                   <HStack key={index} spacing={2} align="center">
                     <Info style={{ color: appleTheme.colors.info, fontSize: "20px" }} />

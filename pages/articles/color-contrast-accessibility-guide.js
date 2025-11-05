@@ -5,7 +5,6 @@ import Card from "../../components/apple/Card";
 import { Container, Box, Flex, Stack, Section } from "../../components/apple/Layout";
 import { appleTheme } from "../../styles/apple-theme";
 import { useTheme } from "../../contexts/ThemeContext";
-import AnimatedGradient from "../../components/apple/AnimatedGradient";
 import {
   CheckCircle,
   Error,
@@ -117,9 +116,6 @@ export default function ColorContrastAccessibilityGuide() {
       position: "relative",
       overflow: "hidden"
     }}>
-      {/* Animated Background Elements */}
-      <AnimatedGradient variant="subtle" intensity="medium" />
-      
       {/* Hero Section */}
       <Section background={isDarkMode ? "linear-gradient(135deg, rgba(28, 28, 30, 0.9) 0%, rgba(44, 44, 46, 0.9) 100%)" : "linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)"} padding="xl">
         <Container size="lg">
