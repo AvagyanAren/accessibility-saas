@@ -17,6 +17,7 @@ export default function NavbarApple() {
   const navbarRef = useRef(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [hasAccount, setHasAccount] = useState(false);
 
   // Memoize navigation items so they update when language changes
   const navigationItems = useMemo(() => [
@@ -43,6 +44,30 @@ export default function NavbarApple() {
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [router.pathname]);
+
+  useEffect(() => {
+    const updateAccountStatus = () => {
+      if (typeof window === "undefined") return;
+      const active = localStorage.getItem("trialActive") === "true";
+      setHasAccount(active);
+    };
+
+    updateAccountStatus();
+
+    const handleStorage = (event) => {
+      if (event.key === "trialActive" || event.key === null) {
+        updateAccountStatus();
+      }
+    };
+
+    window.addEventListener("storage", handleStorage);
+    window.addEventListener("trialStatusChange", updateAccountStatus);
+
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+      window.removeEventListener("trialStatusChange", updateAccountStatus);
+    };
+  }, []);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -176,7 +201,24 @@ export default function NavbarApple() {
 
           {/* Right side - Language Switcher and Burger Menu */}
           <HStack spacing={4} align="center" style={{ flexShrink: 0 }}>
-            <LanguageSwitcher />
+            {hasAccount && !isMobile && (
+              <Link href="/account" passHref legacyBehavior>
+                <a style={{ textDecoration: "none", outline: "none" }}>
+                  <Button
+                    variant="secondary"
+                    size="small"
+                    style={{
+                      fontWeight: appleTheme.typography.fontWeight.medium,
+                      fontSize: appleTheme.typography.fontSize.base,
+                      padding: `${appleTheme.spacing[1.5]} ${appleTheme.spacing[3.5]}`
+                    }}
+                  >
+                    {t("nav.account")}
+                  </Button>
+                </a>
+              </Link>
+            )}
+            {!isMobile && <LanguageSwitcher />}
             {isMobile && <BurgerIcon />}
           </HStack>
         </Flex>
@@ -253,7 +295,41 @@ export default function NavbarApple() {
                     </Button>
                   </a>
                 </Link>
+
+                {hasAccount && (
+                  <Link href="/account" passHref legacyBehavior>
+                    <a style={{ textDecoration: "none", outline: "none" }}>
+                      <Button
+                        variant="secondary"
+                        size="medium"
+                        style={{
+                          color: isDarkMode ? "#000000" : "#FFFFFF",
+                          backgroundColor: isDarkMode ? "#FFFFFF" : "#007AFF",
+                          border: "none",
+                          padding: `${appleTheme.spacing[3]} ${appleTheme.spacing[4]}`,
+                          width: "100%",
+                          justifyContent: "center"
+                        }}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {t("nav.account")}
+                      </Button>
+                    </a>
+                  </Link>
+                )}
               </Flex>
+
+              <Box
+                style={{
+                  marginTop: appleTheme.spacing[5],
+                  paddingTop: appleTheme.spacing[4],
+                  borderTop: `1px solid ${isDarkMode ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.08)"}`,
+                  display: "flex",
+                  justifyContent: "center"
+                }}
+              >
+                <LanguageSwitcher />
+              </Box>
             </Box>
           </Box>
         )}

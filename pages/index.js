@@ -7,6 +7,7 @@ import { Container, Box, Flex, Stack, Section } from "../components/apple/Layout
 import { appleTheme } from "../styles/apple-theme";
 import { useTheme } from "../contexts/ThemeContext";
 import { useLanguage } from "../contexts/LanguageContext";
+import { jsPDF } from "jspdf";
 import { 
   MagnifyingGlass, 
   Check, 
@@ -23,7 +24,8 @@ import {
   CaretUp, 
   Trash,
   CheckCircle,
-  ArrowSquareDown
+  ArrowSquareDown,
+  X
 } from "phosphor-react";
 
 // Icons with Phosphor React
@@ -413,6 +415,13 @@ export default function Home() {
   const [isSearchStacked, setIsSearchStacked] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
   const [dataFromCache, setDataFromCache] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [hasUsedFreeScan, setHasUsedFreeScan] = useState(false);
+  const [isTrialActive, setIsTrialActive] = useState(false);
+  const [isTrialModalOpen, setIsTrialModalOpen] = useState(false);
+  const [trialEmail, setTrialEmail] = useState("");
+  const [trialEmailError, setTrialEmailError] = useState("");
 
   // Load saved scan results on component mount with timeout check
   useEffect(() => {
@@ -446,6 +455,7 @@ export default function Home() {
         if (Array.isArray(parsed)) {
           setViolations(parsed);
           setDataFromCache(true);
+          setHasUsedFreeScan(true);
         }
       }
       
@@ -461,9 +471,24 @@ export default function Home() {
           }
         }
       }
+      
+      const savedFreeScan = localStorage.getItem("freeScanUsed");
+      if (savedFreeScan === "true") {
+        setHasUsedFreeScan(true);
+      }
+
+      const savedTrialActive = localStorage.getItem("trialActive");
+      if (savedTrialActive === "true") {
+        setIsTrialActive(true);
+      }
+
+      const savedTrialEmail = localStorage.getItem("trialEmail");
+      if (savedTrialEmail) {
+        setTrialEmail(savedTrialEmail);
+      }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
-        console.error('Error loading saved data:', error);
+      console.error('Error loading saved data:', error);
       }
       // Clear corrupted data
       localStorage.removeItem('scanUrl');
@@ -496,6 +521,11 @@ export default function Home() {
 
   const handleScan = useCallback(async () => {
     if (!url.trim()) {
+      return;
+    }
+
+    if (hasUsedFreeScan && !isTrialActive) {
+      setIsTrialModalOpen(true);
       return;
     }
     
@@ -535,21 +565,26 @@ export default function Home() {
       setViolations(newViolations);
       setUxAudit(newUxAudit);
       
+      if (!hasUsedFreeScan) {
+        setHasUsedFreeScan(true);
+        localStorage.setItem('freeScanUsed', 'true');
+      }
+      
       // Performance logging (only in development)
       if (process.env.NODE_ENV === 'development') {
-        const endTime = performance.now();
-        console.log(`Scan completed in ${(endTime - startTime).toFixed(2)}ms`);
+      const endTime = performance.now();
+      console.log(`Scan completed in ${(endTime - startTime).toFixed(2)}ms`);
       }
       
     } catch (err) {
       if (process.env.NODE_ENV === 'development') {
-        console.error("Scan error:", err);
+      console.error("Scan error:", err);
       }
       setError(err.message || t("common.errorScanFailed"));
     }
 
     setScanning(false);
-  }, [url]);
+  }, [url, hasUsedFreeScan, isTrialActive, t]);
 
   const clearResults = useCallback(() => {
     setUrl("");
@@ -562,6 +597,35 @@ export default function Home() {
     localStorage.removeItem('scanUxAudit');
     localStorage.removeItem('scanTimestamp');
   }, []);
+
+  const handleCloseTrialModal = useCallback(() => {
+    setIsTrialModalOpen(false);
+    setTrialEmailError("");
+  }, []);
+
+  const handleStartTrial = useCallback(() => {
+    const trimmedEmail = trialEmail.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!trimmedEmail || !emailRegex.test(trimmedEmail)) {
+      setTrialEmailError(t("common.trialEmailError"));
+      return;
+    }
+
+    setIsTrialActive(true);
+    setIsTrialModalOpen(false);
+    setTrialEmail(trimmedEmail);
+    setTrialEmailError("");
+    localStorage.setItem('trialActive', 'true');
+    localStorage.setItem('trialEmail', trimmedEmail);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('trialStatusChange'));
+    }
+
+    setSnackbarMessage(t("common.trialStartSuccess"));
+    setSnackbarOpen(true);
+    setTimeout(() => setSnackbarOpen(false), 3000);
+  }, [trialEmail, t]);
 
   const calculateAccessibilityScore = useCallback((violations) => {
     if (!violations || violations.length === 0) return 100;
@@ -584,6 +648,185 @@ export default function Home() {
     if (score >= 70) return appleTheme.colors.warning;
     return appleTheme.colors.error;
   }, []);
+
+  const generatePDF = useCallback(() => {
+    try {
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const margin = 20;
+      let yPosition = margin;
+      
+      // Helper function to add new page if needed
+      const checkNewPage = (requiredSpace = 20) => {
+        if (yPosition + requiredSpace > pageHeight - margin) {
+          doc.addPage();
+          yPosition = margin;
+          return true;
+        }
+        return false;
+      };
+
+      // Helper to convert hex to RGB
+      const hexToRgb = (hex) => {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16)
+        } : { r: 0, g: 122, b: 255 };
+      };
+
+      // Title
+      doc.setFontSize(20);
+      doc.setFont("helvetica", "bold");
+      doc.text(t("common.accessibilityScore") + " - " + t("home.wcagIssues"), margin, yPosition);
+      yPosition += 10;
+
+      // Scan information
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "normal");
+      const scanUrl = url || (uxAudit && uxAudit.scannedUrl) || "N/A";
+      const scanDate = new Date().toLocaleDateString();
+      doc.text(`${t("common.scanned")}: ${scanUrl}`, margin, yPosition);
+      yPosition += 7;
+      doc.text(`Date: ${scanDate}`, margin, yPosition);
+      yPosition += 10;
+
+      // Calculate accessibility score
+      const currentScore = calculateAccessibilityScore(violations);
+      
+      // Accessibility Score
+      doc.setFontSize(16);
+      doc.setFont("helvetica", "bold");
+      doc.text(`${t("common.accessibilityScore")}: ${currentScore}/100`, margin, yPosition);
+      yPosition += 10;
+
+      // Score color indicator
+      const scoreColor = getScoreColor(currentScore);
+      const rgb = hexToRgb(scoreColor);
+      doc.setFillColor(rgb.r, rgb.g, rgb.b);
+      doc.rect(margin, yPosition, 50, 8, "F");
+      yPosition += 12;
+
+      // Issues count
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "normal");
+      doc.text(`${violations.length} ${violations.length === 1 ? t("common.issue") : t("common.issuesFound")}`, margin, yPosition);
+      yPosition += 15;
+
+      // WCAG Violations Section
+      if (violations.length > 0) {
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text(t("home.wcagIssues"), margin, yPosition);
+        yPosition += 10;
+
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+
+        violations.forEach((violation, index) => {
+          checkNewPage(30);
+          
+          // Violation number and impact
+          doc.setFont("helvetica", "bold");
+          const impactTranslation = violation.impact === 'critical' ? t("home.violationImpactCritical") :
+                                   violation.impact === 'serious' ? t("home.violationImpactSerious") :
+                                   violation.impact === 'moderate' ? t("home.violationImpactModerate") :
+                                   violation.impact === 'minor' ? t("home.violationImpactMinor") : violation.impact;
+          doc.text(`${index + 1}. ${violation.help || violation.id} [${impactTranslation}]`, margin, yPosition);
+          yPosition += 6;
+
+          // Description
+          doc.setFont("helvetica", "normal");
+          const description = doc.splitTextToSize(violation.description || "", pageWidth - 2 * margin);
+          doc.text(description, margin + 5, yPosition);
+          yPosition += description.length * 5 + 3;
+
+          // Code snippet if available
+          if (violation.nodes && violation.nodes.length > 0 && violation.nodes[0].html) {
+            checkNewPage(15);
+            doc.setFont("courier", "normal");
+            doc.setFontSize(8);
+            const code = doc.splitTextToSize(violation.nodes[0].html.substring(0, 200), pageWidth - 2 * margin);
+            doc.text(code, margin + 5, yPosition);
+            yPosition += code.length * 4 + 5;
+            doc.setFontSize(10);
+          }
+
+          yPosition += 5;
+        });
+      }
+
+      // UX Audit Section
+      if (uxAudit && uxAudit.issues && uxAudit.issues.length > 0) {
+        checkNewPage(20);
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text(t("home.uxAuditResults"), margin, yPosition);
+        yPosition += 10;
+
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+
+        uxAudit.issues.forEach((issue, index) => {
+          checkNewPage(25);
+          
+          // Issue title
+          doc.setFont("helvetica", "bold");
+          const issueTitle = issue.title || issue.id || `Issue ${index + 1}`;
+          doc.text(`${index + 1}. ${issueTitle}`, margin, yPosition);
+          yPosition += 6;
+
+          // Description
+          doc.setFont("helvetica", "normal");
+          const desc = doc.splitTextToSize(issue.description || "", pageWidth - 2 * margin);
+          doc.text(desc, margin + 5, yPosition);
+          yPosition += desc.length * 5 + 3;
+
+          // Recommendation
+          if (issue.recommendation) {
+            checkNewPage(10);
+            doc.setFont("helvetica", "italic");
+            const rec = doc.splitTextToSize(issue.recommendation, pageWidth - 2 * margin);
+            doc.text(rec, margin + 5, yPosition);
+            yPosition += rec.length * 5 + 5;
+          }
+
+          yPosition += 3;
+        });
+      }
+
+      // Footer
+      const totalPages = doc.internal.pages.length - 1;
+      for (let i = 1; i <= totalPages; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Page ${i} of ${totalPages}`, pageWidth - 30, pageHeight - 10);
+        doc.text("Generated by ScanWeb", margin, pageHeight - 10);
+      }
+
+      // Generate filename
+      const sanitizedUrl = scanUrl.replace(/[^a-zA-Z0-9]/g, "-").substring(0, 50);
+      const fileName = `accessibility-report-${sanitizedUrl}-${new Date().toISOString().split("T")[0]}.pdf`;
+      
+      // Save PDF
+      doc.save(fileName);
+      
+      // Show success message
+      setSnackbarMessage(t("common.pdfDownloadSuccess"));
+      setSnackbarOpen(true);
+      setTimeout(() => setSnackbarOpen(false), 3000);
+      
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('PDF generation error:', error);
+      }
+      setSnackbarMessage(t("common.errorGeneric"));
+      setSnackbarOpen(true);
+    }
+  }, [url, violations, uxAudit, calculateAccessibilityScore, getScoreColor, t]);
 
   const getStatusColor = useCallback((impact) => {
     switch (impact) {
@@ -622,17 +865,17 @@ export default function Home() {
               <Typography 
                 variant="display" 
                 style={{ 
-                  marginBottom: isMobile ? appleTheme.spacing[6] : appleTheme.spacing[8],
-                  color: themeColors.text.primary,
-                  fontWeight: appleTheme.typography.fontWeight.bold,
-                  fontSize: isMobile ? "28px" : "42px",
-                  lineHeight: 1.2,
-                  padding: isMobile ? "0 20px" : "0",
-                  background: isDarkMode 
-                    ? "linear-gradient(135deg, #FFFFFF 0%, #E5E5EA 100%)"
-                    : "linear-gradient(135deg, #1C1C1E 0%, #007AFF 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
+              marginBottom: isMobile ? appleTheme.spacing[6] : appleTheme.spacing[8],
+              color: themeColors.text.primary,
+              fontWeight: appleTheme.typography.fontWeight.bold,
+              fontSize: isMobile ? "28px" : "42px",
+              lineHeight: 1.2,
+              padding: isMobile ? "0 20px" : "0",
+              background: isDarkMode 
+                ? "linear-gradient(135deg, #FFFFFF 0%, #E5E5EA 100%)"
+                : "linear-gradient(135deg, #1C1C1E 0%, #007AFF 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
                   willChange: "background",
                   WebkitBackfaceVisibility: "hidden",
@@ -640,7 +883,7 @@ export default function Home() {
                 }}
               >
                 {t("home.title")}
-              </Typography>
+  </Typography>
             </div>
             <Typography variant="headline" weight="regular" style={{ 
               color: themeColors.text.secondary,
@@ -894,8 +1137,8 @@ export default function Home() {
                         {accessibilityScore}
                       </div>
                       <div style={{
-                        display: "flex",
-                        flexDirection: "column",
+                display: "flex",
+                flexDirection: "column",
                         gap: "4px",
                         justifyContent: "flex-start",
                         alignItems: "flex-start"
@@ -907,7 +1150,7 @@ export default function Home() {
                           lineHeight: 1.2
                         }}>
                           {t("common.outOf")} 100
-                        </Typography>
+          </Typography>
                         <div style={{
                           display: "flex",
                           alignItems: "center",
@@ -929,7 +1172,7 @@ export default function Home() {
                             whiteSpace: "nowrap"
                           }}>
                             {violations.length} {violations.length === 1 ? t("common.issue") : t("common.issuesFound")}
-                          </Typography>
+          </Typography>
                         </div>
                       </div>
                     </div>
@@ -945,6 +1188,7 @@ export default function Home() {
                   }}>
                     <div style={{ display: "flex", gap: "8px" }}>
                     <button 
+                      onClick={generatePDF}
                       style={{
                         height: isMobile ? "32px" : "36px",
                         backgroundColor: isDarkMode ? themeColors.background.tertiary : themeColors.background.primary,
@@ -1056,38 +1300,38 @@ export default function Home() {
                 {/* WCAG Accessibility Issues Title */}
                 {violations.length > 0 && (
                   <>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "20px" }}>
-                      <Typography variant="title3" style={{
-                        color: "#000000",
-                        fontSize: "18px",
-                        fontWeight: "600",
-                        textAlign: "left"
-                      }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "20px" }}>
+                  <Typography variant="title3" style={{
+                    color: "#000000",
+                    fontSize: "18px",
+                    fontWeight: "600",
+                    textAlign: "left"
+                  }}>
                         {t("home.wcagIssues")} ({violations.length})
-                      </Typography>
-                    </div>
+                  </Typography>
+                </div>
 
-                    {/* Violations Grid */}
-                    <div style={{
-                      display: "grid",
-                      gridTemplateColumns: isMobile 
-                        ? "1fr" 
-                        : "repeat(auto-fit, minmax(300px, 1fr))",
-                      gap: isMobile ? "12px" : "20px",
-                      maxWidth: "100%",
-                      width: "100%",
-                      alignItems: "start"
-                    }}>
-                      {violations.map((violation, index) => (
-                        <ViolationCard 
-                          key={`violation-${index}-${violation.id || 'unknown'}`} 
-                          violation={violation} 
-                          isDarkMode={isDarkMode}
-                          getStatusColor={getStatusColor}
+                {/* Violations Grid */}
+                <div style={{
+                  display: "grid",
+                  gridTemplateColumns: isMobile 
+                    ? "1fr" 
+                    : "repeat(auto-fit, minmax(300px, 1fr))",
+                  gap: isMobile ? "12px" : "20px",
+                  maxWidth: "100%",
+                  width: "100%",
+                  alignItems: "start"
+                }}>
+                  {violations.map((violation, index) => (
+                    <ViolationCard 
+                      key={`violation-${index}-${violation.id || 'unknown'}`} 
+                      violation={violation} 
+                      isDarkMode={isDarkMode}
+                      getStatusColor={getStatusColor}
                           t={t}
-                        />
-                      ))}
-                    </div>
+                    />
+                  ))}
+                </div>
                   </>
                 )}
 
@@ -1450,13 +1694,13 @@ export default function Home() {
                 overflowWrap: "break-word"
               }}>
                 {t("index.trustedBy")}
-              </Typography>
+  </Typography>
 
               <div style={{
-                display: "flex",
+                  display: "flex",
                 flexWrap: "wrap",
                 justifyContent: "center",
-                alignItems: "center",
+                  alignItems: "center",
                 gap: isMobile ? appleTheme.spacing[4] : appleTheme.spacing[6],
                 maxWidth: "900px",
                 margin: "0 auto"
@@ -1501,18 +1745,18 @@ export default function Home() {
                       overflowWrap: "break-word"
                     }}>
                       {indicator}
-                    </Typography>
-                  </Box>
+                </Typography>
+                </Box>
                 ))}
               </div>
-            </Box>
+              </Box>
 
             {/* Technical Specifications */}
             <Box style={{ 
               marginTop: isMobile ? appleTheme.spacing[12] : appleTheme.spacing[16],
               maxWidth: "900px",
               margin: `${isMobile ? appleTheme.spacing[12] : appleTheme.spacing[16]} auto 0 auto`,
-              padding: appleTheme.spacing[6],
+              padding: isMobile ? `${appleTheme.spacing[4]}` : appleTheme.spacing[6],
               backgroundColor: isDarkMode ? "rgba(255, 255, 255, 0.03)" : "rgba(0, 0, 0, 0.02)",
               borderRadius: appleTheme.borderRadius.xl,
               border: isDarkMode ? "1px solid rgba(255, 255, 255, 0.08)" : "1px solid rgba(0, 0, 0, 0.05)"
@@ -1599,7 +1843,9 @@ export default function Home() {
         {/* Features Section - only shown when no results */}
         {violations.length === 0 && (
           <Section className="features-section" padding="lg" style={{ 
-            padding: `${appleTheme.spacing[12]} 0`
+            padding: isMobile
+              ? `${appleTheme.spacing[10]} ${appleTheme.spacing[4]}`
+              : `${appleTheme.spacing[12]} 0`
           }}>
             <Box style={{ textAlign: "center", marginBottom: appleTheme.spacing[12] }}>
               <Typography variant="title1" style={{ 
@@ -1712,6 +1958,160 @@ export default function Home() {
           </Section>
         )}
       </Container>
+
+      {/* Trial Modal */}
+      {isTrialModalOpen && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1100,
+            padding: appleTheme.spacing[4]
+          }}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="trial-modal-title"
+        >
+          <div
+            style={{
+              width: "100%",
+              maxWidth: "420px",
+              backgroundColor: isDarkMode ? themeColors.background.tertiary : "#FFFFFF",
+              borderRadius: appleTheme.borderRadius.xl,
+              padding: appleTheme.spacing[6],
+              boxShadow: isDarkMode
+                ? "0 20px 60px rgba(0, 0, 0, 0.6)"
+                : "0 20px 60px rgba(15, 23, 42, 0.20)",
+              border: isDarkMode ? "1px solid rgba(255, 255, 255, 0.08)" : "1px solid rgba(0, 0, 0, 0.05)",
+              display: "flex",
+              flexDirection: "column",
+              gap: appleTheme.spacing[4],
+              position: "relative"
+            }}
+          >
+            <button
+              onClick={handleCloseTrialModal}
+              aria-label="Close"
+              style={{
+                position: "absolute",
+                top: appleTheme.spacing[4],
+                right: appleTheme.spacing[4],
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+                padding: appleTheme.spacing[1],
+                color: isDarkMode ? themeColors.text.secondary : "#1C1C1E",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+            >
+              <X size={18} weight="bold" />
+            </button>
+
+            <div>
+              <Typography
+                id="trial-modal-title"
+                variant="title2"
+                style={{
+                  color: isDarkMode ? "#FFFFFF" : "#000000",
+                  fontWeight: appleTheme.typography.fontWeight.semibold,
+                  marginBottom: appleTheme.spacing[2]
+                }}
+              >
+                {t("common.trialModalTitle")}
+              </Typography>
+              <Typography
+                variant="body"
+                style={{
+                  color: isDarkMode ? themeColors.text.secondary : "#1C1C1E",
+                  lineHeight: 1.5
+                }}
+              >
+                {t("common.trialModalMessage")}
+              </Typography>
+            </div>
+
+            <Input
+              label={t("common.trialEmailLabel")}
+              placeholder=""
+              value={trialEmail}
+              onChange={(value) => {
+                setTrialEmail(value);
+                if (trialEmailError) {
+                  setTrialEmailError("");
+                }
+              }}
+              fullWidth
+              error={Boolean(trialEmailError)}
+              helperText={trialEmailError}
+              type="email"
+            />
+
+            <div
+              style={{
+                display: "flex",
+                flexDirection: isMobile ? "column" : "row",
+                gap: appleTheme.spacing[3]
+              }}
+            >
+              <Button
+                variant="primary"
+                fullWidth={isMobile}
+                size="large"
+                onClick={handleStartTrial}
+              >
+                {t("common.trialModalStart")}
+              </Button>
+              <Button
+                variant="ghost"
+                fullWidth={isMobile}
+                size="large"
+                onClick={handleCloseTrialModal}
+              >
+                {t("common.trialModalLater")}
+              </Button>
+            </div>
+
+            <Typography
+              variant="footnote"
+              style={{
+                color: isDarkMode ? themeColors.text.tertiary : "#6D6D70",
+                lineHeight: 1.4,
+                textAlign: "center",
+                fontSize: "12px"
+              }}
+            >
+              {t("common.trialModalDetail")}
+            </Typography>
+          </div>
+        </div>
+      )}
+
+      {/* Snackbar for notifications */}
+      {snackbarOpen && (
+        <Box style={{
+          position: "fixed",
+          bottom: appleTheme.spacing[6],
+          right: appleTheme.spacing[6],
+          backgroundColor: appleTheme.colors.success,
+          color: "white",
+          padding: `${appleTheme.spacing[3]} ${appleTheme.spacing[4]}`,
+          borderRadius: appleTheme.borderRadius.md,
+          boxShadow: appleTheme.shadows.lg,
+          zIndex: 1000,
+          maxWidth: "400px",
+          animation: "fadeIn 0.3s ease-in-out"
+        }}>
+          <Typography variant="footnote" style={{ color: "white" }}>
+            {snackbarMessage}
+          </Typography>
+        </Box>
+      )}
     </div>
   );
 }

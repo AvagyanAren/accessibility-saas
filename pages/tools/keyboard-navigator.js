@@ -182,40 +182,40 @@ export default function KeyboardNavigator() {
             
             {/* Input and Button Section */}
             <HStack spacing={3} align="center" style={{ 
-              marginBottom: appleTheme.spacing[4],
+            marginBottom: appleTheme.spacing[4],
               width: '100%',
               maxWidth: '800px',
               justifyContent: 'center'
             }}>
               <Box style={{ flex: 1, maxWidth: '600px' }}>
-                <Input
-                  placeholder="https://example.com"
-                  value={url}
-                  onChange={setUrl}
-                  size="large"
-                  variant="filled"
-                  startIcon={<Keyboard size={20} weight="regular" />}
-                />
-              </Box>
-              <Button
-                variant="primary"
+              <Input
+                placeholder="https://example.com"
+                value={url}
+                onChange={setUrl}
                 size="large"
-                onClick={handleTest}
-                disabled={testing}
-                loading={testing}
+                variant="filled"
+                  startIcon={<Keyboard size={20} weight="regular" />}
+              />
+            </Box>
+            <Button
+              variant="primary"
+              size="large"
+              onClick={handleTest}
+              disabled={testing}
+              loading={testing}
                 startIcon={testing ? <ArrowsClockwise size={16} weight="regular" /> : <Play size={16} weight="fill" />}
                 style={{ 
                   height: '54px', 
                   flexShrink: 0,
                   minWidth: '140px'
                 }}
-              >
+            >
                 {testing ? t("keyboardNavigator.testing") : t("keyboardNavigator.testButton")}
-              </Button>
-            </HStack>
+            </Button>
+          </HStack>
 
             {/* What we test card */}
-            <Card variant="outlined" padding="md" style={{ 
+          <Card variant="outlined" padding="md" style={{ 
               backgroundColor: isDarkMode ? themeColors.background.tertiary : '#F5F5F7',
               border: `1px solid ${isDarkMode ? 'rgba(255, 255, 255, 0.15)' : '#E5E5EA'}`,
               borderRadius: appleTheme.borderRadius.lg,
@@ -223,15 +223,15 @@ export default function KeyboardNavigator() {
               width: '100%',
               maxWidth: '800px',
               textAlign: 'left'
-            }}>
+          }}>
               <Typography variant="body" style={{ 
                 color: themeColors.text.secondary,
                 fontSize: appleTheme.typography.fontSize.base,
                 lineHeight: appleTheme.typography.lineHeight.relaxed
               }}>
                 <strong>{t("keyboardNavigator.whatWeTest")}</strong> {t("keyboardNavigator.whatWeTestDesc")}
-              </Typography>
-            </Card>
+            </Typography>
+          </Card>
           </Box>
         </Container>
       </Section>

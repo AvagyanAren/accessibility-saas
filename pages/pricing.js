@@ -1,4 +1,4 @@
-import React, { useState, memo } from "react";
+import React, { useState, useEffect, memo } from "react";
 import Typography from "../components/apple/Typography";
 import Button from "../components/apple/Button";
 import Card from "../components/apple/Card";
@@ -94,6 +94,19 @@ export default function Pricing() {
   const { isDarkMode } = useTheme();
   const { t } = useLanguage();
   const [expandedFAQ, setExpandedFAQ] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (typeof window === "undefined") return;
+      setIsMobile(window.innerWidth < 1024);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const plans = [
     {
       name: t("pricing.planFree"),
@@ -184,7 +197,15 @@ export default function Pricing() {
       overflow: "hidden"
     }}>
       {/* Hero Section */}
-      <Section className="pricing-hero" background={isDarkMode ? "linear-gradient(135deg, rgba(28, 28, 30, 0.9) 0%, rgba(44, 44, 46, 0.9) 100%)" : "linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)"} padding="xl">
+      <Section
+        className="pricing-hero"
+        background={isDarkMode ? "linear-gradient(135deg, rgba(28, 28, 30, 0.9) 0%, rgba(44, 44, 46, 0.9) 100%)" : "linear-gradient(135deg, #F5F5F7 0%, #E5E5EA 100%)"}
+        padding="lg"
+        style={{
+          paddingTop: isMobile ? appleTheme.spacing[12] : appleTheme.spacing[14],
+          paddingBottom: isMobile ? appleTheme.spacing[10] : appleTheme.spacing[12]
+        }}
+      >
         <Container size="lg">
           <Box className="pricing-hero__content" style={{ textAlign: "center" }}>
             <Typography variant="display" className="pricing-hero__title" style={{ 
@@ -199,7 +220,7 @@ export default function Pricing() {
             <Typography variant="headline" weight="regular" className="pricing-hero__subtitle" style={{ 
               color: themeColors.text.secondary,
               maxWidth: "600px",
-              margin: `0 auto ${appleTheme.spacing[8]} auto`,
+              margin: `0 auto ${isMobile ? appleTheme.spacing[6] : appleTheme.spacing[7]} auto`,
               fontWeight: appleTheme.typography.fontWeight.medium,
               wordBreak: "break-word",
               overflowWrap: "break-word"
@@ -212,17 +233,22 @@ export default function Pricing() {
 
       <Container size="lg" padding="lg">
         {/* Pricing Cards */}
-        <Section padding="lg">
+        <Section
+          padding="default"
+          style={{
+            paddingTop: isMobile ? appleTheme.spacing[8] : appleTheme.spacing[12],
+            paddingBottom: isMobile ? appleTheme.spacing[8] : appleTheme.spacing[12]
+          }}
+        >
           <div style={{
             display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: appleTheme.spacing[4],
+            gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+            gap: isMobile ? appleTheme.spacing[6] : appleTheme.spacing[5],
             alignItems: "stretch",
-            justifyItems: "center",
-            maxWidth: "1200px",
+            justifyItems: isMobile ? "stretch" : "center",
+            maxWidth: isMobile ? "100%" : "1200px",
             margin: "0 auto",
-            // Ensure spacing between pricing cards and "Why Choose ScanWeb?" matches the next section gap
-            marginBottom: appleTheme.spacing[12]
+            marginBottom: appleTheme.spacing[isMobile ? 10 : 12]
           }}>
             {plans.map((plan, index) => (
               <div 
@@ -236,23 +262,25 @@ export default function Pricing() {
                   boxShadow: plan.popular ? "0 8px 25px rgba(0, 122, 255, 0.15)" : (isDarkMode ? "0 1px 3px rgba(0, 0, 0, 0.3)" : "0 1px 3px rgba(0, 0, 0, 0.1)"),
                   overflow: "hidden",
                   width: "100%",
-                  maxWidth: "320px",
+                  maxWidth: isMobile ? "100%" : "320px",
                   display: "flex",
                   flexDirection: "column",
                   position: "relative",
                   zIndex: plan.popular ? 2 : 1,
                   contain: "layout style",
-                  transform: plan.popular ? "scale(1.05)" : "scale(1)",
-                  minHeight: "610px",
+                  transform: plan.popular && !isMobile ? "scale(1.05)" : "scale(1)",
+                  minHeight: isMobile ? "auto" : "610px",
                   height: "100%"
                 }}
                 onMouseEnter={(e) => {
+                  if (isMobile) return;
                   e.currentTarget.style.boxShadow = isDarkMode ? "0 8px 25px rgba(0, 0, 0, 0.5)" : "0 8px 25px rgba(0, 0, 0, 0.15)";
                   e.currentTarget.style.transform = plan.popular ? "scale(1.05) translateY(-3px)" : "translateY(-3px)";
                   e.currentTarget.style.borderColor = "#007AFF";
                       e.currentTarget.style.backgroundColor = isDarkMode ? themeColors.gray[200] : "#F8F9FA";
                 }}
                 onMouseLeave={(e) => {
+                  if (isMobile) return;
                   e.currentTarget.style.boxShadow = plan.popular ? "0 8px 25px rgba(0, 122, 255, 0.15)" : (isDarkMode ? "0 1px 3px rgba(0, 0, 0, 0.3)" : "0 1px 3px rgba(0, 0, 0, 0.1)");
                   e.currentTarget.style.transform = plan.popular ? "scale(1.05)" : "translateY(0)";
                   e.currentTarget.style.borderColor = plan.popular ? "#007AFF" : (isDarkMode ? "rgba(255, 255, 255, 0.1)" : "#E5E5EA");
@@ -316,60 +344,64 @@ export default function Pricing() {
                   </Box>
 
                   <Box style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0, overflow: "hidden" }}>
-                    <Stack spacing={2} style={{ alignItems: "flex-start", flex: 1 }}>
+                    <ul
+                      style={{
+                        margin: 0,
+                        paddingLeft: isMobile ? "18px" : "22px",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: appleTheme.spacing[2],
+                        listStyleType: "disc"
+                      }}
+                    >
                       {plan.features.map((feature, featureIndex) => (
-                        <Flex key={featureIndex} align="flex-start" gap={2} style={{ width: "100%" }}>
-                          <CheckIcon style={{ 
-                            color: isDarkMode ? "#30D158" : "#30D158", 
-                            flexShrink: 0,
-                            marginTop: "2px"
-                          }} />
-                          <Typography variant="footnote" style={{
+                        <li
+                          key={featureIndex}
+                          style={{
                             color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
                             wordBreak: "break-word",
                             overflowWrap: "break-word",
-                            lineHeight: 1.5,
-                            flex: 1
-                          }}>
-                            {feature}
-                          </Typography>
-                        </Flex>
+                            lineHeight: 1.5
+                          }}
+                        >
+                          {feature}
+                        </li>
                       ))}
-                    </Stack>
+                    </ul>
                   </Box>
 
                   <Box style={{ marginTop: "auto", flexShrink: 0, paddingTop: appleTheme.spacing[4] }}>
-                    <Button
-                      variant="primary"
-                      fullWidth
-                      size="large"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
+                  <Button
+                    variant="primary"
+                    fullWidth
+                    size="large"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
                         if (plan.buttonText === t("pricing.buttonStartFree")) {
-                          window.location.href = "/";
+                        window.location.href = "/";
                         } else if (plan.buttonText === t("pricing.buttonStartPro")) {
-                          window.location.href = "/";
+                        window.location.href = "/";
                         } else if (plan.buttonText === t("pricing.buttonContactSales")) {
-                          window.location.href = "mailto:sales@accessibility-saas.com";
-                        }
-                      }}
-                      style={{
-                        backgroundColor: "#007AFF",
-                        color: "#FFFFFF",
-                        border: "none",
-                        borderRadius: "8px",
-                        padding: "12px 20px",
-                        minHeight: "44px",
-                        fontSize: "14px",
-                        fontWeight: "600",
-                        transition: "all 0.2s ease-in-out",
-                        cursor: "pointer",
-                        width: "100%"
-                      }}
-                    >
-                      {plan.buttonText}
-                    </Button>
+                        window.location.href = "mailto:sales@accessibility-saas.com";
+                      }
+                    }}
+                    style={{
+                      backgroundColor: "#007AFF",
+                      color: "#FFFFFF",
+                      border: "none",
+                      borderRadius: "8px",
+                      padding: "12px 20px",
+                      minHeight: "44px",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      transition: "all 0.2s ease-in-out",
+                      cursor: "pointer",
+                      width: "100%"
+                    }}
+                  >
+                    {plan.buttonText}
+                  </Button>
                   </Box>
                 </Stack>
               </div>

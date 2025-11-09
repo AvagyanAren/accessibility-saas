@@ -682,7 +682,7 @@ export default function Resources() {
                   e.currentTarget.style.transform = "translateY(0)";
                   e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.15)";
                 }}
-                >
+              >
                 {t("resources.subscribeToNewsletter")}
               </button>
               <button

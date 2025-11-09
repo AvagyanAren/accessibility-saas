@@ -214,7 +214,7 @@ export default function PerformanceAudit() {
           </HStack>
         </Card>
 
-        <Card variant="outlined" padding="md" style={{ 
+          <Card variant="outlined" padding="md" style={{ 
           backgroundColor: isDarkMode ? themeColors.background.tertiary : '#F5F5F7',
           border: `1px solid ${isDarkMode ? 'rgba(255, 255, 255, 0.15)' : '#E5E5EA'}`,
           borderRadius: appleTheme.borderRadius.lg,
@@ -222,12 +222,12 @@ export default function PerformanceAudit() {
           marginBottom: appleTheme.spacing[6],
           boxShadow: isDarkMode ? '0 2px 8px rgba(0, 0, 0, 0.2)' : '0 1px 3px rgba(0, 0, 0, 0.1)',
           width: '100%'
-        }}>
+          }}>
           <Typography variant="body" style={{ 
             color: themeColors.text.secondary
           }}>
             <strong>{t("performanceAudit.whatWeAnalyze")}</strong> {t("performanceAudit.whatWeAnalyzeDesc")}
-          </Typography>
+            </Typography>
         </Card>
 
         {/* Results Section */}

@@ -355,6 +355,7 @@ const Section = ({
   padding = 'default',
   background = 'transparent',
   className = '',
+  style: customStyle = {},
   ...props
 }) => {
   const getPaddingStyles = () => {
@@ -384,7 +385,8 @@ const Section = ({
   const sectionStyles = {
     width: '100%',
     backgroundColor: background,
-    ...getPaddingStyles()
+    ...getPaddingStyles(),
+    ...customStyle
   };
 
   return (

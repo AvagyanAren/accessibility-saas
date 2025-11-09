@@ -54,7 +54,7 @@ export default function BestPractices({
                 color: themeColors.text.primary
               }}>
                 Do's
-              </Typography>
+            </Typography>
             </HStack>
             <Stack spacing={3}>
               {dos.map((practice, index) => (
@@ -91,7 +91,7 @@ export default function BestPractices({
                 color: themeColors.text.primary
               }}>
                 Don'ts
-              </Typography>
+            </Typography>
             </HStack>
             <Stack spacing={3}>
               {donts.map((practice, index) => (
@@ -128,7 +128,7 @@ export default function BestPractices({
                 color: themeColors.text.primary
               }}>
                 Tips
-              </Typography>
+            </Typography>
             </HStack>
             <Stack spacing={3}>
               {tips.map((practice, index) => (
