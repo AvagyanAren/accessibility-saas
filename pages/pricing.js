@@ -364,7 +364,7 @@ export default function Pricing() {
                             lineHeight: 1.5
                           }}
                         >
-                          {feature}
+                            {feature}
                         </li>
                       ))}
                     </ul>

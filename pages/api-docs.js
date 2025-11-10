@@ -209,7 +209,7 @@ print(data)`
             <Typography variant="headline" weight="regular" style={{ 
               color: themeColors.text.secondary,
               maxWidth: "600px",
-              margin: `0 auto ${appleTheme.spacing[8]} auto`,
+              margin: `0 auto ${appleTheme.spacing[5]} auto`,
               fontWeight: appleTheme.typography.fontWeight.medium,
               wordBreak: "break-word",
               overflowWrap: "break-word"

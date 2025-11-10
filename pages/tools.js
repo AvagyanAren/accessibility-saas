@@ -100,7 +100,6 @@ export default function Tools() {
       description: t("tools.toolContrastDesc"),
       icon: <ContrastIcon />,
       color: "#007AFF",
-      status: t("tools.statusAvailable"),
       features: [t("tools.featureWCAG"), t("tools.featureLivePreview"), t("tools.featureColorGen"), t("tools.featureDetailedReport")]
     },
     {
@@ -108,8 +107,7 @@ export default function Tools() {
       title: t("tools.toolAltText"),
       description: t("tools.toolAltTextDesc"),
       icon: <ImageIcon />,
-      color: "#30D158",
-      status: t("tools.statusAvailable"),
+      color: "#007AFF",
       features: [t("tools.featureBulkScan"), t("tools.featureMissingDetection"), t("tools.featureSuggestions"), t("tools.featureExport")]
     },
     {
@@ -117,8 +115,7 @@ export default function Tools() {
       title: t("tools.toolKeyboard"),
       description: t("tools.toolKeyboardDesc"),
       icon: <KeyboardIcon />,
-      color: "#FF9F0A",
-      status: t("tools.statusAvailable"),
+      color: "#007AFF",
       features: ["Tab order testing", "Focus indicators", "Skip links detection", "Navigation flow analysis"]
     },
     {
@@ -126,8 +123,7 @@ export default function Tools() {
       title: t("tools.toolPerformance"),
       description: t("tools.toolPerformanceDesc"),
       icon: <TrendingUpIcon />,
-      color: "#FF6B6B",
-      status: t("tools.statusAvailable"),
+      color: "#007AFF",
       features: ["Load time analysis", "Resource optimization", "Performance scoring", "Improvement recommendations"]
     },
     {
@@ -135,8 +131,7 @@ export default function Tools() {
       title: t("tools.toolScreenReader"),
       description: t("tools.toolScreenReaderDesc"),
       icon: <RecordVoiceOverIcon />,
-      color: "#9C27B0",
-      status: t("tools.statusAvailable"),
+      color: "#007AFF",
       features: ["Voice simulation", "Multiple voices", "Speed control", "Content structure analysis"]
     }
   ];
@@ -251,16 +246,6 @@ export default function Tools() {
                         }}>
                           {tool.icon}
                         </Box>
-                        <Box style={{
-                          padding: `${appleTheme.spacing[1]} ${appleTheme.spacing[3]}`,
-                          backgroundColor: tool.status === "Available" ? "#30D158" : "#FF9F0A",
-                          color: "white",
-                          borderRadius: appleTheme.borderRadius.full,
-                          fontSize: appleTheme.typography.fontSize.xs,
-                          fontWeight: appleTheme.typography.fontWeight.semibold
-                        }}>
-                          {tool.status}
-                        </Box>
                       </Flex>
                       
                       {/* Content */}
@@ -307,16 +292,12 @@ export default function Tools() {
                       </Box>
                       
                       {/* Action */}
-                      <HStack justify="space-between" align="center">
+                      <HStack justify="flex-end" align="center">
                         <Typography variant="caption1" weight="medium" style={{
-                          color: tool.color
+                          color: "#007AFF"
                         }}>
                           Try Tool
                         </Typography>
-                        <ExternalLinkIcon style={{ 
-                          color: tool.color,
-                          fontSize: "14px"
-                        }} />
                       </HStack>
                     </Stack>
                   </div>
