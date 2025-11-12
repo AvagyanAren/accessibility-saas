@@ -1,5 +1,6 @@
 import Navbar from "../components/NavbarApple";
 import ThemeToggle from "../components/apple/ThemeToggle";
+import Chatbot from "../components/Chatbot";
 import { ThemeProvider } from "../contexts/ThemeContext";
 import { LanguageProvider } from "../contexts/LanguageContext";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -37,6 +38,7 @@ function MyApp({ Component, pageProps }) {
           
           <SpeedInsights />
           <Analytics />
+          <Chatbot />
         </div>
       </ThemeProvider>
     </LanguageProvider>

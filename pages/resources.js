@@ -796,9 +796,9 @@ export default function Resources() {
                   pointerEvents: "none"
                 }} />
 
-                <Stack spacing={5} style={{ position: "relative", zIndex: 1 }}>
-                  <Flex align="center" justify="space-between" gap={4} wrap="wrap">
-                    <Flex align="center" gap={4}>
+                <Stack spacing={5} style={{ position: "relative", zIndex: 1, height: "100%" }}>
+                  <Flex align="center" justify="space-between" gap={4} wrap="nowrap">
+                    <Flex align="center" gap={4} style={{ minWidth: 0 }}>
                       <Box style={{
                         width: "56px",
                         height: "56px",
@@ -816,7 +816,7 @@ export default function Resources() {
                       }}>
                         {index + 1}
                       </Box>
-                      <Box>
+                      <Box style={{ minWidth: 0 }}>
                         <Typography variant="title3" style={{
                           fontWeight: appleTheme.typography.fontWeight.semibold,
                           color: isDarkMode ? "#FFFFFF" : "#000000",
@@ -829,7 +829,9 @@ export default function Resources() {
                           color: isDarkMode ? "rgba(235, 235, 245, 0.78)" : appleTheme.colors.text.secondary,
                           lineHeight: appleTheme.typography.lineHeight.relaxed,
                           fontSize: "15px",
-                          maxWidth: "320px"
+                          maxWidth: "320px",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis"
                         }}>
                           {tool.description}
                         </Typography>
@@ -852,41 +854,41 @@ export default function Resources() {
                     </Box>
                   </Flex>
 
-                    <Stack spacing={2}>
-                      {tool.features.map((feature, fIndex) => (
-                        <Flex
-                          key={fIndex}
-                          align="center"
-                          gap={3}
-                          style={{
-                            padding: `${appleTheme.spacing[2]} ${appleTheme.spacing[3]}`,
-                            borderRadius: appleTheme.borderRadius.lg,
-                            backgroundColor: isDarkMode ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)",
-                            border: isDarkMode ? "1px solid rgba(255, 255, 255, 0.08)" : "1px solid rgba(15, 23, 42, 0.05)"
-                          }}
-                        >
-                          <Box style={{
-                            width: "28px",
-                            height: "28px",
-                            borderRadius: "50%",
-                            backgroundColor: isDarkMode ? "rgba(48, 209, 88, 0.18)" : "rgba(48, 209, 88, 0.12)",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            flexShrink: 0
-                          }}>
-                            <CheckCircle size={16} weight="bold" color="#30D158" />
-                          </Box>
-                          <Typography variant="body" style={{
-                            color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
-                            fontSize: "15px",
-                            letterSpacing: "0.15px"
-                          }}>
-                            {feature}
-                          </Typography>
-                        </Flex>
-                      ))}
-                    </Stack>
+                  <Stack spacing={2} style={{ flex: 1 }}>
+                    {tool.features.map((feature, fIndex) => (
+                      <Flex
+                        key={fIndex}
+                        align="center"
+                        gap={3}
+                        style={{
+                          padding: `${appleTheme.spacing[2]} ${appleTheme.spacing[3]}`,
+                          borderRadius: appleTheme.borderRadius.lg,
+                          backgroundColor: isDarkMode ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)",
+                          border: isDarkMode ? "1px solid rgba(255, 255, 255, 0.08)" : "1px solid rgba(15, 23, 42, 0.05)"
+                        }}
+                      >
+                        <Box style={{
+                          width: "28px",
+                          height: "28px",
+                          borderRadius: "50%",
+                          backgroundColor: isDarkMode ? "rgba(48, 209, 88, 0.18)" : "rgba(48, 209, 88, 0.12)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          flexShrink: 0
+                        }}>
+                          <CheckCircle size={16} weight="bold" color="#30D158" />
+                        </Box>
+                        <Typography variant="body" style={{
+                          color: isDarkMode ? "#E5E5EA" : "#1C1C1E",
+                          fontSize: "15px",
+                          letterSpacing: "0.15px"
+                        }}>
+                          {feature}
+                        </Typography>
+                      </Flex>
+                    ))}
+                  </Stack>
 
                   <Flex align="center" justify="flex-end" style={{ marginTop: appleTheme.spacing[2] }}>
                     <a
@@ -904,7 +906,7 @@ export default function Resources() {
                           color: isDarkMode ? "#8AC6FF" : appleTheme.colors.primary[500],
                           border: isDarkMode
                             ? "1px solid rgba(10, 132, 255, 0.35)"
-                            : `1px solid ${appleTheme.colors.primary[100]}`,
+                            : `1px солид ${appleTheme.colors.primary[100]}`,
                           boxShadow: "none",
                           letterSpacing: "0.2px"
                         }}
